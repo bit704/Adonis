@@ -1,0 +1,16 @@
+
+create database adonis;
+
+use adonis;
+
+create table user(
+id varchar(20) primary key,
+nickname varchar(20),
+password varchar(20)
+);
+
+desc user;
+
+select * from user;
+
+
