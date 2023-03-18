@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center_vertical"
+    android:gravity="center_horizontal"
+    tools:context=".activity.LoginActivity">
+
+    <ImageView
+        android:contentDescription="@string/logo_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginVertical="@dimen/login_text_margin_vertical"
+        android:src="@mipmap/ic_launcher">
+    </ImageView>
+
+    <EditText
+        android:id="@+id/edit_text_user"
+        android:hint="@string/user"
+        android:maxLines="1"
+        android:layout_width="@dimen/login_text_width"
+        android:layout_height="@dimen/login_text_height"
+        android:layout_marginVertical="@dimen/login_text_margin_vertical"
+        android:inputType="number"
+        android:selectAllOnFocus="true"
+        android:importantForAutofill="no">
+    </EditText>
+
+    <EditText
+        android:id="@+id/edit_text_password"
+        android:hint="@string/password"
+        android:maxLines="1"
+        android:layout_width="@dimen/login_text_width"
+        android:layout_height="@dimen/login_text_height"
+        android:layout_marginVertical="@dimen/login_text_margin_vertical"
+        android:inputType="textPassword"
+        android:importantForAutofill="no">
+    </EditText>
+    
+    <Button
+        android:id="@+id/button_login"
+        android:layout_width="@dimen/login_button_width"
+        android:layout_height="@dimen/login_button_height"
+        android:layout_marginVertical="@dimen/login_button_margin_vertical"
+        android:text="@string/login">
+    </Button>
+
+    <Button
+        android:id="@+id/button_signup"
+        android:layout_width="@dimen/login_button_width"
+        android:layout_height="@dimen/login_button_height"
+        android:layout_marginVertical="@dimen/login_button_margin_vertical"
+        android:text="@string/signup">
+    </Button>
+
+</LinearLayout>
+

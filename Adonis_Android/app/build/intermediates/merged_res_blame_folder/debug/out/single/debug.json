@@ -1,0 +1,106 @@
+[
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/xml_backup_rules.xml.flat",
+        "source": "com.example.adonis.app-main-28:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/menu_menu_main_more.xml.flat",
+        "source": "com.example.adonis.app-main-28:/menu/menu_main_more.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/xml_data_extraction_rules.xml.flat",
+        "source": "com.example.adonis.app-main-28:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/layout_fragment_news.xml.flat",
+        "source": "com.example.adonis.app-main-28:/layout/fragment_news.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/menu_menu_main_navigation.xml.flat",
+        "source": "com.example.adonis.app-main-28:/menu/menu_main_navigation.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.adonis.app-main-28:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.adonis.app-main-28:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/layout_activity_main.xml.flat",
+        "source": "com.example.adonis.app-main-28:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.example.adonis.app-main-28:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/layout_view_holder_news.xml.flat",
+        "source": "com.example.adonis.app-main-28:/layout/view_holder_news.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/layout_fragment_contacts.xml.flat",
+        "source": "com.example.adonis.app-main-28:/layout/fragment_contacts.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/drawable-v24_ic_launcher_foreground.xml.flat",
+        "source": "com.example.adonis.app-main-28:/drawable-v24/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.example.adonis.app-main-28:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.adonis.app-main-28:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.example.adonis.app-main-28:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.adonis.app-main-28:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.example.adonis.app-main-28:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/layout_header_main_navigation.xml.flat",
+        "source": "com.example.adonis.app-main-28:/layout/header_main_navigation.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/layout_activity_signup.xml.flat",
+        "source": "com.example.adonis.app-main-28:/layout/activity_signup.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/layout_activity_login.xml.flat",
+        "source": "com.example.adonis.app-main-28:/layout/activity_login.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/mipmap-anydpi-v33_ic_launcher.xml.flat",
+        "source": "com.example.adonis.app-main-28:/mipmap-anydpi-v33/ic_launcher.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.adonis.app-main-28:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.example.adonis.app-main-28:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.example.adonis.app-main-28:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.example.adonis.app-main-28:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.example.adonis.app-merged_res-26:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.example.adonis.app-main-28:/mipmap-anydpi-v26/ic_launcher.xml"
+    }
+]
