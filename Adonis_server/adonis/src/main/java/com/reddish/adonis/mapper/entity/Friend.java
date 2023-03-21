@@ -9,12 +9,12 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("user")
-public class User {
-    @TableField("id")
-    private String id;
-    @TableField("nickname")
-    private String nickname;
-    @TableField("password")
-    private String password;
+@TableName("friend")
+public class Friend {
+    @TableField("subject")
+    private String subject;
+
+    @TableField("object")
+    private String object;
+
 }

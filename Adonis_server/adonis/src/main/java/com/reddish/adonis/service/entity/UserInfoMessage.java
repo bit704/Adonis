@@ -1,13 +1,13 @@
 package com.reddish.adonis.service.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
 @ToString
-public class UserMessage {
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserInfoMessage {
     /**
      * sign_in: 登录
      * sign_out: 登出
