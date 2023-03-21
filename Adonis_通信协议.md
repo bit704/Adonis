@@ -134,3 +134,17 @@ public class DialogueInfoMessage {
 | 207  | 注册时未传入完整信息                  |
 | 208  | 用户不在线                            |
 
+# 示例
+
+仅有已经开发好的功能的示例。
+
+以下是消息序列化后的字符串。
+
+```json
+//注册 
+{"messageId":"d393badd-9ed5-444a-8d8a-3cdf19bddb7c","reply":false,"replyCode":0,"type":"userMessage","userId":"8569","userInfoMessage":{"id":"8569","nickname":"乌有之乡","password":"56897z","type":"sign_up"}}
+
+//登录
+{"messageId":"e4b9e610-461b-45a2-8e5b-3a306792d587","reply":false,"replyCode":0,"type":"userMessage","userInfoMessage":{"id":"8569","password":"56897z","type":"sign_in"}}
+```
+
