@@ -52,12 +52,12 @@ public class Dispatcher {
         Message message = JSON.parseObject(messageString, Message.class);
 
         try {
+            // messageId = null 的消息视作保活消息，对其回复同样的保活消息
             if(message.getMessageId() == null) {
-                throw new MessageException(ExceptionCode._100);
+                sendMessageForAlive(session);
+                return;
             }
-            // 暂不处理客户端的任何回复
             // 默认只有服务端回复客户端，没有客户端回复服务端
-            // 客户端的回复视作保活信息
             if (!message.isReply()) {
                 switch (message.getType()) {
                     case "userMessage" -> {
@@ -101,6 +101,12 @@ public class Dispatcher {
         message.setReply(true);
         message.setReplyCode(0);
         message.setMessageId(messageToReply.getMessageId());
+        sendMessage(session, message);
+    }
+
+    //保活消息
+    public static void sendMessageForAlive(Session session) {
+        Message message = new Message();
         sendMessage(session, message);
     }
 
