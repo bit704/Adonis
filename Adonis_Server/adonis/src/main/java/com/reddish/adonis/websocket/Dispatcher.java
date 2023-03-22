@@ -7,6 +7,7 @@ import com.reddish.adonis.exception.UserInfoException;
 import com.reddish.adonis.service.DialogueInfoService;
 import com.reddish.adonis.service.UserInfoService;
 import com.reddish.adonis.service.entity.Message;
+import com.reddish.adonis.service.entity.ReplyMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.websocket.Session;
 import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -52,37 +54,38 @@ public class Dispatcher {
         Message message = JSON.parseObject(messageString, Message.class);
 
         try {
-            // messageId = null 的消息视作保活消息，对其回复同样的保活消息
-            if(message.getMessageId() == null) {
+            // id = null 的消息视作保活消息，对其回复同样的保活消息
+            if(message.getId() == null) {
                 sendMessageForAlive(session);
                 return;
             }
-            // 默认只有服务端回复客户端，没有客户端回复服务端
-            if (!message.isReply()) {
-                switch (message.getType()) {
-                    case "userMessage" -> {
-                        if (message.getUserInfoMessage() == null) {
-                            throw new MessageException(ExceptionCode._102);
-                        } else {
-                            userInfoService.handle(message.getUserInfoMessage(),session);
-                        }
+
+            switch (message.getType()) {
+                case "UserInfoMessage" -> {
+                    if (message.getUserInfoMessage() == null) {
+                        throw new MessageException(ExceptionCode._102);
+                    } else {
+                        userInfoService.handle(message.getUserInfoMessage(),session);
                     }
-                    case "dialogueMessage" -> {
-                        if (message.getDialogueInfoMessage() == null) {
-                            throw new MessageException(ExceptionCode._102);
-                        } else {
-                            dialogueInfoService.handle(message.getDialogueInfoMessage());
-                        }
-                    }
-                    default -> throw new MessageException(ExceptionCode._101);
                 }
+                case "DialogueInfoMessage" -> {
+                    if (message.getDialogueInfoMessage() == null) {
+                        throw new MessageException(ExceptionCode._102);
+                    } else {
+                        dialogueInfoService.handle(message.getDialogueInfoMessage());
+                    }
+                }
+                default -> throw new MessageException(ExceptionCode._101);
+
             }
         } catch (MessageException e) {
             logger.info(e.getMessage());
             sendMesageForReply(session, message, e.code.getCodeId());
+            return;
         } catch (UserInfoException e) {
             logger.info(e.getMessage());
             sendMesageForReply(session, message, e.code.getCodeId());
+            return;
         }
         // 此回复表示成功
         sendMesageForReply(session, message, 0);
@@ -98,9 +101,9 @@ public class Dispatcher {
 
     public static void sendMesageForReply(Session session, Message messageToReply, int code) {
         Message message = new Message();
-        message.setReply(true);
-        message.setReplyCode(0);
-        message.setMessageId(messageToReply.getMessageId());
+        message.setId(UUID.randomUUID().toString());
+        message.setType("ReplyMessage");
+        message.setReplyMessage(new ReplyMessage(messageToReply.getId(),code));
         sendMessage(session, message);
     }
 

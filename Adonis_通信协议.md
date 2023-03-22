@@ -2,153 +2,36 @@
 
 所有消息均为`Message`类的对象，使用[alibaba/fastjson2](https://github.com/alibaba/fastjson2)序列化为字符串发送。
 
-`Message`类包含`UserInfoMessage`、`FriendInfoMessage`、`DialogueInfoMessage`三个类的对象。
-
 只需要填充所需字段，其它字段设为`null`。
 
 # 2 消息结构
 
-## 2.1 Message
+## 2.1 消息类
 
-```java
-public class Message {
-    /**
-     * 表示此消息是不是对已发送消息的回复
-     * 如果是，messageId表示此消息对应的已发送消息的id,除了isReply、replyCode、id的其它字段都应为null
-     *
-     * 默认只有服务端回复客户端，没有客户端回复服务端
-     *
-     * messageId = null 的消息视作保活消息，对其回复同样的保活消息
-     */
-    private boolean isReply;
-    /**
-     * 回复代码，见2.5回复代码说明
-     * 回复已发送消息的执行情况
-     */
-    private int replyCode;
+消息类位于`Adonis\Adonis_Server\adonis\src\main\java\com\reddish\adonis\service\entity`。
 
-    /**
-     * 唯一id
-     * 使用UUID实现
-     */
-    private String messageId;
+## 2.2 服务端异常代码
 
-    /**
-     * 消息类型
-     * userMessage 用户操作相关消息
-     * friendInfoMessage 好友操作相关消息
-     * dialogueMessage 对话相关消息
-     */
-    private String type;
-    
-    private UserInfoMessage userInfoMessage;
-    private FriendInfoMessage friendInfoMessage;
-    private DialogueInfoMessage dialogueInfoMessage;
-}
-```
-
-## 2.2 UserInfoMessage
-
-```java
-public class UserInfoMessage {
-    /**
-     * sign_in: 登录
-     * sign_out: 登出
-     * sign_up: 注册
-     * delete: 注销
-     * change_nickname: 修改昵称
-     * change_password: 修改密码
-     */
-    private String type;
-    /**
-     * 账号
-     * 长度20以内
-     */
-    private String id;
-    /**
-     * 昵称
-     * 长度20以内
-     */
-    private String nickname;
-    /**
-     * 密码
-     * 长度20以内
-     */
-    private String password;
-}
-```
-
-## 2.3 FriendInfoMessage
-
-```java
-public class FriendInfoMessage {
-    /**
-     * 请求方账号
-     */
-    private String subjectId;
-    /**
-     * 被请求方账号
-     */
-    private String objectId;
-    /**
-     * 备注内容
-     */
-    private String memo;
-}
-```
-
-## 2.4 DialogueInfoMessage
-
-```java
-public class DialogueInfoMessage {
-    /**
-     * 发送方账号
-     */
-    private String senderId;
-    /**
-     * 接收方账号
-     */
-    private String receiverId;
-    /**
-     * 消息内容
-     */
-    private String content;
-    /**
-     * 消息存在时间
-     */
-    private double lastedTime;
-}
-```
-
-## 2.5 回复代码
-
-| 代码 | 含义                                  |
-| ---- | ------------------------------------- |
-| 0    | 成功执行                              |
-| 100  | 不合法的消息                          |
-| 101  | 不存在的消息类型                      |
-| 102  | 消息类型与消息内容不符                |
-| 200  | 不存在的用户消息类型                  |
-| 201  | 用户ID已存在，无法注册                |
-| 202  | 用户ID不存在，无法线上操作            |
-| 203  | 密码不正确                            |
-| 204  | 消息内用户ID与session拥有用户ID不一致 |
-| 205  | 消息中未传入新昵称，无法更新          |
-| 206  | 消息中未传入新密码，无法更新          |
-| 207  | 注册时未传入完整信息                  |
-| 208  | 用户不在线                            |
+异常类位于`Adonis\Adonis_Server\adonis\src\main\java\com\reddish\adonis\exception`。
 
 # 示例
 
-仅有已经开发好的功能的示例。
+仅有部分已经开发好的功能的示例。
 
 以下是消息序列化后的字符串。
 
 ```json
-//注册 
-{"messageId":"d393badd-9ed5-444a-8d8a-3cdf19bddb7c","reply":false,"replyCode":0,"type":"userMessage","userId":"8569","userInfoMessage":{"id":"8569","nickname":"乌有之乡","password":"56897z","type":"sign_up"}}
+注册A
+{"id":"e6279dbd-a9a1-4207-b9da-0e411193f947","type":"UserInfoMessage","userInfoMessage":{"id":"8569","nickname":"乌有之乡","password":"56897z","type":"sign_up"}}
 
-//登录
-{"messageId":"e4b9e610-461b-45a2-8e5b-3a306792d587","reply":false,"replyCode":0,"type":"userMessage","userInfoMessage":{"id":"8569","password":"56897z","type":"sign_in"}}
+登录A
+{"id":"58a3fc56-063e-43b9-bb05-fba2abbad6d9","type":"UserInfoMessage","userInfoMessage":{"id":"8569","password":"56897z","type":"sign_in"}}
+
+注册B
+{"id":"39565db9-e82f-4e50-929f-22fba9ba8330","type":"UserInfoMessage","userInfoMessage":{"id":"kkk110","nickname":"三国杀","password":"110256","type":"sign_up"}}
+
+登录B
+{"id":"a8708c4d-4278-4756-892b-d687d6da61d2","type":"UserInfoMessage","userInfoMessage":{"id":"kkk110","password":"110256","type":"sign_in"}}
+
 ```
 
