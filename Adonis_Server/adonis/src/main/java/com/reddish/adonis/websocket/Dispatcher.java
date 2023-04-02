@@ -55,7 +55,7 @@ public class Dispatcher {
 
         try {
             // id = null 的消息视作保活消息，对其回复同样的保活消息
-            if(message.getId() == null) {
+            if (message.getId() == null) {
                 sendMessageForAlive(session);
                 return;
             }
@@ -65,14 +65,14 @@ public class Dispatcher {
                     if (message.getUserInfoMessage() == null) {
                         throw new MessageException(ExceptionCode._102);
                     } else {
-                        userInfoService.handle(message.getUserInfoMessage(),session);
+                        userInfoService.handle(message.getUserInfoMessage(), session);
                     }
                 }
                 case "DialogueInfoMessage" -> {
                     if (message.getDialogueInfoMessage() == null) {
                         throw new MessageException(ExceptionCode._102);
                     } else {
-                        dialogueInfoService.handle(message.getDialogueInfoMessage());
+                        dialogueInfoService.handle(message.getDialogueInfoMessage(), session);
                     }
                 }
                 default -> throw new MessageException(ExceptionCode._101);
@@ -103,7 +103,7 @@ public class Dispatcher {
         Message message = new Message();
         message.setId(UUID.randomUUID().toString());
         message.setType("ReplyMessage");
-        message.setReplyMessage(new ReplyMessage(messageToReply.getId(),code));
+        message.setReplyMessage(new ReplyMessage(messageToReply.getId(), code));
         sendMessage(session, message);
     }
 
