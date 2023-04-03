@@ -29,9 +29,9 @@ class LoginActivity : AppCompatActivity() {
         buttonLogin.setOnClickListener(onclick)
         buttonSignup.setOnClickListener(onclick)
 
-        val newConnection = NewConnection()
+        val loginConnection = LoginConnection()
         val serviceIntent = Intent(this, WebSocketService::class.java)
-        bindService(serviceIntent, newConnection, BIND_AUTO_CREATE)
+        bindService(serviceIntent, loginConnection, BIND_AUTO_CREATE)
     }
 
     inner class OnClick:OnClickListener{
@@ -50,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    inner class NewConnection: ServiceConnection{
+    inner class LoginConnection: ServiceConnection{
         override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
             Log.i("Activity Info", "Login Connect")
         }

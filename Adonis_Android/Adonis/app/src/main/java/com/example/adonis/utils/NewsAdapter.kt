@@ -10,7 +10,6 @@ import com.example.adonis.R
 
 class NewsAdapter:RecyclerView.Adapter<NewsAdapter.ViewHolder>()  {
 
-
     var onItemClickListener: OnItemClickListener? = null
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view){
         val avatar: ImageView = view.findViewById(R.id.news_avatar)

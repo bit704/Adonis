@@ -1,9 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center_vertical"
+    android:gravity="center_horizontal"
     tools:context=".activity.SignupActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <EditText
+        android:id="@+id/edit_text_name_signup"
+        android:hint="@string/name"
+        android:maxLines="1"
+        android:layout_width="@dimen/login_text_width"
+        android:layout_height="@dimen/login_text_height"
+        android:layout_marginVertical="@dimen/login_text_margin_vertical"
+        android:inputType="text"
+        android:importantForAutofill="no">
+    </EditText>
+
+    <EditText
+        android:id="@+id/edit_text_user_signup"
+        android:hint="@string/user"
+        android:maxLines="1"
+        android:layout_width="@dimen/login_text_width"
+        android:layout_height="@dimen/login_text_height"
+        android:layout_marginVertical="@dimen/login_text_margin_vertical"
+        android:selectAllOnFocus="true"
+        android:inputType="textFilter"
+        android:importantForAutofill="no">
+    </EditText>
+
+    <EditText
+        android:id="@+id/edit_text_password_signup"
+        android:hint="@string/password"
+        android:maxLines="1"
+        android:layout_width="@dimen/login_text_width"
+        android:layout_height="@dimen/login_text_height"
+        android:layout_marginVertical="@dimen/login_text_margin_vertical"
+        android:inputType="textPassword"
+        android:importantForAutofill="no">
+    </EditText>
+
+    <EditText
+        android:id="@+id/edit_text_password_confirm"
+        android:hint="@string/confirm_password"
+        android:maxLines="1"
+        android:layout_width="@dimen/login_text_width"
+        android:layout_height="@dimen/login_text_height"
+        android:layout_marginVertical="@dimen/login_text_margin_vertical"
+        android:inputType="textPassword"
+        android:importantForAutofill="no">
+    </EditText>
+
+    <Button
+        android:id="@+id/button_signup_confirm"
+        android:layout_width="@dimen/login_button_width"
+        android:layout_height="@dimen/login_button_height"
+        android:layout_marginVertical="@dimen/login_button_margin_vertical"
+        android:text="@string/signup">
+    </Button>
+
+</LinearLayout>

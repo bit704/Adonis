@@ -6,7 +6,7 @@ import org.java_websocket.handshake.ServerHandshake
 import java.lang.Exception
 import java.net.URI
 
-class Client(serverUri: URI?) : WebSocketClient(serverUri) {
+open class Client(serverUri: URI?) : WebSocketClient(serverUri) {
 
     override fun onOpen(handshakedata: ServerHandshake?) {
         Log.i("Client", "open")

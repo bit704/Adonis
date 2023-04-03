@@ -11,6 +11,7 @@ import java.net.URI
 class WebSocketService : Service() {
 
     private val uri = URI.create("ws://8.130.67.208:8080/ws")
+    private lateinit var client: Client
     private val binder = SocketBinder()
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -18,16 +19,17 @@ class WebSocketService : Service() {
         return binder
     }
 
-    override fun onUnbind(intent: Intent?): Boolean {
-        Log.i("Service Info", "Service UnBind")
-        return super.onUnbind(intent)
-    }
-
     override fun onCreate() {
-        Log.i("Service Info", "Service Create")
-        val client = Client(uri)
+        client = object : Client(uri) {
+            override fun onMessage(message: String?) {
+                Log.i("msg", message.toString())
+                super.onMessage(message)
+            }
+        }
         client.connect()
         Log.i("Client", client.isOpen.toString())
+
+
         super.onCreate()
     }
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -40,4 +42,9 @@ class WebSocketService : Service() {
             return this@WebSocketService
         }
     }
+
+    fun getClient():Client{
+        return client
+    }
+
 }
