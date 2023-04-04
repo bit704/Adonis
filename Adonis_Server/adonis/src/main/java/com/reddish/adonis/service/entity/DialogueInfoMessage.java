@@ -24,6 +24,7 @@ public class DialogueInfoMessage {
      * 指示客户端将此消息展示给客户后应在多久后自动删除
      * 单位是毫秒
      * 由用户设置，由客户端填写
+     * 若为空则代表消息不过期
      */
     private long lastedTime;
 

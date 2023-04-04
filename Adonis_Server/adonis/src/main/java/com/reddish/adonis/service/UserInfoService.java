@@ -68,6 +68,7 @@ public class UserInfoService {
                         friend.getObjectId(),
                         friend.getMemo());
                 FriendInfoService.sendFriendInfoMessage(friendInfoMessage, session);
+                // TODO: 发完从数据库删掉
             }
             // 发送对象为该用户的消息
             QueryWrapper<Dialogue> dialogueQueryWrapper = new QueryWrapper<>();

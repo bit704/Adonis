@@ -55,6 +55,7 @@ public class DialogueInfoService {
             // 可以自己给自己发消息，user1和user2可以相同
             // 消息到达服务端的时间
             dialogueInfoMessage.setOccurredTime(System.currentTimeMillis());
+            // TODO: 判断还是不是双向好友
             // 对方刚好在线,直接转发
             if (Dispatcher.onlineMap.get(receiverId)) {
                 sendDialogueInfoMessage(dialogueInfoMessage, receiverId);
