@@ -1,10 +1,9 @@
 package com.reddish.adonis.websocket;
 
 import com.alibaba.fastjson2.JSON;
-import com.reddish.adonis.exception.ExceptionCode;
-import com.reddish.adonis.exception.MessageException;
-import com.reddish.adonis.exception.UserInfoException;
+import com.reddish.adonis.exception.*;
 import com.reddish.adonis.service.DialogueInfoService;
+import com.reddish.adonis.service.FriendInfoService;
 import com.reddish.adonis.service.UserInfoService;
 import com.reddish.adonis.service.entity.Message;
 import com.reddish.adonis.service.entity.ReplyMessage;
@@ -22,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Dispatcher {
     private static final Logger logger = LoggerFactory.getLogger(Dispatcher.class);
     private static UserInfoService userInfoService;
+    private static FriendInfoService friendInfoService;
     private static DialogueInfoService dialogueInfoService;
     /**
      * 统计当前连接数
@@ -41,9 +41,10 @@ public class Dispatcher {
      */
     public static final ConcurrentHashMap<String, Boolean> onlineMap = new ConcurrentHashMap<>();
 
-    @Autowired
-    public void initialize(UserInfoService _userInfoService, DialogueInfoService _dialogueInfoService) {
+
+    public void initialize(UserInfoService _userInfoService, FriendInfoService _friendInfoService, DialogueInfoService _dialogueInfoService) {
         userInfoService = _userInfoService;
+        friendInfoService = _friendInfoService;
         dialogueInfoService = _dialogueInfoService;
     }
 
@@ -68,11 +69,18 @@ public class Dispatcher {
                         userInfoService.handle(message.getUserInfoMessage(), session);
                     }
                 }
-                case "DialogueInfoMessage" -> {
-                    if (message.getDialogueInfoMessage() == null) {
+                case "FriendInfoMessage" -> {
+                    if (message.getFriendInfoMessage() == null) {
                         throw new MessageException(ExceptionCode._102);
                     } else {
-                        dialogueInfoService.handle(message.getDialogueInfoMessage(), session);
+                        friendInfoService.handle(message.getFriendInfoMessage(), session);
+                    }
+                }
+                case "DialogueInfoMessage" -> {
+                    if (message.getDialogueInfoMessageList() == null) {
+                        throw new MessageException(ExceptionCode._102);
+                    } else {
+                        dialogueInfoService.handle(message.getDialogueInfoMessageList(), session);
                     }
                 }
                 default -> throw new MessageException(ExceptionCode._101);
@@ -87,10 +95,20 @@ public class Dispatcher {
             sendMesageForReply(session, message, e.code.getCodeId());
             return;
         }
-        // 此回复表示成功
+        catch (FriendInfoException e) {
+            logger.info(e.getMessage());
+            sendMesageForReply(session, message, e.code.getCodeId());
+            return;
+        }
+        catch (DialogueInfoException e) {
+            logger.info(e.getMessage());
+            sendMesageForReply(session, message, e.code.getCodeId());
+            return;
+        }
+        // 代码0表示成功
         sendMesageForReply(session, message, 0);
     }
-
+    // 发送消息
     public static void sendMessage(Session session, Message message) {
         try {
             session.getBasicRemote().sendText(JSON.toJSONString(message));
@@ -98,7 +116,7 @@ public class Dispatcher {
             throw new RuntimeException(e);
         }
     }
-
+    // 回复消息
     public static void sendMesageForReply(Session session, Message messageToReply, int code) {
         Message message = new Message();
         message.setId(UUID.randomUUID().toString());

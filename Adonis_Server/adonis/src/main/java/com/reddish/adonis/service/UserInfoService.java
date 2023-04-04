@@ -1,24 +1,37 @@
 package com.reddish.adonis.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.reddish.adonis.exception.ExceptionCode;
 import com.reddish.adonis.exception.MessageException;
 import com.reddish.adonis.exception.UserInfoException;
+import com.reddish.adonis.mapper.DialogueMapper;
+import com.reddish.adonis.mapper.FriendMapper;
 import com.reddish.adonis.mapper.UserMapper;
+import com.reddish.adonis.mapper.entity.Dialogue;
+import com.reddish.adonis.mapper.entity.Friend;
 import com.reddish.adonis.mapper.entity.User;
+import com.reddish.adonis.service.entity.DialogueInfoMessage;
+import com.reddish.adonis.service.entity.FriendInfoMessage;
 import com.reddish.adonis.service.entity.UserInfoMessage;
 import com.reddish.adonis.websocket.Dispatcher;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.Session;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserInfoService {
 
     private final UserMapper userMapper;
+    private final FriendMapper friendMapper;
+    private final DialogueMapper dialogueMapper;
 
-    public UserInfoService(UserMapper userMapper) {
+    public UserInfoService(UserMapper userMapper, FriendMapper friendMapper, DialogueMapper dialogueMapper) {
         this.userMapper = userMapper;
+        this.friendMapper = friendMapper;
+        this.dialogueMapper = dialogueMapper;
     }
 
 
@@ -30,6 +43,7 @@ public class UserInfoService {
         String type = userInfoMessage.getType();
 
         if ("sign_in".equals(type)) {
+            // 登录
             if (user == null) {
                 throw new UserInfoException(ExceptionCode._202);
             }
@@ -42,6 +56,34 @@ public class UserInfoService {
             // 存userId和Session的对应关系
             Dispatcher.userId2SessionMap.put(userInfoMessage.getId(), session);
             Dispatcher.session2UserIdMap.put(session, userInfoMessage.getId());
+
+            // 登录先向登录方发送好友申请和服务器暂存的对话消息
+            QueryWrapper<Friend> friendQueryWrapper = new QueryWrapper<>();
+            // 发送对象为该用户的好友申请
+            friendQueryWrapper.eq("objectId", userInfoMessage.getId()).eq("status", 1);
+            List<Friend> friendList = friendMapper.selectList(friendQueryWrapper);
+            for (Friend friend : friendList) {
+                FriendInfoMessage friendInfoMessage = new FriendInfoMessage("add",
+                        friend.getSubjectId(),
+                        friend.getObjectId(),
+                        friend.getMemo());
+                FriendInfoService.sendFriendInfoMessage(friendInfoMessage, session);
+            }
+            // 发送对象为该用户的消息
+            QueryWrapper<Dialogue> dialogueQueryWrapper = new QueryWrapper<>();
+            dialogueQueryWrapper.eq("receiverId", userInfoMessage.getId());
+            List<Dialogue> dialogueList = dialogueMapper.selectList(dialogueQueryWrapper);
+            List<DialogueInfoMessage> dialogueInfoMessageList = new ArrayList<DialogueInfoMessage>();
+            for (Dialogue dialogue : dialogueList) {
+                dialogueInfoMessageList.add(new DialogueInfoMessage(dialogue.getSenderId(),
+                        dialogue.getReceiverId(),
+                        dialogue.getContent(),
+                        dialogue.getOccurredTime(),
+                        dialogue.getLastedTime()
+                ));
+            }
+            DialogueInfoService.sendDialogueInfoMessage(dialogueInfoMessageList, session);
+
         } else if ("sign_up".equals(type)) {
             // 已存在，不可注册
             if (user != null) {

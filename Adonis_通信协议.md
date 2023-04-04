@@ -1,20 +1,26 @@
-# 1 概述
+# Adonis_通信协议
+
+## 1 概述
 
 所有消息均为`Message`类的对象，使用[alibaba/fastjson2](https://github.com/alibaba/fastjson2)序列化为字符串发送。
 
 只需要填充所需字段，其它字段设为`null`。
 
-# 2 消息结构
+## 2 消息结构
 
-## 2.1 消息类
+### 2.1 消息类
 
 消息类位于`Adonis\Adonis_Server\adonis\src\main\java\com\reddish\adonis\service\entity`。
 
-## 2.2 服务端异常代码
+### 2.2 服务端异常代码
 
 异常类位于`Adonis\Adonis_Server\adonis\src\main\java\com\reddish\adonis\exception`。
 
-# 示例
+## 3 协议说明
+
+
+
+## 4 示例
 
 以下是消息序列化后的字符串。测试用。
 
