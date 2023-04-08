@@ -2,9 +2,9 @@ package com.reddish.adonis.websocket;
 
 import com.alibaba.fastjson2.JSON;
 import com.reddish.adonis.exception.*;
-import com.reddish.adonis.service.DialogueInfoService;
-import com.reddish.adonis.service.FriendInfoService;
-import com.reddish.adonis.service.UserInfoService;
+import com.reddish.adonis.service.DialogueService;
+import com.reddish.adonis.service.FriendService;
+import com.reddish.adonis.service.UserService;
 import com.reddish.adonis.service.entity.Message;
 import com.reddish.adonis.service.entity.ReplyMessage;
 import org.slf4j.Logger;
@@ -14,15 +14,14 @@ import org.springframework.stereotype.Component;
 
 import javax.websocket.Session;
 import java.io.IOException;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class Dispatcher {
     private static final Logger logger = LoggerFactory.getLogger(Dispatcher.class);
-    private static UserInfoService userInfoService;
-    private static FriendInfoService friendInfoService;
-    private static DialogueInfoService dialogueInfoService;
+    private static UserService userService;
+    private static FriendService friendService;
+    private static DialogueService dialogueService;
     /**
      * 统计当前连接数
      * Session id, Session
@@ -41,11 +40,11 @@ public class Dispatcher {
      */
     public static final ConcurrentHashMap<String, Boolean> onlineMap = new ConcurrentHashMap<>();
 
-
-    public void initialize(UserInfoService _userInfoService, FriendInfoService _friendInfoService, DialogueInfoService _dialogueInfoService) {
-        userInfoService = _userInfoService;
-        friendInfoService = _friendInfoService;
-        dialogueInfoService = _dialogueInfoService;
+    @Autowired
+    public void initialize(UserService _userService, FriendService _friendService, DialogueService _dialogueService) {
+        userService = _userService;
+        friendService = _friendService;
+        dialogueService = _dialogueService;
     }
 
     /**
@@ -53,7 +52,7 @@ public class Dispatcher {
      */
     public static void dispatch(String messageString, Session session) {
         Message message = JSON.parseObject(messageString, Message.class);
-
+        String messageType = message.getType();
         try {
             // id = null 的消息视作保活消息，对其回复同样的保活消息
             if (message.getId() == null) {
@@ -61,26 +60,30 @@ public class Dispatcher {
                 return;
             }
 
-            switch (message.getType()) {
-                case "UserInfoMessage" -> {
-                    if (message.getUserInfoMessage() == null) {
+            if (messageType == null) {
+                throw new MessageException(ExceptionCode._101);
+            }
+
+            switch (messageType) {
+                case "UserOpMessage" -> {
+                    if (message.getUserOpMessage() == null) {
                         throw new MessageException(ExceptionCode._102);
                     } else {
-                        userInfoService.handle(message.getUserInfoMessage(), session);
+                        userService.handle(message.getUserOpMessage(), session);
                     }
                 }
-                case "FriendInfoMessage" -> {
-                    if (message.getFriendInfoMessage() == null) {
+                case "FriendOpMessage" -> {
+                    if (message.getFriendOpMessage() == null) {
                         throw new MessageException(ExceptionCode._102);
                     } else {
-                        friendInfoService.handle(message.getFriendInfoMessage(), session);
+                        friendService.handle(message.getFriendOpMessage(), session);
                     }
                 }
                 case "DialogueInfoMessage" -> {
-                    if (message.getDialogueInfoMessageList() == null) {
+                    if (message.getDialogueInfoMessage() == null) {
                         throw new MessageException(ExceptionCode._102);
                     } else {
-                        dialogueInfoService.handle(message.getDialogueInfoMessageList(), session);
+                        dialogueService.handle(message.getDialogueInfoMessage(), session);
                     }
                 }
                 default -> throw new MessageException(ExceptionCode._101);
@@ -94,20 +97,20 @@ public class Dispatcher {
             logger.info(e.getMessage());
             sendMesageForReply(session, message, e.code.getCodeId());
             return;
-        }
-        catch (FriendInfoException e) {
+        } catch (FriendInfoException e) {
             logger.info(e.getMessage());
             sendMesageForReply(session, message, e.code.getCodeId());
             return;
-        }
-        catch (DialogueInfoException e) {
+        } catch (DialogueInfoException e) {
             logger.info(e.getMessage());
             sendMesageForReply(session, message, e.code.getCodeId());
             return;
         }
         // 代码0表示成功
         sendMesageForReply(session, message, 0);
+
     }
+
     // 发送消息
     public static void sendMessage(Session session, Message message) {
         try {
@@ -116,12 +119,10 @@ public class Dispatcher {
             throw new RuntimeException(e);
         }
     }
+
     // 回复消息
     public static void sendMesageForReply(Session session, Message messageToReply, int code) {
-        Message message = new Message();
-        message.setId(UUID.randomUUID().toString());
-        message.setType("ReplyMessage");
-        message.setReplyMessage(new ReplyMessage(messageToReply.getId(), code));
+        Message message = new Message(new ReplyMessage(messageToReply.getId(), code));
         sendMessage(session, message);
     }
 

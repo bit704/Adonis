@@ -9,8 +9,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
-@NoArgsConstructor
 @TableName("user")
 public class User {
     @TableField("id")
@@ -35,5 +33,14 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(id, nickname, password);
+    }
+
+    public User() {
+    }
+
+    public User(String id, String nickname, String password) {
+        this.id = id;
+        this.nickname = nickname;
+        this.password = password;
     }
 }

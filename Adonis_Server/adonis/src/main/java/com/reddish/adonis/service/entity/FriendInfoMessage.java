@@ -1,49 +1,69 @@
 package com.reddish.adonis.service.entity;
 
-
 public class FriendInfoMessage {
     /**
-     * add: 添加好友申请
-     * consent: 同意好友申请
-     * refuse: 拒绝好友申请
-     * delete: 删除好友
+     * 好友id
      */
-    private String type;
+    private String id;
     /**
-     * 请求方账号
+     * 好友nickname
      */
-    private String subjectId;
+    private String nickname;
+
     /**
-     * 被请求方账号
+     * 好友状态
+     * -2: 此好友是您的单向好友（您没删它，它删了您）
+     * -1: 此好友已注销
+     * 0: 此好友正申请将您加入好友列表
+     * 1: 此好友已将您加入好友列表
+     * 2: 此好友已将您拉黑
+     * 3: 此好友拒绝您的好友申请
+     * 4: 此用户存在
+     * 5: 此用户不存在
+     * 6: 此用户在线
+     * 7： 此用户不在线
      */
-    private String objectId;
+    private int status;
     /**
+     * 您对该好友的自定义备注名
+     */
+    private String customname;
+    /**
+     * 如果好友状态是0、2、3
      * 备注内容
      */
     private String memo;
 
-    public String getType() {
-        return type;
+    public String getId() {
+        return id;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getSubjectId() {
-        return subjectId;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setSubjectId(String subjectId) {
-        this.subjectId = subjectId;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
-    public String getObjectId() {
-        return objectId;
+    public String getCustomname() {
+        return customname;
     }
 
-    public void setObjectId(String objectId) {
-        this.objectId = objectId;
+    public void setCustomname(String customname) {
+        this.customname = customname;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getMemo() {
@@ -57,20 +77,11 @@ public class FriendInfoMessage {
     @Override
     public String toString() {
         return "FriendInfoMessage{" +
-                "type='" + type + '\'' +
-                ", subjectId='" + subjectId + '\'' +
-                ", objectId='" + objectId + '\'' +
+                "id='" + id + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", customname='" + customname + '\'' +
+                ", status=" + status +
                 ", memo='" + memo + '\'' +
                 '}';
-    }
-
-    public FriendInfoMessage() {
-    }
-
-    public FriendInfoMessage(String type, String subjectId, String objectId, String memo) {
-        this.type = type;
-        this.subjectId = subjectId;
-        this.objectId = objectId;
-        this.memo = memo;
     }
 }

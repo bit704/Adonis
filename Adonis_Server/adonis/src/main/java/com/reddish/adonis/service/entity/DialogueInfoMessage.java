@@ -89,4 +89,5 @@ public class DialogueInfoMessage {
         this.occurredTime = occurredTime;
         this.lastedTime = lastedTime;
     }
+
 }
