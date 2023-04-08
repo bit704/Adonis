@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adonis.R
+import com.example.adonis.activity.AddActivity
 import com.example.adonis.activity.SingleChatActivity
 import kotlin.math.abs
 
@@ -26,14 +27,11 @@ private const val ARG_PARAM2 = "param2"
  * Use the [NewsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class NewsFragment : Fragment(), OnTouchListener {
+class NewsFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
-    private val flingMinDistance: Int = 280
-    private lateinit var gestureDetector: GestureDetector
-    private var  leftSwipeListener: OnLeftSwipeListener? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +70,15 @@ class NewsFragment : Fragment(), OnTouchListener {
         moreButton.setOnClickListener{
             val popupMenu: PopupMenu = PopupMenu(this.context, moreButton)
             popupMenu.menuInflater.inflate(R.menu.menu_main_more, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.item_more_add -> {
+                        val intent = Intent(this.context, AddActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                return@setOnMenuItemClickListener true
+            }
             popupMenu.show()
         }
 
@@ -144,34 +151,4 @@ class NewsFragment : Fragment(), OnTouchListener {
         fun onItemLongClick()
     }
 
-    inner class OnGesture: GestureDetector.SimpleOnGestureListener(){
-        override fun onFling(
-            e1: MotionEvent,
-            e2: MotionEvent,
-            velocityX: Float,
-            velocityY: Float
-        ): Boolean {
-            val x = e1.x - e2.x
-            Log.i("distance", x.toString())
-            if (x < 0 && abs(x) > flingMinDistance){
-                leftSwipeListener?.onLeftSwipe()
-            }
-            return super.onFling(e1, e2, velocityX, velocityY)
-        }
-    }
-
-    override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-        return if (p1 != null)
-            gestureDetector.onTouchEvent(p1)
-        else
-            false
-    }
-
-    open interface OnLeftSwipeListener {
-        fun onLeftSwipe()
-    }
-
-    fun setLeftSwipeListener(listener: OnLeftSwipeListener){
-        this.leftSwipeListener = listener
-    }
 }

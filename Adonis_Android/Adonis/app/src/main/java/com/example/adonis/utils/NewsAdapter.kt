@@ -13,7 +13,7 @@ class NewsAdapter:RecyclerView.Adapter<NewsAdapter.ViewHolder>()  {
     var onItemClickListener: OnItemClickListener? = null
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view){
         val avatar: ImageView = view.findViewById(R.id.news_avatar)
-        val name: TextView = view.findViewById(R.id.news_name)
+        val nickname: TextView = view.findViewById(R.id.news_name)
         val message: TextView = view.findViewById(R.id.news_message)
     }
 

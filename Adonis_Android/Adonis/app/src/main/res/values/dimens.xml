@@ -8,6 +8,25 @@
     <dimen name="login_button_width">100dp</dimen>
     <dimen name="login_button_height">50dp</dimen>
 
+    <dimen name="add_text_height">60dp</dimen>
+    <dimen name="add_text_margin_h">20dp</dimen>
+    <dimen name="add_text_margin_v">10dp</dimen>
+    <dimen name="add_nickname">25dp</dimen>
+    <dimen name="add_id">35dp</dimen>
+    <dimen name="add_button_width">50dp</dimen>
+    <dimen name="add_button_height">45dp</dimen>
+    <dimen name="add_margin">5dp</dimen>
+
+    <dimen name="confirm_avatar">100dp</dimen>
+    <dimen name="confirm_nickname">60dp</dimen>
+    <dimen name="confirm_id">30dp</dimen>
+    <dimen name="confirm_margin">5dp</dimen>
+    <dimen name="confirm_text">35dp</dimen>
+    <dimen name="confirm_remark">45dp</dimen>
+    <dimen name="confirm_request">150dp</dimen>
+    <dimen name="confirm_width">100dp</dimen>
+    <dimen name="confirm_height">60dp</dimen>
+
     <dimen name="main_button">50dp</dimen>
     <dimen name="main_button_margin">50dp</dimen>
     <dimen name="main_tool_height">70dp</dimen>

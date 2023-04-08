@@ -1,8 +1,6 @@
 package com.example.adonis.activity
 
-import android.content.ComponentName
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
 import android.os.Bundle
 import android.os.IBinder
 import android.text.InputFilter
@@ -15,17 +13,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.adonis.R
 import com.example.adonis.services.WebSocketService
-import com.example.adonis.utils.Client
 import com.alibaba.fastjson.*
-import com.example.adonis.entity.Message
-import com.example.adonis.entity.ReplyCode
-import com.example.adonis.entity.UserInfoMessage
+import com.example.adonis.entity.*
 import java.util.UUID
 
 
 class SignupActivity : AppCompatActivity() {
     lateinit var binder: WebSocketService.SocketBinder
-    lateinit var client: Client
+    lateinit var service: WebSocketService
+    lateinit var receiver: BroadcastReceiver
+    private val intentFilter = IntentFilter()
+    private val DEFAULT_CODE = 404
+    private val RESULT_CODE = 2
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
@@ -79,24 +78,52 @@ class SignupActivity : AppCompatActivity() {
                 userInfoMessage.id = id
                 userInfoMessage.nickname = nickname
                 userInfoMessage.password = pwd
-                message.type = "UserInfoMessage"
+                message.type = FilterString.USER_INFO_MESSAGE
                 message.id = UUID.randomUUID().toString()
                 message.userInfoMessage = userInfoMessage
                 val msg = JSON.toJSONString(message)
-                Log.i("msg", msg.toString())
-                client.send(msg)
+                service.sendMessage(msg, message.id, ActionString.SIGN_UP)
             }
         }
+
+        intentFilter.addAction(ActionString.SIGN_UP)
+        receiver = object: BroadcastReceiver() {
+            override fun onReceive(p0: Context?, p1: Intent?) {
+                val replyCode = p1?.getIntExtra(FilterString.REPLY_MESSAGE, DEFAULT_CODE)
+                if (replyCode == 0) {
+                    val data = Intent()
+                    data.putExtra(FilterString.RESULT, Code.SUCCESS)
+                    setResult(RESULT_CODE, data)
+                    finish()
+                }
+                else if (replyCode == 201) {
+                    val toast = Toast.makeText(this@SignupActivity, "账号已存在，请重新设置！", Toast.LENGTH_SHORT)
+                    toast.setGravity(Gravity.BOTTOM, 0, 100)
+                    toast.show()
+                }
+            }
+
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(receiver, intentFilter)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(receiver)
     }
 
     inner class SignupConnection: ServiceConnection {
         override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
             binder = p1 as WebSocketService.SocketBinder
-            client = binder.getService().getClient()
+            service = binder.getService()
         }
 
         override fun onServiceDisconnected(p0: ComponentName?) {
-            Log.i("Activity Info", "Login DisConnect")
+            Log.i("Activity Info", "Signup DisConnect")
         }
 
     }
@@ -119,4 +146,5 @@ class SignupActivity : AppCompatActivity() {
             return null
         }
     }
+
 }

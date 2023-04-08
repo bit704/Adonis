@@ -76,16 +76,9 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
-    inner class OnLeftSwipe: NewsFragment.OnLeftSwipeListener{
-        override fun onLeftSwipe() {
-            drawerLayout.openDrawer(GravityCompat.START)
-        }
-    }
 
     private fun initFragment(){
         newsFragment = NewsFragment.newInstance("1", "1")
-        val onLeftSwipe = OnLeftSwipe()
-        newsFragment?.setLeftSwipeListener(onLeftSwipe)
         addFragment(newsFragment!!)
         showFragment(newsFragment!!)
     }
