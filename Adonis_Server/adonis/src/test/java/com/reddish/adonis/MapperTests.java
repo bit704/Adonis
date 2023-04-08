@@ -31,4 +31,10 @@ public class MapperTests extends AdonisApplicationTests {
     void deleteAllUser() {
         userMapper.delete(null);
     }
+
+    @Test
+    void selectNull() {
+        User user = userMapper.selectById(null);
+        System.out.println(user);
+    }
 }

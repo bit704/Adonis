@@ -1,5 +1,7 @@
 package com.reddish.adonis.service.entity;
 
+import java.util.UUID;
+
 public class Message {
     /**
      * 消息唯一id
@@ -10,15 +12,19 @@ public class Message {
     /**
      * 消息类型
      * ReplyMessage 回复消息
-     * UserInfoMessage 用户操作相关消息
-     * FriendInfoMessage 好友操作相关消息
-     * DialogueInfoMessage 对话相关消息
+     * UserOpMessage 用户操作消息
+     * FriendOpMessage 好友操作消息
+     * FriendInfoMessage 对话信息消息
+     * DialogueInfoMessage 对话信息消息
+     * UserOnlineMessage 是用户离线期间存在服务器的消息，用户登录在线时发送给用户
      */
     private String type;
     private ReplyMessage replyMessage;
-    private UserInfoMessage userInfoMessage;
+    private UserOpMessage userOpMessage;
+    private FriendOpMessage friendOpMessage;
     private FriendInfoMessage friendInfoMessage;
     private DialogueInfoMessage dialogueInfoMessage;
+    private UserOnlineMessage userOnlineMessage;
 
     public String getId() {
         return id;
@@ -44,12 +50,20 @@ public class Message {
         this.replyMessage = replyMessage;
     }
 
-    public UserInfoMessage getUserInfoMessage() {
-        return userInfoMessage;
+    public UserOpMessage getUserOpMessage() {
+        return userOpMessage;
     }
 
-    public void setUserInfoMessage(UserInfoMessage userInfoMessage) {
-        this.userInfoMessage = userInfoMessage;
+    public void setUserOpMessage(UserOpMessage userOpMessage) {
+        this.userOpMessage = userOpMessage;
+    }
+
+    public FriendOpMessage getFriendOpMessage() {
+        return friendOpMessage;
+    }
+
+    public void setFriendOpMessage(FriendOpMessage friendOpMessage) {
+        this.friendOpMessage = friendOpMessage;
     }
 
     public FriendInfoMessage getFriendInfoMessage() {
@@ -68,29 +82,74 @@ public class Message {
         this.dialogueInfoMessage = dialogueInfoMessage;
     }
 
+    public UserOnlineMessage getUserOnlineMessage() {
+        return userOnlineMessage;
+    }
+
+    public void setUserOnlineMessage(UserOnlineMessage userOnlineMessage) {
+        this.userOnlineMessage = userOnlineMessage;
+    }
+
     @Override
     public String toString() {
         return "Message{" +
                 "id='" + id + '\'' +
                 ", type='" + type + '\'' +
                 ", replyMessage=" + replyMessage +
-                ", userInfoMessage=" + userInfoMessage +
+                ", userOpMessage=" + userOpMessage +
+                ", friendOpMessage=" + friendOpMessage +
                 ", friendInfoMessage=" + friendInfoMessage +
                 ", dialogueInfoMessage=" + dialogueInfoMessage +
+                ", userOnlineMessage=" + userOnlineMessage +
                 '}';
     }
 
     public Message() {
     }
 
-    public Message(String id, String type, ReplyMessage replyMessage, UserInfoMessage userInfoMessage, FriendInfoMessage friendInfoMessage, DialogueInfoMessage dialogueInfoMessage) {
+    public Message(String id, String type, ReplyMessage replyMessage, UserOpMessage userOpMessage, FriendOpMessage friendOpMessage, DialogueInfoMessage dialogueInfoMessage, UserOnlineMessage userOnlineMessage) {
         this.id = id;
         this.type = type;
         this.replyMessage = replyMessage;
-        this.userInfoMessage = userInfoMessage;
-        this.friendInfoMessage = friendInfoMessage;
+        this.userOpMessage = userOpMessage;
+        this.friendOpMessage = friendOpMessage;
+        this.dialogueInfoMessage = dialogueInfoMessage;
+        this.userOnlineMessage = userOnlineMessage;
+    }
+
+    public Message(ReplyMessage replyMessage) {
+        this.id = UUID.randomUUID().toString();
+        this.type = "replyMessage";
+        this.replyMessage = replyMessage;
+    }
+
+    public Message(UserOpMessage userOpMessage) {
+        this.id = UUID.randomUUID().toString();
+        this.type = "userOpMessage";
+        this.userOpMessage = userOpMessage;
+    }
+
+    public Message(FriendOpMessage friendOpMessage) {
+        this.id = UUID.randomUUID().toString();
+        this.type = "friendOpMessage";
+        this.friendOpMessage = friendOpMessage;
+    }
+
+    public Message(DialogueInfoMessage dialogueInfoMessage) {
+        this.id = UUID.randomUUID().toString();
+        this.type = "dialogueInfoMessage";
         this.dialogueInfoMessage = dialogueInfoMessage;
     }
 
+    public Message(UserOnlineMessage userOnlineMessage) {
+        this.id = UUID.randomUUID().toString();
+        this.type = "userOnlineMessage";
+        this.userOnlineMessage = userOnlineMessage;
+    }
 
+    public Message(FriendInfoMessage friendInfoMessage) {
+        this.id = UUID.randomUUID().toString();
+        this.type = "friendInfoMessage";
+        this.friendInfoMessage = friendInfoMessage;
+    }
 }

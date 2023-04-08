@@ -14,9 +14,19 @@ public class DialogueInfoMessage {
      */
     private String content;
     /**
-     * 消息存在时间
+     * 消息发送时间
+     * 自 1970 年 1 月 1 日 00:00:00 GMT 到 消息发送时刻 经过了多少毫秒
+     * 由服务端填写，以消息到达服务端的时间为准
      */
-    private double lastedTime;
+    private long occurredTime;
+    /**
+     * 消息存活时间
+     * 指示客户端将此消息展示给客户后应在多久后自动删除
+     * 单位是毫秒
+     * 由用户设置，由客户端填写
+     * 若为空则代表消息不过期
+     */
+    private long lastedTime;
 
     public String getSenderId() {
         return senderId;
@@ -42,11 +52,19 @@ public class DialogueInfoMessage {
         this.content = content;
     }
 
-    public double getLastedTime() {
+    public long getOccurredTime() {
+        return occurredTime;
+    }
+
+    public void setOccurredTime(long occurredTime) {
+        this.occurredTime = occurredTime;
+    }
+
+    public long getLastedTime() {
         return lastedTime;
     }
 
-    public void setLastedTime(double lastedTime) {
+    public void setLastedTime(long lastedTime) {
         this.lastedTime = lastedTime;
     }
 
@@ -56,6 +74,7 @@ public class DialogueInfoMessage {
                 "senderId='" + senderId + '\'' +
                 ", receiverId='" + receiverId + '\'' +
                 ", content='" + content + '\'' +
+                ", occurredTime=" + occurredTime +
                 ", lastedTime=" + lastedTime +
                 '}';
     }
@@ -63,10 +82,12 @@ public class DialogueInfoMessage {
     public DialogueInfoMessage() {
     }
 
-    public DialogueInfoMessage(String senderId, String receiverId, String content, double lastedTime) {
+    public DialogueInfoMessage(String senderId, String receiverId, String content, long occurredTime, long lastedTime) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.content = content;
+        this.occurredTime = occurredTime;
         this.lastedTime = lastedTime;
     }
+
 }

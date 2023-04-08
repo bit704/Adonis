@@ -3,7 +3,6 @@ package com.reddish.adonis.mapper.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
-import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -21,10 +20,9 @@ public class Dialogue {
     @TableField("content")
     private String content;
 
+    @TableField("occurredTime")
+    private long occurredTime;
+
     @TableField("lastedTime")
-    private double lastedTime;
-
-    @TableField("occuringTime")
-    private Timestamp occuringTime;
-
+    private long lastedTime;
 }
