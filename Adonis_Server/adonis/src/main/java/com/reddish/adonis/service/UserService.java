@@ -54,8 +54,7 @@ public class UserService {
             // 存userId和Session的对应关系
             Dispatcher.userId2SessionMap.put(userId, session);
             Dispatcher.session2UserIdMap.put(session, userId);
-            // 发送在线消息
-            sendUserOnlineMessage(session, userId);
+
 
         } else if ("sign_up".equals(type)) {
             // 已存在，不可注册
@@ -104,6 +103,10 @@ public class UserService {
                     updateWrapper.eq("id", userId).set("password", password_new);
                     userMapper.update(null, updateWrapper);
                 }
+                case "request" -> {
+                    // 请求了再发送
+                    sendUserOnlineMessage(session, userId);
+                }
                 default -> throw new MessageException(ExceptionCode._200);
             }
         }
@@ -126,7 +129,7 @@ public class UserService {
             // 此用户还在，没有被注销
             if (friendUser != null) {
                 friendInfoMessage.setNickname(friendUser.getNickname());
-                friendInfoMessage.setCustomname(friend.getCustomname());
+                friendInfoMessage.setCustomNickname(friend.getCustomNickname());
                 friendInfoMessage.setMemo(friend.getMemo());
 
                 // 查询好友对自己的关系，填写status

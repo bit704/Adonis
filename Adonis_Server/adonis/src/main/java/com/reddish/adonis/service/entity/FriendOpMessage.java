@@ -10,7 +10,7 @@ public class FriendOpMessage {
      * exist: 查询好友是否存在
      * online: 查询好友是否在线
      * block: 拉黑好友
-     * custom: 自定义对好友的备注名（customname字段）
+     * custom: 自定义对好友的备注名（customNickname字段）
      */
     private String type;
     /**

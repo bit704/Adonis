@@ -11,12 +11,13 @@ public class Message {
     private String id;
     /**
      * 消息类型
-     * ReplyMessage 回复消息
-     * UserOpMessage 用户操作消息
-     * FriendOpMessage 好友操作消息
-     * FriendInfoMessage 对话信息消息
-     * DialogueInfoMessage 对话信息消息
-     * UserOnlineMessage 是用户离线期间存在服务器的消息，用户登录在线时发送给用户
+     * 首字母小写！
+     * replyMessage 回复消息
+     * userOpMessage 用户操作消息
+     * friendOpMessage 好友操作消息
+     * friendInfoMessage 对话信息消息
+     * dialogueInfoMessage 对话信息消息
+     * userOnlineMessage 是用户离线期间存在服务器的消息，用户登录在线时发送给用户
      */
     private String type;
     private ReplyMessage replyMessage;

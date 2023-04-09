@@ -8,6 +8,7 @@ public class UserOpMessage {
      * delete: 注销
      * change_nickname: 修改昵称
      * change_password: 修改密码
+     * request: 要求服务端发送UserOnlineMessage。发这个消息的话，其它字段都不用填。
      */
     private String type;
     /**

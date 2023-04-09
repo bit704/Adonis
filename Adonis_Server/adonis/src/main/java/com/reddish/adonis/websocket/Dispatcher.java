@@ -65,21 +65,22 @@ public class Dispatcher {
             }
 
             switch (messageType) {
-                case "UserOpMessage" -> {
+                // 首字母小写
+                case "userOpMessage" -> {
                     if (message.getUserOpMessage() == null) {
                         throw new MessageException(ExceptionCode._102);
                     } else {
                         userService.handle(message.getUserOpMessage(), session);
                     }
                 }
-                case "FriendOpMessage" -> {
+                case "friendOpMessage" -> {
                     if (message.getFriendOpMessage() == null) {
                         throw new MessageException(ExceptionCode._102);
                     } else {
                         friendService.handle(message.getFriendOpMessage(), session);
                     }
                 }
-                case "DialogueInfoMessage" -> {
+                case "dialogueInfoMessage" -> {
                     if (message.getDialogueInfoMessage() == null) {
                         throw new MessageException(ExceptionCode._102);
                     } else {

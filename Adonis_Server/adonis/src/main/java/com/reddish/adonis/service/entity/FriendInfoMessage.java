@@ -27,7 +27,7 @@ public class FriendInfoMessage {
     /**
      * 您对该好友的自定义备注名
      */
-    private String customname;
+    private String customNickname;
     /**
      * 如果好友状态是0、2、3
      * 备注内容
@@ -50,12 +50,12 @@ public class FriendInfoMessage {
         this.nickname = nickname;
     }
 
-    public String getCustomname() {
-        return customname;
+    public String getCustomNickname() {
+        return customNickname;
     }
 
-    public void setCustomname(String customname) {
-        this.customname = customname;
+    public void setCustomNickname(String customNickname) {
+        this.customNickname = customNickname;
     }
 
     public int getStatus() {
@@ -79,7 +79,7 @@ public class FriendInfoMessage {
         return "FriendInfoMessage{" +
                 "id='" + id + '\'' +
                 ", nickname='" + nickname + '\'' +
-                ", customname='" + customname + '\'' +
+                ", customname='" + customNickname + '\'' +
                 ", status=" + status +
                 ", memo='" + memo + '\'' +
                 '}';

@@ -32,7 +32,7 @@
 
    > 注意，客户端不需要填写DialogueInfoMessage的occurredTime字段，服务端会填写，以服务端中转时间表示消息发送时间。
 
-5. **UserOnlineMessage**用于服务端在客户端登录上线时，给其发送其**离线期间**的消息，包括FriendInfoMessage和DialogueInfoMessage。
+5. **UserOnlineMessage**用于服务端在客户端登录上线时，给其发送其**离线期间**的消息，包括FriendInfoMessage和DialogueInfoMessage。用户请求后再发送。
 
 ## 4 示例
 

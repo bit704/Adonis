@@ -29,8 +29,8 @@ public class Friend {
     /**
      * s对o的自定义备注名
      */
-    @TableField("customname")
-    private String customname;
+    @TableField("customNickname")
+    private String customNickname;
 
     /**
      * 申请备注
