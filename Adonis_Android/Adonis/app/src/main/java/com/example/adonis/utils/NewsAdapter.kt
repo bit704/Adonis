@@ -7,8 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adonis.R
+import com.example.adonis.entity.DialogueInfoMessage
 
 class NewsAdapter:RecyclerView.Adapter<NewsAdapter.ViewHolder>()  {
+    var newsList = mutableListOf<DialogueInfoMessage>()
 
     var onItemClickListener: OnItemClickListener? = null
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view){
@@ -23,7 +25,7 @@ class NewsAdapter:RecyclerView.Adapter<NewsAdapter.ViewHolder>()  {
     }
 
     override fun getItemCount(): Int {
-        return 14
+        return newsList.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -35,10 +37,6 @@ class NewsAdapter:RecyclerView.Adapter<NewsAdapter.ViewHolder>()  {
 
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return super.getItemViewType(position)
-    }
-
     fun setItemClickListener(listener:OnItemClickListener){
         this.onItemClickListener = listener
     }
@@ -46,6 +44,10 @@ class NewsAdapter:RecyclerView.Adapter<NewsAdapter.ViewHolder>()  {
     interface OnItemClickListener{
         fun onItemClick()
         fun onItemLongClick()
+    }
+
+    fun initNewsList(newsList: List<DialogueInfoMessage>) {
+        this.newsList = newsList.toMutableList()
     }
 
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/contacts_avatar"
+        android:contentDescription="@string/avatar"
+        android:layout_width="@dimen/contacts_avatar"
+        android:layout_height="@dimen/contacts_avatar"
+        android:layout_margin="@dimen/contacts_margin"
+        android:src="@mipmap/ic_launcher">
+    </ImageView>
+
+    <TextView
+        android:id="@+id/contacts_nickname"
+        android:layout_toEndOf="@id/contacts_avatar"
+        android:layout_width="match_parent"
+        android:maxLines="1"
+        android:layout_height="@dimen/contacts_nickname"
+        android:layout_margin="@dimen/contacts_margin">
+    </TextView>
+
+</RelativeLayout>

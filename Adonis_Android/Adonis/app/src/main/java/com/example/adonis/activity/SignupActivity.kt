@@ -23,7 +23,6 @@ class SignupActivity : AppCompatActivity() {
     lateinit var service: WebSocketService
     lateinit var receiver: BroadcastReceiver
     private val intentFilter = IntentFilter()
-    private val DEFAULT_CODE = 404
     private val RESULT_CODE = 2
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +43,7 @@ class SignupActivity : AppCompatActivity() {
         bindService(serviceIntent, newConnection, BIND_AUTO_CREATE)
 
         confirmButton.setOnClickListener {
-            val userInfoMessage = UserInfoMessage()
+            val userOpMessage = UserOpMessage()
             val message = Message()
             val nickname = nameEditText.text.toString()
             val id = userEditText.text.toString()
@@ -74,13 +73,13 @@ class SignupActivity : AppCompatActivity() {
                 toast.show()
             }
             else {
-                userInfoMessage.type = "sign_up"
-                userInfoMessage.id = id
-                userInfoMessage.nickname = nickname
-                userInfoMessage.password = pwd
-                message.type = FilterString.USER_INFO_MESSAGE
+                userOpMessage.type = "sign_up"
+                userOpMessage.id = id
+                userOpMessage.nickname = nickname
+                userOpMessage.password = pwd
+                message.type = FilterString.USER_OP_MESSAGE
                 message.id = UUID.randomUUID().toString()
-                message.userInfoMessage = userInfoMessage
+                message.userOpMessage = userOpMessage
                 val msg = JSON.toJSONString(message)
                 service.sendMessage(msg, message.id, ActionString.SIGN_UP)
             }
@@ -89,7 +88,7 @@ class SignupActivity : AppCompatActivity() {
         intentFilter.addAction(ActionString.SIGN_UP)
         receiver = object: BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
-                val replyCode = p1?.getIntExtra(FilterString.REPLY_MESSAGE, DEFAULT_CODE)
+                val replyCode = p1?.getIntExtra(FilterString.REPLY_MESSAGE, Code.DEFAULT_CODE)
                 if (replyCode == 0) {
                     val data = Intent()
                     data.putExtra(FilterString.RESULT, Code.SUCCESS)

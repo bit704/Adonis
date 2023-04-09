@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.View.OnTouchListener
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
@@ -15,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adonis.R
 import com.example.adonis.activity.AddActivity
 import com.example.adonis.activity.SingleChatActivity
+import com.example.adonis.entity.DialogueInfoMessage
+import com.example.adonis.utils.NewsAdapter
 import kotlin.math.abs
 
 // TODO: Rename parameter arguments, choose names that match
@@ -31,7 +32,7 @@ class NewsFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
+    private val newsAdapter = NewsAdapter()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,10 +55,10 @@ class NewsFragment : Fragment() {
         val layout = LinearLayoutManager(view.context)
         layout.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = layout
-        val newsAdapter = NewsListAdapter()
-        newsAdapter.setItemClickListener(object :OnItemClickListener{
+
+        newsAdapter.setItemClickListener(object : NewsAdapter.OnItemClickListener {
             override fun onItemClick() {
-                val intent = Intent(this@NewsFragment.context, SingleChatActivity::class.java)
+                val intent = Intent(activity, SingleChatActivity::class.java)
                 startActivity(intent)
             }
 
@@ -68,12 +69,12 @@ class NewsFragment : Fragment() {
         recyclerView.adapter = newsAdapter
 
         moreButton.setOnClickListener{
-            val popupMenu: PopupMenu = PopupMenu(this.context, moreButton)
+            val popupMenu = PopupMenu(this.context, moreButton)
             popupMenu.menuInflater.inflate(R.menu.menu_main_more, popupMenu.menu)
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.item_more_add -> {
-                        val intent = Intent(this.context, AddActivity::class.java)
+                        val intent = Intent(activity, AddActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -110,45 +111,10 @@ class NewsFragment : Fragment() {
             }
     }
 
-    inner class NewsListAdapter: RecyclerView.Adapter<NewsListAdapter.ViewHolder>() {
-
-        var onItemClickListener: OnItemClickListener? = null
-        inner class ViewHolder(view: View):RecyclerView.ViewHolder(view){
-            val avatar:ImageView = view.findViewById(R.id.news_avatar)
-            val name:TextView = view.findViewById(R.id.news_name)
-            val message:TextView = view.findViewById(R.id.news_message)
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val newsView = LayoutInflater.from(parent.context).inflate(R.layout.view_holder_news, null)
-            return ViewHolder(newsView)
-        }
-
-        override fun getItemCount(): Int {
-            return 14
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.itemView.setOnClickListener {
-                if (onItemClickListener != null){
-                    onItemClickListener?.onItemClick()
-                }
-            }
-        }
-
-        override fun getItemViewType(position: Int): Int {
-            return super.getItemViewType(position)
-        }
-
-        fun setItemClickListener(onItemClickListener: OnItemClickListener){
-            this.onItemClickListener = onItemClickListener
-        }
 
 
+    fun initNewsList(list: List<DialogueInfoMessage>) {
+        newsAdapter.initNewsList(list)
+        newsAdapter.notifyDataSetChanged()
     }
-    interface OnItemClickListener{
-        fun onItemClick()
-        fun onItemLongClick()
-    }
-
 }

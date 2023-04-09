@@ -15,10 +15,10 @@
         android:theme="@style/Theme.Adonis"
         tools:targetApi="31">
         <activity
-            android:name=".ConfirmActivity"
+            android:name=".activity.ConfirmActivity"
             android:exported="false" />
         <activity
-            android:name=".AddActivity"
+            android:name=".activity.AddActivity"
             android:exported="false" />
 
         <service

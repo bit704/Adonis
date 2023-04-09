@@ -15,7 +15,7 @@ import com.example.adonis.entity.ActionString
 import com.example.adonis.entity.Code
 import com.example.adonis.entity.FilterString
 import com.example.adonis.entity.Message
-import com.example.adonis.entity.UserInfoMessage
+import com.example.adonis.entity.UserOpMessage
 import com.example.adonis.services.WebSocketService
 import java.util.UUID
 
@@ -27,7 +27,7 @@ class LoginActivity : AppCompatActivity() {
 
     private val REQUEST_CODE = 1
     private val RESULT_CODE = 2
-    private val DEFAULT_CODE = 404
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -55,14 +55,14 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val userInfoMessage = UserInfoMessage()
+            val userOpMessage = UserOpMessage()
             val message = Message()
-            userInfoMessage.type = "sign_in"
-            userInfoMessage.id = id
-            userInfoMessage.password = pwd
+            userOpMessage.type = "sign_in"
+            userOpMessage.id = id
+            userOpMessage.password = pwd
             message.id = UUID.randomUUID().toString()
-            message.type = FilterString.USER_INFO_MESSAGE
-            message.userInfoMessage = userInfoMessage
+            message.type = FilterString.USER_OP_MESSAGE
+            message.userOpMessage = userOpMessage
             val msg = JSON.toJSONString(message)
             service.sendMessage(msg, message.id, ActionString.SIGN_IN)
 
@@ -81,11 +81,14 @@ class LoginActivity : AppCompatActivity() {
         intentFilter.addAction(ActionString.SIGN_IN)
         receiver = object : BroadcastReceiver(){
             override fun onReceive(p0: Context?, p1: Intent?) {
-                val replyCode = p1?.getIntExtra(FilterString.REPLY_MESSAGE, DEFAULT_CODE)
+                Log.i("Login", "Receive")
+                val replyCode = p1?.getIntExtra(FilterString.REPLY_MESSAGE, Code.DEFAULT_CODE)
                 if (replyCode == 0) {
+                    val editor = getSharedPreferences(FilterString.DATA, MODE_PRIVATE).edit()
+                    editor.putString("id", textUser.text.toString())
+                    editor.apply()
                     val intent = Intent()
                     intent.setClass(this@LoginActivity, MainActivity::class.java)
-                    intent.putExtra("id", textUser.text.toString())
                     startActivity(intent)
                     finish()
                 }
@@ -126,7 +129,7 @@ class LoginActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CODE -> if (resultCode == RESULT_CODE){
-                val result = data?.getIntExtra(FilterString.RESULT, DEFAULT_CODE)
+                val result = data?.getIntExtra(FilterString.RESULT, Code.DEFAULT_CODE)
                 if (result == Code.SUCCESS) {
                     val toast = Toast.makeText(this, "注册成功，请登录！", Toast.LENGTH_SHORT)
                     toast.setGravity(Gravity.BOTTOM, 0, 100)

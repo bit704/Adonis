@@ -11,6 +11,7 @@ import com.example.adonis.entity.ActionString
 import com.example.adonis.entity.FilterString
 import com.example.adonis.utils.Client
 import java.net.URI
+import java.util.*
 
 class WebSocketService : Service() {
     private val tag = "Client"
@@ -43,26 +44,45 @@ class WebSocketService : Service() {
                 Log.i(tag, message.toString())
                 val msg = JSON.parseObject(message, com.example.adonis.entity.Message::class.java)
                 if (msg.id != null) {
+
                     when (msg.type) {
                         FilterString.REPLY_MESSAGE -> {
                             val replyMessage = msg.replyMessage
                             val action = messageMap[replyMessage.messageToReplyId]
                             if (action != null) {
-                                when(action) {
+                                when (action) {
                                     ActionString.SIGN_UP -> {
                                         val intent = Intent(ActionString.SIGN_UP)
-                                        intent.putExtra(FilterString.REPLY_MESSAGE, replyMessage.replyCode)
+                                        intent.putExtra(
+                                            FilterString.REPLY_MESSAGE,
+                                            replyMessage.replyCode
+                                        )
                                         sendBroadcast(intent)
                                         messageMap.remove(replyMessage.messageToReplyId)
                                     }
                                     ActionString.SIGN_IN -> {
                                         val intent = Intent(ActionString.SIGN_IN)
-                                        intent.putExtra(FilterString.REPLY_MESSAGE, replyMessage.replyCode)
+                                        intent.putExtra(
+                                            FilterString.REPLY_MESSAGE,
+                                            replyMessage.replyCode
+                                        )
                                         sendBroadcast(intent)
+                                        messageMap.remove(replyMessage.messageToReplyId)
+                                    }
+                                    ActionString.REQUEST -> {
                                         messageMap.remove(replyMessage.messageToReplyId)
                                     }
                                 }
                             }
+                        }
+
+                        FilterString.USER_ONLINE_MESSAGE -> {
+                            val userOnlineMessage = msg.userOnlineMessage
+                            val intent = Intent(ActionString.MAIN_INFO)
+                            val initInfo = JSON.toJSONString(userOnlineMessage)
+                            intent.putExtra("type", FilterString.USER_ONLINE_MESSAGE)
+                            intent.putExtra(FilterString.USER_ONLINE_MESSAGE, initInfo)
+                            sendBroadcast(intent)
                         }
 
                         FilterString.FRIEND_INFO_MESSAGE -> {
@@ -105,8 +125,20 @@ class WebSocketService : Service() {
         if (this::client.isInitialized) {
             try {
                 client.send(message)
+                Log.i(tag, message.toString())
                 if (id != null)
                     messageMap[id.toString()] = type.toString()
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun sendMessage(message: String?) {
+        if (this::client.isInitialized) {
+            try {
+                client.send(message)
+                Log.i(tag, message.toString())
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
             }

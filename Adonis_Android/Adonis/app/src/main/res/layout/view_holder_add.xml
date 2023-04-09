@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/add_avatar"
+        android:layout_alignParentStart="true"
         android:contentDescription="@string/avatar"
-        android:layout_width="@dimen/news_avatar"
-        android:layout_height="@dimen/news_avatar"
+        android:layout_width="@dimen/add_avatar"
+        android:layout_height="@dimen/add_avatar"
         android:src="@mipmap/ic_launcher"
         android:layout_margin="@dimen/add_margin">
     </ImageView>
 
     <LinearLayout
-        android:layout_weight="1"
-        android:layout_width="0dp"
+        android:layout_toEndOf="@id/add_avatar"
+        android:layout_toStartOf="@id/button_add"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/add_margin"
         android:orientation="vertical">
@@ -39,12 +41,13 @@
 
     <Button
         android:id="@+id/button_add"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
         android:contentDescription="@string/add_friends"
-        android:layout_gravity="center_vertical"
         android:layout_width="@dimen/add_button_width"
         android:layout_height="@dimen/add_button_height"
         android:layout_margin="@dimen/add_margin">
 
     </Button>
 
-</LinearLayout>
+</RelativeLayout>

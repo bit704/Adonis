@@ -1,6 +1,6 @@
 package com.example.adonis.entity;
 
-public class UserInfoMessage {
+public class UserOpMessage {
     /**
      * sign_in: 登录
      * sign_out: 登出
@@ -8,6 +8,7 @@ public class UserInfoMessage {
      * delete: 注销
      * change_nickname: 修改昵称
      * change_password: 修改密码
+     * request: 要求服务端发送UserOnlineMessage。发这个消息的话，其它字段都不用填。
      */
     private String type;
     /**
@@ -60,7 +61,7 @@ public class UserInfoMessage {
 
     @Override
     public String toString() {
-        return "UserInfoMessage{" +
+        return "UserOpMessage{" +
                 "type='" + type + '\'' +
                 ", id='" + id + '\'' +
                 ", nickname='" + nickname + '\'' +
@@ -68,10 +69,10 @@ public class UserInfoMessage {
                 '}';
     }
 
-    public UserInfoMessage() {
+    public UserOpMessage() {
     }
 
-    public UserInfoMessage(String type, String id, String nickname, String password) {
+    public UserOpMessage(String type, String id, String nickname, String password) {
         this.type = type;
         this.id = id;
         this.nickname = nickname;
