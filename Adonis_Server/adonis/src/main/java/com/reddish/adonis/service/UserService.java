@@ -50,7 +50,7 @@ public class UserService {
                 throw new UserInfoException(ExceptionCode._203);
             }
             // 标记为在线
-            Dispatcher.onlineMap.put(userId, true);
+            Dispatcher.setOnline(userId);
             // 存userId和Session的对应关系
             Dispatcher.userId2SessionMap.put(userId, session);
             Dispatcher.session2UserIdMap.put(session, userId);
@@ -73,14 +73,14 @@ public class UserService {
                 throw new UserInfoException(ExceptionCode._204);
             }
             // 校验用户是否在线
-            if (!Dispatcher.onlineMap.get(userId)) {
+            if (!Dispatcher.isOnline(userId)) {
                 throw new UserInfoException(ExceptionCode._208);
             }
 
             switch (type) {
                 case "sign_out" -> {
                     // 标记为离线
-                    Dispatcher.onlineMap.put(userId, false);
+                    Dispatcher.setOffline(userId);
                 }
                 case "delete" -> {
                     userMapper.deleteById(userId);

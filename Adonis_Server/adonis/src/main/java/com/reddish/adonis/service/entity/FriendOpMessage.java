@@ -24,7 +24,7 @@ public class FriendOpMessage {
     /**
      * s对o的自定义备注名
      */
-    private String customname;
+    private String customNickname;
     /**
      * 添加好友时的申请备注
      * 如：你好！我是XXX，想添加你为好友
@@ -55,12 +55,12 @@ public class FriendOpMessage {
         this.objectId = objectId;
     }
 
-    public String getCustomname() {
-        return customname;
+    public String getCustomNickname() {
+        return customNickname;
     }
 
-    public void setCustomname(String customname) {
-        this.customname = customname;
+    public void setCustomNickname(String customNickname) {
+        this.customNickname = customNickname;
     }
 
     public String getMemo() {
@@ -77,7 +77,7 @@ public class FriendOpMessage {
                 "type='" + type + '\'' +
                 ", subjectId='" + subjectId + '\'' +
                 ", objectId='" + objectId + '\'' +
-                ", customname='" + customname + '\'' +
+                ", customNickname='" + customNickname + '\'' +
                 ", memo='" + memo + '\'' +
                 '}';
     }

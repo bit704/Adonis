@@ -63,7 +63,7 @@ public class DialogueService {
         }
 
         // 对方刚好在线,直接转发
-        if (Dispatcher.onlineMap.get(receiverId)) {
+        if (Dispatcher.isOnline(receiverId)) {
             sendDialogueInfoMessage(dialogueInfoMessage, receiverId);
         }
 

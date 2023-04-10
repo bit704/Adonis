@@ -41,9 +41,13 @@ public class FriendService {
         // 查看表中是否有添加好友双方user
         String subjectId = friendOpMessage.getSubjectId();
         String objectId = friendOpMessage.getObjectId();
+        String type = friendOpMessage.getType();
+
         User user_s = userMapper.selectById(subjectId);
         User user_o = userMapper.selectById(objectId);
-        if (user_s == null || user_o == null) {
+
+        // 不判断user_o是否存在，因为对方可能已经注销
+        if (user_s == null) {
             throw new FriendInfoException(ExceptionCode._301);
         }
         if (user_s.equals(user_o)) {
@@ -62,7 +66,6 @@ public class FriendService {
                 .eq("objectId", subjectId);
         Friend friend_os = friendMapper.selectOne(queryWrapper_os);
 
-        String type = friendOpMessage.getType();
         switch (type) {
             case "add" -> {
                 if (friend_so != null) {
@@ -84,7 +87,7 @@ public class FriendService {
                     }
                 }
                 // 对方刚好在线，直接发给o
-                if (Dispatcher.onlineMap.get(objectId)) {
+                if (Dispatcher.isOnline(objectId)) {
                     FriendInfoMessage friendInfoMessage = new FriendInfoMessage();
                     friendInfoMessage.setId(subjectId);
                     friendInfoMessage.setNickname(user_s.getNickname());
@@ -121,7 +124,7 @@ public class FriendService {
                     friendMapper.update(null, updateWrapper_os);
                 }
                 // 告知s
-                if (Dispatcher.onlineMap.get(subjectId)) {
+                if (Dispatcher.isOnline(subjectId)) {
                     FriendInfoMessage friendInfoMessage = new FriendInfoMessage();
                     friendInfoMessage.setId(subjectId);
                     friendInfoMessage.setNickname(user_s.getNickname());
@@ -134,15 +137,14 @@ public class FriendService {
                 // s申请将o加入好友列表，o拒绝
                 friendMapper.delete(queryWrapper_so);
                 // 告知s
-                if (Dispatcher.onlineMap.get(subjectId)) {
+                if (Dispatcher.isOnline(subjectId)) {
                     FriendInfoMessage friendInfoMessage = new FriendInfoMessage();
                     friendInfoMessage.setId(subjectId);
                     friendInfoMessage.setNickname(user_s.getNickname());
                     friendInfoMessage.setStatus(3);
                     friendInfoMessage.setMemo(friendOpMessage.getMemo());
                     sendFriendInfoMessage(friendInfoMessage, subjectId);
-                }
-                else {
+                } else {
                     UpdateWrapper<Friend> updateWrapper_so = new UpdateWrapper<>();
                     updateWrapper_so
                             .eq("subjectId", subjectId)
@@ -170,10 +172,10 @@ public class FriendService {
                 sendFriendInfoMessage(friendInfoMessage, subjectId);
 
             }
-            case "oline" -> {
+            case "online" -> {
                 FriendInfoMessage friendInfoMessage = new FriendInfoMessage();
                 friendInfoMessage.setId(objectId);
-                if (Dispatcher.onlineMap.get(objectId)) {
+                if (Dispatcher.isOnline(objectId)) {
                     friendInfoMessage.setStatus(6);
                 } else {
                     friendInfoMessage.setStatus(7);
@@ -195,7 +197,7 @@ public class FriendService {
                 updateWrapper_so
                         .eq("subjectId", subjectId)
                         .eq("objectId", objectId)
-                        .set("customname", friendOpMessage.getCustomname());
+                        .set("customNickname", friendOpMessage.getCustomNickname());
                 friendMapper.update(null, updateWrapper_so);
             }
             default -> throw new MessageException(ExceptionCode._300);

@@ -23,10 +23,9 @@ public class Server {
     public void onClose(Session session) {
         Dispatcher.selfId2SessionMap.remove(session.getId());
         String userId = Dispatcher.session2UserIdMap.get(session);
-        if (userId != null)
-        {
+        if (userId != null) {
             // 标记为不在线
-            Dispatcher.onlineMap.put(userId, false);
+            Dispatcher.setOffline(userId);
             // 删除userId和Session的对应关系
             Dispatcher.session2UserIdMap.remove(session);
             Dispatcher.userId2SessionMap.remove(userId);

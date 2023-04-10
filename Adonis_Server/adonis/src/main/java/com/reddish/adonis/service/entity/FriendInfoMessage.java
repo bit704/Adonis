@@ -79,7 +79,7 @@ public class FriendInfoMessage {
         return "FriendInfoMessage{" +
                 "id='" + id + '\'' +
                 ", nickname='" + nickname + '\'' +
-                ", customname='" + customNickname + '\'' +
+                ", customNickname='" + customNickname + '\'' +
                 ", status=" + status +
                 ", memo='" + memo + '\'' +
                 '}';

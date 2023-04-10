@@ -38,7 +38,7 @@ public class Dispatcher {
     /**
      * senderId, 在线状态
      */
-    public static final ConcurrentHashMap<String, Boolean> onlineMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Boolean> onlineMap = new ConcurrentHashMap<>();
 
     @Autowired
     public void initialize(UserService _userService, FriendService _friendService, DialogueService _dialogueService) {
@@ -131,6 +131,18 @@ public class Dispatcher {
     public static void sendMessageForAlive(Session session) {
         Message message = new Message();
         sendMessage(session, message);
+    }
+
+    public static boolean isOnline(String userId) {
+        return onlineMap.get(userId) != null && onlineMap.get(userId);
+    }
+
+    public static void setOnline(String userId) {
+        Dispatcher.onlineMap.put(userId, true);
+    }
+
+    public static void setOffline(String userId) {
+        Dispatcher.onlineMap.put(userId, false);
     }
 
 }
