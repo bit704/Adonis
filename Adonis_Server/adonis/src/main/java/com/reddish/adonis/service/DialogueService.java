@@ -10,7 +10,7 @@ import com.reddish.adonis.mapper.UserMapper;
 import com.reddish.adonis.mapper.entity.Dialogue;
 import com.reddish.adonis.mapper.entity.Friend;
 import com.reddish.adonis.mapper.entity.User;
-import com.reddish.adonis.service.entity.DialogueInfoMessage;
+import com.reddish.adonis.service.entity.DialogueMessage;
 import com.reddish.adonis.service.entity.Message;
 import com.reddish.adonis.websocket.Dispatcher;
 import org.springframework.stereotype.Service;
@@ -30,16 +30,16 @@ public class DialogueService {
         this.dialogueMapper = dialogueMapper;
     }
 
-    private void sendDialogueInfoMessage(DialogueInfoMessage dialogueInfoMessage, String receiverId) {
-        Message message = new Message(dialogueInfoMessage);
+    private void sendDialogueInfoMessage(DialogueMessage dialogueMessage, String receiverId) {
+        Message message = new Message(dialogueMessage);
         Session session = Dispatcher.userId2SessionMap.get(receiverId);
         Dispatcher.sendMessage(session, message);
     }
 
-    public void handle(DialogueInfoMessage dialogueInfoMessage, Session session) throws MessageException, DialogueInfoException {
+    public void handle(DialogueMessage dialogueMessage, Session session) throws MessageException, DialogueInfoException {
 
-        String senderId = dialogueInfoMessage.getSenderId();
-        String receiverId = dialogueInfoMessage.getReceiverId();
+        String senderId = dialogueMessage.getSenderId();
+        String receiverId = dialogueMessage.getReceiverId();
         User user1 = userMapper.selectById(senderId);
         User user2 = userMapper.selectById(receiverId);
 
@@ -49,7 +49,7 @@ public class DialogueService {
 
         // 可以自己给自己发消息，user1和user2可以相同
         // cccurredTime是消息到达服务端的时间，由服务端填写
-        dialogueInfoMessage.setOccurredTime(System.currentTimeMillis());
+        dialogueMessage.setOccurredTime(System.currentTimeMillis());
 
         // 判断还是不是双向好友
         QueryWrapper<Friend> queryWrapper_sr = new QueryWrapper<>();
@@ -64,15 +64,15 @@ public class DialogueService {
 
         // 对方刚好在线,直接转发
         if (Dispatcher.isOnline(receiverId)) {
-            sendDialogueInfoMessage(dialogueInfoMessage, receiverId);
+            sendDialogueInfoMessage(dialogueMessage, receiverId);
         }
 
         // 否则先存在数据库里
         else {
             dialogueMapper.insert(new Dialogue(senderId, receiverId,
-                    dialogueInfoMessage.getContent(),
-                    dialogueInfoMessage.getLastedTime(),
-                    dialogueInfoMessage.getOccurredTime()));
+                    dialogueMessage.getContent(),
+                    dialogueMessage.getLastedTime(),
+                    dialogueMessage.getOccurredTime()));
         }
     }
 

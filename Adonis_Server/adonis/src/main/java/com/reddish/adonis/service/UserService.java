@@ -50,88 +50,93 @@ public class UserService {
             throw new MessageException(illegal_code);
         }
 
+        MessageCode uif;
+
+        // 这里先用if而不是直接用switch是因为：有部分公有代码为部分情况所有
         if (uop_sign_in.equals(messageCode)) {
             // 登录
             if (user == null) {
-                sendInfoForOp(uif_not_exist, session);
-                return;
+                uif = uif_not_exist;
+            } else if (!user.getPassword().equals(userOpMessage.getPassword())) {
+                uif = uif_worry_password;
+            } else {
+                // 标记为在线
+                Dispatcher.setOnline(userId);
+                // 存userId和Session的对应关系
+                Dispatcher.userId2SessionMap.put(userId, session);
+                Dispatcher.session2UserIdMap.put(session, userId);
+                uif = uif_op_success;
             }
-
-            if (!user.getPassword().equals(userOpMessage.getPassword())) {
-                sendInfoForOp(uif_worry_password, session);
-                return;
-            }
-            // 标记为在线
-            Dispatcher.setOnline(userId);
-            // 存userId和Session的对应关系
-            Dispatcher.userId2SessionMap.put(userId, session);
-            Dispatcher.session2UserIdMap.put(session, userId);
 
         } else if (uop_sign_up.equals(messageCode)) {
             // 已存在，不可注册
             if (user != null) {
-                sendInfoForOp(uif_already_exist, session);
-                return;
+                uif = uif_already_exist;
+            } else if (userId == null || userOpMessage.getNickname() == null || userOpMessage.getPassword() == null) {
+                uif = uif_incomplete_info;
+            } else {
+                userMapper.insert(new User(userId, userOpMessage.getNickname(), userOpMessage.getPassword()));
+                // 默认自己是自己的好友
+                friendMapper.insert(new Friend(userId, userId, 1, null, null));
+                uif = uif_op_success;
             }
-            if (userId == null || userOpMessage.getNickname() == null || userOpMessage.getPassword() == null) {
-                sendInfoForOp(uif_incomplete_info, session);
-                return;
-            }
-            userMapper.insert(new User(userId, userOpMessage.getNickname(), userOpMessage.getPassword()));
-            // 默认自己是自己的好友
-            friendMapper.insert(new Friend(userId, userId, 1, null, null));
-        } else {
             // 校验消息内用户ID与session拥有用户ID是否一致
-            if (!Dispatcher.session2UserIdMap.get(session).equals(userId)) {
-                throw new UserInfoException(hack);
-            }
-            // 校验用户是否在线
-            if (!Dispatcher.isOnline(userId)) {
-                sendInfoForOp(uif_offline, session);
-                return;
-            }
-
+        } else if (!Dispatcher.session2UserIdMap.get(session).equals(userId)) {
+            throw new UserInfoException(hack);
+        }
+        // 校验用户是否在线
+        else if (!Dispatcher.isOnline(userId)) {
+            uif = uif_offline;
+        } else {
             switch (messageCode) {
                 case uop_sign_out -> {
                     // 标记为离线
                     Dispatcher.setOffline(userId);
+                    uif = uif_op_success;
                 }
                 case uop_delete -> {
                     userMapper.deleteById(userId);
+                    uif = uif_op_success;
                 }
                 case uop_change_nickname -> {
                     UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
                     String nickname_new = userOpMessage.getNickname();
                     if (nickname_new == null) {
-                        sendInfoForOp(uif_no_nickname, session);
-                        return;
+                        uif = uif_no_nickname;
+                    } else {
+                        updateWrapper.eq("id", userId).set("nickname", nickname_new);
+                        userMapper.update(null, updateWrapper);
+                        uif = uif_op_success;
                     }
-                    updateWrapper.eq("id", userId).set("nickname", nickname_new);
-                    userMapper.update(null, updateWrapper);
                 }
                 case uop_change_password -> {
                     UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
                     String password_new = userOpMessage.getPassword();
                     if (password_new == null) {
-                        sendInfoForOp(uif_no_password, session);
-                        return;
+                        uif = uif_no_password;
+                    } else {
+                        updateWrapper.eq("id", userId).set("password", password_new);
+                        userMapper.update(null, updateWrapper);
+                        uif = uif_op_success;
                     }
-                    updateWrapper.eq("id", userId).set("password", password_new);
-                    userMapper.update(null, updateWrapper);
                 }
                 case uop_request_online_message -> {
                     // 请求了再发送
-                    sendUserOnlineMessage(session, userId);
+                    uif = uif_reply_online_message;
                 }
                 default -> throw new MessageException(illegal_uop_code);
             }
+        }
+        sendInfoForOp(uif, session);
+        if (uif_reply_online_message.equals(uif)) {
+            sendUserOnlineMessage(session, userId);
         }
     }
 
     public void sendUserOnlineMessage(Session session, String userId) {
 
         List<FriendInfoMessage> friendInfoMessageList = new ArrayList<>();
-        List<DialogueInfoMessage> dialogueInfoMessageList = new ArrayList<>();
+        List<DialogueMessage> dialogueMessageList = new ArrayList<>();
 
         QueryWrapper<Friend> friendQueryWrapper = new QueryWrapper<>();
         friendQueryWrapper.eq("subjectId", userId);
@@ -182,7 +187,7 @@ public class UserService {
                         .eq("receiverId", userId);
                 List<Dialogue> dialogueList = dialogueMapper.selectList(dialogueQueryWrapper);
                 for (Dialogue dialogue : dialogueList) {
-                    dialogueInfoMessageList.add(new DialogueInfoMessage(
+                    dialogueMessageList.add(new DialogueMessage(
                             dialogue.getSenderId(),
                             dialogue.getReceiverId(),
                             dialogue.getContent(),
@@ -195,7 +200,7 @@ public class UserService {
             friendInfoMessageList.add(friendInfoMessage);
         }
         // 发送
-        Dispatcher.sendMessage(session, new Message(new UserOnlineMessage(friendInfoMessageList, dialogueInfoMessageList)));
+        Dispatcher.sendMessage(session, new Message(new UserOnlineMessage(friendInfoMessageList, dialogueMessageList)));
 
     }
 

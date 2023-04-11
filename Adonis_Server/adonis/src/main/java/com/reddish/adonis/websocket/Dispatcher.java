@@ -65,6 +65,8 @@ public class Dispatcher {
                 throw new MessageException(illegal_type);
             }
 
+            // 先发reply表示收到
+            sendMesageForReply(session, message, 0);
             switch (messageType) {
                 // 首字母小写
                 case "userOpMessage" -> {
@@ -89,28 +91,20 @@ public class Dispatcher {
                     }
                 }
                 default -> throw new MessageException(illegal_type);
-
             }
         } catch (MessageException e) {
             logger.info(e.getMessage());
             sendMesageForReply(session, message, e.code.getId());
-            return;
         } catch (UserInfoException e) {
             logger.info(e.getMessage());
             sendMesageForReply(session, message, e.code.getId());
-            return;
         } catch (FriendInfoException e) {
             logger.info(e.getMessage());
             sendMesageForReply(session, message, e.code.getId());
-            return;
         } catch (DialogueInfoException e) {
             logger.info(e.getMessage());
             sendMesageForReply(session, message, e.code.getId());
-            return;
         }
-        // 代码0表示成功
-        sendMesageForReply(session, message, 0);
-
     }
 
     // 发送消息
@@ -124,7 +118,7 @@ public class Dispatcher {
         sendMessage(session, message);
     }
 
-    //保活消息
+    // 心跳机制保活消息
     public static void sendMessageForAlive(Session session) {
         Message message = new Message();
         sendMessage(session, message);

@@ -17,7 +17,7 @@ public class Message {
      * userInfoMessage 用户信息消息
      * friendOpMessage 好友操作消息
      * friendInfoMessage 对话信息消息
-     * dialogueInfoMessage 对话信息消息
+     * dialogueMessage 对话信息消息
      * userOnlineMessage 是用户离线期间存在服务器的消息，用户登录在线时发送给用户
      */
     private String type;
@@ -26,7 +26,7 @@ public class Message {
     private UserInfoMessage userInfoMessage;
     private FriendOpMessage friendOpMessage;
     private FriendInfoMessage friendInfoMessage;
-    private DialogueInfoMessage dialogueInfoMessage;
+    private DialogueMessage dialogueMessage;
     private UserOnlineMessage userOnlineMessage;
 
     public String getId() {
@@ -85,12 +85,12 @@ public class Message {
         this.friendInfoMessage = friendInfoMessage;
     }
 
-    public DialogueInfoMessage getDialogueInfoMessage() {
-        return dialogueInfoMessage;
+    public DialogueMessage getDialogueInfoMessage() {
+        return dialogueMessage;
     }
 
-    public void setDialogueInfoMessage(DialogueInfoMessage dialogueInfoMessage) {
-        this.dialogueInfoMessage = dialogueInfoMessage;
+    public void setDialogueInfoMessage(DialogueMessage dialogueMessage) {
+        this.dialogueMessage = dialogueMessage;
     }
 
     public UserOnlineMessage getUserOnlineMessage() {
@@ -111,7 +111,7 @@ public class Message {
                 ", userInfoMessage=" + userInfoMessage +
                 ", friendOpMessage=" + friendOpMessage +
                 ", friendInfoMessage=" + friendInfoMessage +
-                ", dialogueInfoMessage=" + dialogueInfoMessage +
+                ", dialogueMessage=" + dialogueMessage +
                 ", userOnlineMessage=" + userOnlineMessage +
                 '}';
     }
@@ -143,10 +143,10 @@ public class Message {
         this.friendOpMessage = friendOpMessage;
     }
 
-    public Message(DialogueInfoMessage dialogueInfoMessage) {
+    public Message(DialogueMessage dialogueMessage) {
         this.id = UUID.randomUUID().toString();
-        this.type = "dialogueInfoMessage";
-        this.dialogueInfoMessage = dialogueInfoMessage;
+        this.type = "dialogueMessage";
+        this.dialogueMessage = dialogueMessage;
     }
 
     public Message(UserOnlineMessage userOnlineMessage) {

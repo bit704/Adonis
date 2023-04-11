@@ -2,8 +2,8 @@ package com.reddish.adonis.exception;
 
 public enum ExceptionCode {
     /**
-     * 编码0表示成功，回复的消息不存在异常
-     * 异常表示开发过程中可能出现的错误，以及应由客户端预防而不应在服务端出现的错误
+     * 代码0表示正常收到消息
+     * 异常表示开发过程中可能出现的错误，以及应由客户端预防而不应在服务端出现的错误，因此0之外其它实际中并无用途
      */
     illegal_type(100, "不存在的消息类型"),
     unconformity(101, "消息类型与消息内容不符"),
@@ -15,7 +15,6 @@ public enum ExceptionCode {
     illegal_fop_code(300, "不正确的好友操作消息MessageCode"),
     extreme_error(301, "发出好友操作的用户自己已经注销，这是一种极端错误"),
     not_self(302, "好友操作涉及双方不能相同"),
-
 
     shadow_man(401, "消息发送与接收有一方不存在，可能已注销"),
     stranger(402, "消息接收方和自己不是双向好友"),
