@@ -13,8 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.Session;
-import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.reddish.adonis.exception.ExceptionCode.*;
 
 @Component
 public class Dispatcher {
@@ -61,50 +62,50 @@ public class Dispatcher {
             }
 
             if (messageType == null) {
-                throw new MessageException(ExceptionCode._101);
+                throw new MessageException(_100);
             }
 
             switch (messageType) {
                 // 首字母小写
                 case "userOpMessage" -> {
                     if (message.getUserOpMessage() == null) {
-                        throw new MessageException(ExceptionCode._102);
+                        throw new MessageException(_101);
                     } else {
                         userService.handle(message.getUserOpMessage(), session);
                     }
                 }
                 case "friendOpMessage" -> {
                     if (message.getFriendOpMessage() == null) {
-                        throw new MessageException(ExceptionCode._102);
+                        throw new MessageException(_101);
                     } else {
                         friendService.handle(message.getFriendOpMessage(), session);
                     }
                 }
                 case "dialogueInfoMessage" -> {
                     if (message.getDialogueInfoMessage() == null) {
-                        throw new MessageException(ExceptionCode._102);
+                        throw new MessageException(_101);
                     } else {
                         dialogueService.handle(message.getDialogueInfoMessage(), session);
                     }
                 }
-                default -> throw new MessageException(ExceptionCode._101);
+                default -> throw new MessageException(_100);
 
             }
         } catch (MessageException e) {
             logger.info(e.getMessage());
-            sendMesageForReply(session, message, e.code.getCodeId());
+            sendMesageForReply(session, message, e.code.getId());
             return;
         } catch (UserInfoException e) {
             logger.info(e.getMessage());
-            sendMesageForReply(session, message, e.code.getCodeId());
+            sendMesageForReply(session, message, e.code.getId());
             return;
         } catch (FriendInfoException e) {
             logger.info(e.getMessage());
-            sendMesageForReply(session, message, e.code.getCodeId());
+            sendMesageForReply(session, message, e.code.getId());
             return;
         } catch (DialogueInfoException e) {
             logger.info(e.getMessage());
-            sendMesageForReply(session, message, e.code.getCodeId());
+            sendMesageForReply(session, message, e.code.getId());
             return;
         }
         // 代码0表示成功
@@ -114,11 +115,7 @@ public class Dispatcher {
 
     // 发送消息
     public static void sendMessage(Session session, Message message) {
-        try {
-            session.getBasicRemote().sendText(JSON.toJSONString(message));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        session.getAsyncRemote().sendText(JSON.toJSONString(message));
     }
 
     // 回复消息

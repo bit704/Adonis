@@ -1,24 +1,17 @@
 package com.reddish.adonis.service.entity;
 
-
 public class FriendOpMessage {
+
     /**
-     * add: 添加好友申请（可以选择是否添加申请备注，memo字段）
-     * consent: 同意好友申请
-     * refuse: 拒绝好友申请
-     * delete: 删除好友（只能单向删除，自己还在对方好友列表中，但对方发给自己的消息会被服务器拦截）
-     * exist: 查询好友是否存在
-     * online: 查询好友是否在线
-     * block: 拉黑好友
-     * custom: 自定义对好友的备注名（customNickname字段）
+     * 见MessageCode下编码
      */
-    private String type;
+    private int code;
     /**
-     * 请求方账号
+     * 请求方账号，即发出此message的用户账号，简称为s
      */
     private String subjectId;
     /**
-     * 被请求方账号
+     * 被请求方账号，简称为o
      */
     private String objectId;
     /**
@@ -27,16 +20,16 @@ public class FriendOpMessage {
     private String customNickname;
     /**
      * 添加好友时的申请备注
-     * 如：你好！我是XXX，想添加你为好友
+     * 如：你好！我是XXX。
      */
     private String memo;
 
-    public String getType() {
-        return type;
+    public int getCode() {
+        return code;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public String getSubjectId() {
@@ -74,7 +67,7 @@ public class FriendOpMessage {
     @Override
     public String toString() {
         return "FriendOpMessage{" +
-                "type='" + type + '\'' +
+                "code=" + code +
                 ", subjectId='" + subjectId + '\'' +
                 ", objectId='" + objectId + '\'' +
                 ", customNickname='" + customNickname + '\'' +
@@ -85,10 +78,11 @@ public class FriendOpMessage {
     public FriendOpMessage() {
     }
 
-    public FriendOpMessage(String type, String subjectId, String objectId, String memo) {
-        this.type = type;
+    public FriendOpMessage(int code, String subjectId, String objectId, String customNickname, String memo) {
+        this.code = code;
         this.subjectId = subjectId;
         this.objectId = objectId;
+        this.customNickname = customNickname;
         this.memo = memo;
     }
 }

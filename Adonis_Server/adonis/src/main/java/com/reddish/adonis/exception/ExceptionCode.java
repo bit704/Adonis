@@ -1,58 +1,48 @@
 package com.reddish.adonis.exception;
 
 public enum ExceptionCode {
-    _100("不合法的消息", 100),
-    _101("不存在的消息类型", 101),
-    _102("消息类型与消息内容不符", 102),
+    /**
+     * 编码0表示成功，回复的消息不存在异常
+     * 异常表示开发过程中可能出现的错误，以及应由客户端预防而不应在服务端出现的错误
+     */
+    _100(100, "不存在的消息类型"),
+    _101(101, "消息类型与消息内容不符"),
+    _102(102, "不存在的子消息MessageCode"),
 
-    _200("不存在的用户消息类型", 200),
-    _201("用户ID已存在，无法注册", 201),
-    _202("用户ID不存在，无法线上操作", 202),
-    _203("密码不正确", 203),
-    _204("消息内用户ID与session拥有用户ID不一致", 204),
-    _205("消息中未传入新昵称，无法更新", 205),
-    _206("消息中未传入新密码，无法更新", 206),
-    _207("注册时未传入完整信息", 207),
-    _208("用户不在线", 208),
+    _200(200, "不正确的用户操作消息MessageCode"),
+    _201(201, "消息内用户ID与session拥有用户ID不一致,可能有破坏者伪装成他人发送消息"),
 
-    _300("不存在的好友消息类型", 300),
-    _301("发出好友操作的用户已经注销", 301),
-    _302("好友操作涉及双方不能相同", 302),
-    _303("已经发送过同样的好友申请", 303),
-    _304("已在好友列表中，无需申请", 304),
-    _305("无法申请，已被对方拉黑", 305),
+    _300(300, "不正确的好友操作消息MessageCode"),
+    _301(301, "发出好友操作的用户自己已经注销，这是一种极端错误"),
+    _302(302, "好友操作涉及双方不能相同"),
 
-    _400("不存在的对话消息类型", 400),
-    _401("消息发送与接收有一方不存在，可能已注销", 401),
-    _402("消息发送与接收方不是双向好友", 402),
+    _400(400, "不正确的对话操作消息MessageCode"),
+    _401(401, "消息发送与接收有一方不存在，可能已注销"),
+    _402(402, "消息接收方和自己不是双向好友"),
     ;
 
-
+    private final int id;
     private final String desc;
-    private final int codeId;
 
-    ExceptionCode(String desc, int codeId) {
+    ExceptionCode(int id, String desc) {
+        this.id = id;
         this.desc = desc;
-        this.codeId = codeId;
     }
 
     public String getDesc() {
         return desc;
     }
 
-    public int getCodeId() {
-        return codeId;
+    public int getId() {
+        return id;
     }
 
     /**
-     * 由codeId获取Code
-     *
-     * @param codeId
-     * @return
+     * 由id获取Code
      */
-    public static ExceptionCode getCodeByCodeId(int codeId) {
+    public static ExceptionCode getCodeById(int id) {
         for (ExceptionCode exceptionCode : ExceptionCode.values()) {
-            if (exceptionCode.getCodeId() == codeId) {
+            if (exceptionCode.getId() == id) {
                 return exceptionCode;
             }
         }

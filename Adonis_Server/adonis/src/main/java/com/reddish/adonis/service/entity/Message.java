@@ -14,6 +14,7 @@ public class Message {
      * 首字母小写！
      * replyMessage 回复消息
      * userOpMessage 用户操作消息
+     * userInfoMessage 用户信息消息
      * friendOpMessage 好友操作消息
      * friendInfoMessage 对话信息消息
      * dialogueInfoMessage 对话信息消息
@@ -22,6 +23,7 @@ public class Message {
     private String type;
     private ReplyMessage replyMessage;
     private UserOpMessage userOpMessage;
+    private UserInfoMessage userInfoMessage;
     private FriendOpMessage friendOpMessage;
     private FriendInfoMessage friendInfoMessage;
     private DialogueInfoMessage dialogueInfoMessage;
@@ -57,6 +59,14 @@ public class Message {
 
     public void setUserOpMessage(UserOpMessage userOpMessage) {
         this.userOpMessage = userOpMessage;
+    }
+
+    public UserInfoMessage getUserInfoMessage() {
+        return userInfoMessage;
+    }
+
+    public void setUserInfoMessage(UserInfoMessage userInfoMessage) {
+        this.userInfoMessage = userInfoMessage;
     }
 
     public FriendOpMessage getFriendOpMessage() {
@@ -98,6 +108,7 @@ public class Message {
                 ", type='" + type + '\'' +
                 ", replyMessage=" + replyMessage +
                 ", userOpMessage=" + userOpMessage +
+                ", userInfoMessage=" + userInfoMessage +
                 ", friendOpMessage=" + friendOpMessage +
                 ", friendInfoMessage=" + friendInfoMessage +
                 ", dialogueInfoMessage=" + dialogueInfoMessage +
@@ -106,16 +117,6 @@ public class Message {
     }
 
     public Message() {
-    }
-
-    public Message(String id, String type, ReplyMessage replyMessage, UserOpMessage userOpMessage, FriendOpMessage friendOpMessage, DialogueInfoMessage dialogueInfoMessage, UserOnlineMessage userOnlineMessage) {
-        this.id = id;
-        this.type = type;
-        this.replyMessage = replyMessage;
-        this.userOpMessage = userOpMessage;
-        this.friendOpMessage = friendOpMessage;
-        this.dialogueInfoMessage = dialogueInfoMessage;
-        this.userOnlineMessage = userOnlineMessage;
     }
 
     public Message(ReplyMessage replyMessage) {
@@ -128,6 +129,12 @@ public class Message {
         this.id = UUID.randomUUID().toString();
         this.type = "userOpMessage";
         this.userOpMessage = userOpMessage;
+    }
+
+    public Message(UserInfoMessage userInfoMessage) {
+        this.id = UUID.randomUUID().toString();
+        this.type = "userInfoMessage";
+        this.userInfoMessage = userInfoMessage;
     }
 
     public Message(FriendOpMessage friendOpMessage) {

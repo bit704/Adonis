@@ -30,7 +30,7 @@ public class DialogueService {
         this.dialogueMapper = dialogueMapper;
     }
 
-    public static void sendDialogueInfoMessage(DialogueInfoMessage dialogueInfoMessage, String receiverId) {
+    private void sendDialogueInfoMessage(DialogueInfoMessage dialogueInfoMessage, String receiverId) {
         Message message = new Message(dialogueInfoMessage);
         Session session = Dispatcher.userId2SessionMap.get(receiverId);
         Dispatcher.sendMessage(session, message);
