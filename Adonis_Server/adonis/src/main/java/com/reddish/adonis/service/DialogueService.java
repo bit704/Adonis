@@ -44,7 +44,7 @@ public class DialogueService {
         User user2 = userMapper.selectById(receiverId);
 
         if (user1 == null || user2 == null) {
-            throw new DialogueInfoException(ExceptionCode._401);
+            throw new DialogueInfoException(ExceptionCode.shadow_man);
         }
 
         // 可以自己给自己发消息，user1和user2可以相同
@@ -59,7 +59,7 @@ public class DialogueService {
         queryWrapper_rs.eq("subjectId", senderId).eq("objectId", receiverId);
         Friend friend_os = friendMapper.selectOne(queryWrapper_rs);
         if (friend_so == null || friend_os == null) {
-            throw new DialogueInfoException(ExceptionCode._402);
+            throw new DialogueInfoException(ExceptionCode.stranger);
         }
 
         // 对方刚好在线,直接转发

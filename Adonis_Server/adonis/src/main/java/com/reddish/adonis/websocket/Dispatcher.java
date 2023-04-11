@@ -62,33 +62,33 @@ public class Dispatcher {
             }
 
             if (messageType == null) {
-                throw new MessageException(_100);
+                throw new MessageException(illegal_type);
             }
 
             switch (messageType) {
                 // 首字母小写
                 case "userOpMessage" -> {
                     if (message.getUserOpMessage() == null) {
-                        throw new MessageException(_101);
+                        throw new MessageException(unconformity);
                     } else {
                         userService.handle(message.getUserOpMessage(), session);
                     }
                 }
                 case "friendOpMessage" -> {
                     if (message.getFriendOpMessage() == null) {
-                        throw new MessageException(_101);
+                        throw new MessageException(unconformity);
                     } else {
                         friendService.handle(message.getFriendOpMessage(), session);
                     }
                 }
                 case "dialogueInfoMessage" -> {
                     if (message.getDialogueInfoMessage() == null) {
-                        throw new MessageException(_101);
+                        throw new MessageException(unconformity);
                     } else {
                         dialogueService.handle(message.getDialogueInfoMessage(), session);
                     }
                 }
-                default -> throw new MessageException(_100);
+                default -> throw new MessageException(illegal_type);
 
             }
         } catch (MessageException e) {

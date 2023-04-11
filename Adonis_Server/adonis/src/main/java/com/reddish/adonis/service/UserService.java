@@ -47,18 +47,18 @@ public class UserService {
         int code = userOpMessage.getCode();
         MessageCode messageCode = MessageCode.getCodeById(code);
         if (messageCode == null) {
-            throw new MessageException(_102);
+            throw new MessageException(illegal_code);
         }
 
-        if (uop_100.equals(messageCode)) {
+        if (uop_sign_in.equals(messageCode)) {
             // 登录
             if (user == null) {
-                sendInfoForOp(uif_101, session);
+                sendInfoForOp(uif_not_exist, session);
                 return;
             }
 
             if (!user.getPassword().equals(userOpMessage.getPassword())) {
-                sendInfoForOp(uif_102, session);
+                sendInfoForOp(uif_worry_password, session);
                 return;
             }
             // 标记为在线
@@ -67,14 +67,14 @@ public class UserService {
             Dispatcher.userId2SessionMap.put(userId, session);
             Dispatcher.session2UserIdMap.put(session, userId);
 
-        } else if (uop_102.equals(messageCode)) {
+        } else if (uop_sign_up.equals(messageCode)) {
             // 已存在，不可注册
             if (user != null) {
-                sendInfoForOp(uif_100, session);
+                sendInfoForOp(uif_already_exist, session);
                 return;
             }
             if (userId == null || userOpMessage.getNickname() == null || userOpMessage.getPassword() == null) {
-                sendInfoForOp(uif_105, session);
+                sendInfoForOp(uif_incomplete_info, session);
                 return;
             }
             userMapper.insert(new User(userId, userOpMessage.getNickname(), userOpMessage.getPassword()));
@@ -83,47 +83,47 @@ public class UserService {
         } else {
             // 校验消息内用户ID与session拥有用户ID是否一致
             if (!Dispatcher.session2UserIdMap.get(session).equals(userId)) {
-                throw new UserInfoException(_201);
+                throw new UserInfoException(hack);
             }
             // 校验用户是否在线
             if (!Dispatcher.isOnline(userId)) {
-                sendInfoForOp(uif_106, session);
+                sendInfoForOp(uif_offline, session);
                 return;
             }
 
             switch (messageCode) {
-                case uop_101 -> {
+                case uop_sign_out -> {
                     // 标记为离线
                     Dispatcher.setOffline(userId);
                 }
-                case uop_103 -> {
+                case uop_delete -> {
                     userMapper.deleteById(userId);
                 }
-                case uop_104 -> {
+                case uop_change_nickname -> {
                     UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
                     String nickname_new = userOpMessage.getNickname();
                     if (nickname_new == null) {
-                        sendInfoForOp(uif_103, session);
+                        sendInfoForOp(uif_no_nickname, session);
                         return;
                     }
                     updateWrapper.eq("id", userId).set("nickname", nickname_new);
                     userMapper.update(null, updateWrapper);
                 }
-                case uop_105 -> {
+                case uop_change_password -> {
                     UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
                     String password_new = userOpMessage.getPassword();
                     if (password_new == null) {
-                        sendInfoForOp(uif_104, session);
+                        sendInfoForOp(uif_no_password, session);
                         return;
                     }
                     updateWrapper.eq("id", userId).set("password", password_new);
                     userMapper.update(null, updateWrapper);
                 }
-                case uop_106 -> {
+                case uop_request_online_message -> {
                     // 请求了再发送
                     sendUserOnlineMessage(session, userId);
                 }
-                default -> throw new MessageException(_200);
+                default -> throw new MessageException(illegal_uop_code);
             }
         }
     }
@@ -159,20 +159,20 @@ public class UserService {
                     // 填写好友状态
                     switch (friend_os.getStatus()) {
                         case 0 -> {
-                            friendInfoMessage.setCode(fif_100.getId());
+                            friendInfoMessage.setCode(fif_add.getId());
                         }
                         case 1 -> {
-                            friendInfoMessage.setCode(fif_101.getId());
+                            friendInfoMessage.setCode(fif_already_add.getId());
                         }
                         case 2 -> {
-                            friendInfoMessage.setCode(fif_102.getId());
+                            friendInfoMessage.setCode(fif_block.getId());
                         }
                         case 3 -> {
-                            friendInfoMessage.setCode(fif_103.getId());
+                            friendInfoMessage.setCode(fif_reject.getId());
                         }
                     }
                 } else {
-                    friendInfoMessage.setCode(fif_108.getId());
+                    friendInfoMessage.setCode(fif_your_single.getId());
                 }
 
                 // 收集离线聊天记录
@@ -190,7 +190,7 @@ public class UserService {
                             dialogue.getLastedTime()));
                 }
             } else {
-                friendInfoMessage.setCode(fif_109.getId());
+                friendInfoMessage.setCode(fif_not_exist.getId());
             }
             friendInfoMessageList.add(friendInfoMessage);
         }
