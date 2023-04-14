@@ -33,6 +33,10 @@ class ContactsAdapter: RecyclerView.Adapter<ContactsAdapter.ContactsHolder>() {
     }
 
     fun initContacts(contacts: List<FriendInfoMessage>) {
-        this.contacts = contacts.toMutableList()
+        this.contacts.addAll(contacts.toMutableList())
+    }
+
+    fun addContacts(user: FriendInfoMessage) {
+        contacts.add(user)
     }
 }

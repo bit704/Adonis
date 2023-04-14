@@ -7,6 +7,10 @@ import android.text.InputFilter
 import android.text.Spanned
 import android.util.Log
 import android.view.Gravity
+import android.view.MotionEvent
+import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -50,58 +54,75 @@ class SignupActivity : AppCompatActivity() {
             val pwd = pwdEditText.text.toString()
             val confirmPwd = confirmEditText.text.toString()
             if (nickname.isEmpty()) {
-                val toast = Toast.makeText(this, "昵称不能为空！", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.BOTTOM, 0, 100)
-                toast.show()
+                Toast.makeText(this, "昵称不能为空！", Toast.LENGTH_SHORT).show()
+                showKeyBoards(nameEditText)
                 return@setOnClickListener
             }
             if (id.isEmpty()) {
-                val toast = Toast.makeText(this, "账号不能为空！", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.BOTTOM, 0, 100)
-                toast.show()
+                Toast.makeText(this, "账号不能为空！", Toast.LENGTH_SHORT).show()
+                showKeyBoards(userEditText)
                 return@setOnClickListener
             }
             if (pwd.isEmpty()) {
-                val toast = Toast.makeText(this, "请设置密码！", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.BOTTOM, 0, 100)
-                toast.show()
+                Toast.makeText(this, "请设置密码！", Toast.LENGTH_SHORT).show()
+                showKeyBoards(pwdEditText)
                 return@setOnClickListener
             }
             if (pwd != confirmPwd) {
-                val toast = Toast.makeText(this, "两次输入密码不一致！", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.BOTTOM, 0, 100)
-                toast.show()
+                Toast.makeText(this, "两次输入密码不一致！", Toast.LENGTH_SHORT).show()
+                showKeyBoards(confirmEditText)
+                return@setOnClickListener
             }
-            else {
-                userOpMessage.type = "sign_up"
-                userOpMessage.id = id
-                userOpMessage.nickname = nickname
-                userOpMessage.password = pwd
-                message.type = FilterString.USER_OP_MESSAGE
-                message.id = UUID.randomUUID().toString()
-                message.userOpMessage = userOpMessage
-                val msg = JSON.toJSONString(message)
-                service.sendMessage(msg, message.id, ActionString.SIGN_UP)
-            }
+
+            userOpMessage.code = MessageCode.uop_sign_up.id
+            userOpMessage.id = id
+            userOpMessage.nickname = nickname
+            userOpMessage.password = pwd
+            message.type = FilterString.USER_OP_MESSAGE
+            message.id = UUID.randomUUID().toString()
+            message.userOpMessage = userOpMessage
+            val msg = JSON.toJSONString(message)
+            service.sendMessage(msg, message.id, MessageCode.uop_sign_in.id)
+
         }
 
-        intentFilter.addAction(ActionString.SIGN_UP)
+        nameEditText.setOnEditorActionListener { _, i, _ ->
+            if (i == EditorInfo.IME_ACTION_NEXT) {
+                showKeyBoards(userEditText)
+            }
+            false
+        }
+
+        userEditText.setOnEditorActionListener { _, i, _ ->
+            if (i == EditorInfo.IME_ACTION_NEXT) {
+                showKeyBoards(pwdEditText)
+            }
+            false
+        }
+
+        pwdEditText.setOnEditorActionListener { _, i, _ ->
+            if (i == EditorInfo.IME_ACTION_NEXT) {
+                showKeyBoards(confirmButton)
+            }
+            false
+        }
+
+        intentFilter.addAction(FilterString.USER_INFO_MESSAGE)
         receiver = object: BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
-                val replyCode = p1?.getIntExtra(FilterString.REPLY_MESSAGE, Code.DEFAULT_CODE)
-                if (replyCode == 0) {
+                val code = p1?.getIntExtra(FilterString.COED, Code.DEFAULT_CODE)
+                if (code == 200) {
                     val data = Intent()
                     data.putExtra(FilterString.RESULT, Code.SUCCESS)
                     setResult(RESULT_CODE, data)
                     finish()
                 }
-                else if (replyCode == 201) {
+                else if (code == 201) {
                     val toast = Toast.makeText(this@SignupActivity, "账号已存在，请重新设置！", Toast.LENGTH_SHORT)
                     toast.setGravity(Gravity.BOTTOM, 0, 100)
                     toast.show()
                 }
             }
-
         }
     }
 
@@ -144,6 +165,35 @@ class SignupActivity : AppCompatActivity() {
             }
             return null
         }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (ev?.action == MotionEvent.ACTION_DOWN) {
+            val view = currentFocus
+            if (view != null) {
+                val pos = IntArray(2)
+                view.getLocationInWindow(pos)
+                val left = pos[0]
+                val top = pos[1]
+                val right = left + view.width
+                val bottom = top + view.height
+                if (!(ev.x > left && ev.x < right && ev.y > top && ev.y < bottom)) {
+                    hideKeyBoards()
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
+    private fun hideKeyBoards() {
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(window.decorView.windowToken, 0)
+    }
+
+    private fun showKeyBoards(view: View) {
+        view.requestFocus()
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.showSoftInput(view, 0)
     }
 
 }

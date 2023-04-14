@@ -17,7 +17,7 @@
             android:layout_width="@dimen/main_button"
             android:layout_height="@dimen/main_button"
             android:layout_alignParentStart="true"
-            android:layout_margin="@dimen/confirm_margin"
+            android:layout_margin="@dimen/margin"
             android:layout_centerVertical="true">
         </Button>
 
@@ -38,7 +38,7 @@
             android:id="@+id/confirm_avatar"
             android:contentDescription="@string/avatar"
             android:src="@mipmap/ic_launcher"
-            android:layout_margin="@dimen/confirm_margin"
+            android:layout_margin="@dimen/margin"
             android:layout_width="@dimen/confirm_avatar"
             android:layout_height="@dimen/confirm_avatar">
         </ImageView>
@@ -52,14 +52,14 @@
                 android:id="@+id/confirm_nickname"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/confirm_nickname"
-                android:layout_margin="@dimen/confirm_margin">
+                android:layout_margin="@dimen/margin">
             </TextView>
             
             <TextView
                 android:id="@+id/confirm_id"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/confirm_id"
-                android:layout_margin="@dimen/confirm_margin">
+                android:layout_margin="@dimen/margin">
             </TextView>
         </LinearLayout>
     </RelativeLayout>
@@ -67,7 +67,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="@dimen/confirm_text"
-        android:layout_margin="@dimen/confirm_margin"
+        android:layout_margin="@dimen/margin"
         android:text="@string/request">
     </TextView>
 
@@ -78,13 +78,13 @@
         android:inputType="textMultiLine"
         android:scrollbars="vertical"
         android:layout_height="@dimen/confirm_request"
-        android:layout_marginHorizontal="@dimen/confirm_margin">
+        android:layout_marginHorizontal="@dimen/margin">
     </EditText>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="@dimen/confirm_text"
-        android:layout_margin="@dimen/confirm_margin"
+        android:layout_margin="@dimen/margin"
         android:text="@string/remark">
     </TextView>
 
@@ -94,13 +94,13 @@
         android:maxLines="1"
         android:inputType="text"
         android:layout_height="@dimen/confirm_remark"
-        android:layout_marginHorizontal="@dimen/confirm_margin">
+        android:layout_marginHorizontal="@dimen/margin">
     </EditText>
 
     <Button
         android:id="@+id/button_confirm_send"
         android:text="@string/send"
-        android:layout_margin="@dimen/confirm_margin"
+        android:layout_margin="@dimen/margin"
         android:layout_width="@dimen/confirm_width"
         android:layout_height="@dimen/confirm_height"
         android:layout_gravity="center_horizontal">

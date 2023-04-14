@@ -1,6 +1,6 @@
 package com.example.adonis.entity;
 
-public class DialogueInfoMessage {
+public class DialogueMessage {
     /**
      * 发送方账号
      */
@@ -70,7 +70,7 @@ public class DialogueInfoMessage {
 
     @Override
     public String toString() {
-        return "DialogueInfoMessage{" +
+        return "DialogueMessage{" +
                 "senderId='" + senderId + '\'' +
                 ", receiverId='" + receiverId + '\'' +
                 ", content='" + content + '\'' +
@@ -79,10 +79,10 @@ public class DialogueInfoMessage {
                 '}';
     }
 
-    public DialogueInfoMessage() {
+    public DialogueMessage() {
     }
 
-    public DialogueInfoMessage(String senderId, String receiverId, String content, long occurredTime, long lastedTime) {
+    public DialogueMessage(String senderId, String receiverId, String content, long occurredTime, long lastedTime) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.content = content;

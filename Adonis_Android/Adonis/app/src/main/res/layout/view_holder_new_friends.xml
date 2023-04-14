@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
     <ImageView
-        android:id="@+id/add_avatar"
+        android:id="@+id/new_friends_avatar"
         android:layout_alignParentStart="true"
         android:contentDescription="@string/avatar"
         android:layout_width="@dimen/add_avatar"
@@ -14,15 +14,15 @@
     </ImageView>
 
     <LinearLayout
-        android:layout_toEndOf="@id/add_avatar"
-        android:layout_toStartOf="@id/button_add"
+        android:layout_toEndOf="@id/new_friends_avatar"
+        android:layout_toStartOf="@id/button_new_friends"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/add_nickname"
+            android:id="@+id/new_friends_nickname"
             android:text="@string/app_name"
             android:layout_width="match_parent"
             android:layout_height="@dimen/add_nickname"
@@ -30,24 +30,24 @@
         </TextView>
 
         <TextView
-            android:id="@+id/add_id"
+            android:id="@+id/new_friends_request"
             android:text="@string/app_name"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/add_id"
+            android:layout_height="@dimen/new_friends_request"
             android:maxLines="1">
         </TextView>
     </LinearLayout>
 
     <Button
-        android:id="@+id/button_add"
-        android:text="@string/add"
-        android:layout_width="@dimen/add_button_width"
-        android:layout_height="@dimen/add_button_height"
+        android:id="@+id/button_new_friends"
+        android:layout_width="@dimen/new_friends_button_width"
+
+        android:layout_height="@dimen/new_friends_button_height"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_margin="@dimen/margin"
-        android:contentDescription="@string/add">
+        android:contentDescription="@string/agree"
+        android:text="@string/agree">
 
     </Button>
-
 </RelativeLayout>

@@ -26,6 +26,7 @@
         android:layout_height="@dimen/login_text_height"
         android:layout_marginVertical="@dimen/login_text_margin_vertical"
         android:inputType="text"
+        android:imeOptions="actionNext"
         android:selectAllOnFocus="true"
         android:importantForAutofill="no">
     </EditText>
@@ -37,6 +38,7 @@
         android:layout_width="@dimen/login_text_width"
         android:layout_height="@dimen/login_text_height"
         android:layout_marginVertical="@dimen/login_text_margin_vertical"
+        android:imeOptions="actionDone"
         android:inputType="textPassword"
         android:importantForAutofill="no">
     </EditText>

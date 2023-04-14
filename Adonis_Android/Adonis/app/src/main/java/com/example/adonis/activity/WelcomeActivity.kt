@@ -15,6 +15,8 @@ class WelcomeActivity : AppCompatActivity() {
 
         startService(intent)
 
+
+
         val handler = Handler()
         handler.postDelayed({
             val it = Intent(this@WelcomeActivity, LoginActivity::class.java)

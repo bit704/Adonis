@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.SingleChatActivity">
+    tools:context=".activity.NewFriendsActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/main_tool_height">
 
         <Button
-            android:id="@+id/button_chat_back"
+            android:id="@+id/button_new_friends_back"
             android:layout_width="@dimen/main_button"
             android:layout_height="@dimen/main_button"
             android:layout_alignParentStart="true"
@@ -22,17 +22,15 @@
         </Button>
 
         <TextView
-            android:id="@+id/text_nickname"
+            android:text="@string/new_friends"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/name">
-
+            android:layout_centerInParent="true">
         </TextView>
 
         <Button
-            android:id="@+id/button_chat_info"
-
+            android:id="@+id/button_new_friends_more"
+            android:contentDescription="@string/add_friends"
             android:layout_width="@dimen/main_button"
             android:layout_height="@dimen/main_button"
             android:layout_margin="@dimen/margin"
@@ -42,43 +40,13 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_chat"
+        android:id="@+id/recyclerview_new_friends"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/button_chat_more"
-            android:layout_margin="@dimen/margin"
-            android:layout_width="@dimen/chat_button_more"
-            android:layout_height="@dimen/chat_button_more">
-
-        </Button>
-
-        <EditText
-            android:id="@+id/edit_text_chat_input"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/chat_input_height"
-            android:layout_weight="1"
-            android:layout_margin="@dimen/margin">
-
-        </EditText>
-
-        <Button
-            android:id="@+id/button_chat_send"
-            android:layout_width="@dimen/chat_button_send_width"
-            android:layout_height="@dimen/chat_button_send_height"
-            android:text="@string/send"
-            android:layout_margin="@dimen/margin">
-
-        </Button>
-    </LinearLayout>
 
 
 </LinearLayout>

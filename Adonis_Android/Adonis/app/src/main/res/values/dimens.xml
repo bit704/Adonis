@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="margin">5dp</dimen>
+
     <dimen name="login_text_height">50dp</dimen>
     <dimen name="login_text_width">300dp</dimen>
     <dimen name="login_text_margin_horizontal">50dp</dimen>
@@ -12,16 +14,14 @@
     <dimen name="add_avatar">60dp</dimen>
     <dimen name="add_text_margin_h">20dp</dimen>
     <dimen name="add_text_margin_v">10dp</dimen>
-    <dimen name="add_nickname">25dp</dimen>
-    <dimen name="add_id">35dp</dimen>
-    <dimen name="add_button_width">50dp</dimen>
+    <dimen name="add_nickname">35dp</dimen>
+    <dimen name="add_id">25dp</dimen>
+    <dimen name="add_button_width">65dp</dimen>
     <dimen name="add_button_height">45dp</dimen>
-    <dimen name="add_margin">5dp</dimen>
 
     <dimen name="confirm_avatar">100dp</dimen>
     <dimen name="confirm_nickname">60dp</dimen>
     <dimen name="confirm_id">30dp</dimen>
-    <dimen name="confirm_margin">5dp</dimen>
     <dimen name="confirm_text">35dp</dimen>
     <dimen name="confirm_remark">45dp</dimen>
     <dimen name="confirm_request">150dp</dimen>
@@ -30,7 +30,20 @@
 
     <dimen name="contacts_avatar">40dp</dimen>
     <dimen name="contacts_nickname">40dp</dimen>
-    <dimen name="contacts_margin">5dp</dimen>
+    <dimen name="contacts_new_num">15dp</dimen>
+
+    <dimen name="personal_avatar">100dp</dimen>
+    <dimen name="personal_nickname">60dp</dimen>
+    <dimen name="personal_id">30dp</dimen>
+    <dimen name="personal_text">40dp</dimen>
+    <dimen name="personal_exit_width">100dp</dimen>
+    <dimen name="personal_exit_height">60dp</dimen>
+
+    <dimen name="new_friends_avatar">60dp</dimen>
+    <dimen name="new_friends_nickname">25dp</dimen>
+    <dimen name="new_friends_request">35dp</dimen>
+    <dimen name="new_friends_button_width">80dp</dimen>
+    <dimen name="new_friends_button_height">45dp</dimen>
 
     <dimen name="main_button">50dp</dimen>
     <dimen name="main_button_margin">50dp</dimen>
@@ -41,4 +54,10 @@
     <dimen name="news_avatar">60dp</dimen>
     <dimen name="news_name">35dp</dimen>
     <dimen name="news_message">25dp</dimen>
+
+    <dimen name="chat_button_more">50dp</dimen>
+    <dimen name="chat_input_height">50dp</dimen>
+    <dimen name="chat_button_send_height">50dp</dimen>
+    <dimen name="chat_button_send_width">70dp</dimen>
+
 </resources>

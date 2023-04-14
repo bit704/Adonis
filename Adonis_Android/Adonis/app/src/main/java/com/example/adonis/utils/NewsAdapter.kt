@@ -7,10 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adonis.R
-import com.example.adonis.entity.DialogueInfoMessage
+import com.example.adonis.entity.DialogueMessage
 
 class NewsAdapter:RecyclerView.Adapter<NewsAdapter.ViewHolder>()  {
-    var newsList = mutableListOf<DialogueInfoMessage>()
+    var newsList = mutableListOf<DialogueMessage>()
 
     var onItemClickListener: OnItemClickListener? = null
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view){
@@ -46,8 +46,12 @@ class NewsAdapter:RecyclerView.Adapter<NewsAdapter.ViewHolder>()  {
         fun onItemLongClick()
     }
 
-    fun initNewsList(newsList: List<DialogueInfoMessage>) {
-        this.newsList = newsList.toMutableList()
+    fun initNewsList(newsList: List<DialogueMessage>) {
+        this.newsList.addAll(newsList.toMutableList())
+    }
+
+    fun addNewsList(news: DialogueMessage) {
+        newsList.add(news)
     }
 
 }

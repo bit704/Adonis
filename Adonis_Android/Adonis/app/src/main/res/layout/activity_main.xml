@@ -46,6 +46,7 @@
             </ImageButton>
 
             <ImageButton
+                android:id="@+id/button_personal"
                 android:contentDescription="@string/app_name"
                 android:layout_width="@dimen/main_button"
                 android:layout_height="@dimen/main_button"

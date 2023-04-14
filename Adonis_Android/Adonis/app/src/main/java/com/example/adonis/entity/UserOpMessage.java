@@ -2,15 +2,9 @@ package com.example.adonis.entity;
 
 public class UserOpMessage {
     /**
-     * sign_in: 登录
-     * sign_out: 登出
-     * sign_up: 注册
-     * delete: 注销
-     * change_nickname: 修改昵称
-     * change_password: 修改密码
-     * request: 要求服务端发送UserOnlineMessage。发这个消息的话，其它字段都不用填。
+     * 见MessageCode下编码
      */
-    private String type;
+    private int code;
     /**
      * 账号
      * 长度20以内
@@ -27,12 +21,12 @@ public class UserOpMessage {
      */
     private String password;
 
-    public String getType() {
-        return type;
+    public int getCode() {
+        return code;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public String getId() {
@@ -62,7 +56,7 @@ public class UserOpMessage {
     @Override
     public String toString() {
         return "UserOpMessage{" +
-                "type='" + type + '\'' +
+                "code=" + code +
                 ", id='" + id + '\'' +
                 ", nickname='" + nickname + '\'' +
                 ", password='" + password + '\'' +
@@ -72,8 +66,8 @@ public class UserOpMessage {
     public UserOpMessage() {
     }
 
-    public UserOpMessage(String type, String id, String nickname, String password) {
-        this.type = type;
+    public UserOpMessage(int code, String id, String nickname, String password) {
+        this.code = code;
         this.id = id;
         this.nickname = nickname;
         this.password = password;

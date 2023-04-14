@@ -4,7 +4,7 @@ import java.util.List;
 
 public class UserOnlineMessage {
     private List<FriendInfoMessage> friendInfoMessageList;
-    private List<DialogueInfoMessage> dialogueInfoMessageList;
+    private List<DialogueMessage> dialogueMessageList;
 
     public List<FriendInfoMessage> getFriendInfoMessageList() {
         return friendInfoMessageList;
@@ -14,27 +14,27 @@ public class UserOnlineMessage {
         this.friendInfoMessageList = friendInfoMessageList;
     }
 
-    public List<DialogueInfoMessage> getDialogueInfoMessageList() {
-        return dialogueInfoMessageList;
+    public List<DialogueMessage> getDialogueInfoMessageList() {
+        return dialogueMessageList;
     }
 
-    public void setDialogueInfoMessageList(List<DialogueInfoMessage> dialogueInfoMessageList) {
-        this.dialogueInfoMessageList = dialogueInfoMessageList;
+    public void setDialogueInfoMessageList(List<DialogueMessage> dialogueMessageList) {
+        this.dialogueMessageList = dialogueMessageList;
     }
 
     @Override
     public String toString() {
         return "UserOnlineMessage{" +
                 "friendInfoMessageList=" + friendInfoMessageList +
-                ", dialogueInfoMessageList=" + dialogueInfoMessageList +
+                ", dialogueMessageList=" + dialogueMessageList +
                 '}';
     }
 
     public UserOnlineMessage() {
     }
 
-    public UserOnlineMessage(List<FriendInfoMessage> friendInfoMessageList, List<DialogueInfoMessage> dialogueInfoMessageList) {
+    public UserOnlineMessage(List<FriendInfoMessage> friendInfoMessageList, List<DialogueMessage> dialogueMessageList) {
         this.friendInfoMessageList = friendInfoMessageList;
-        this.dialogueInfoMessageList = dialogueInfoMessageList;
+        this.dialogueMessageList = dialogueMessageList;
     }
 }

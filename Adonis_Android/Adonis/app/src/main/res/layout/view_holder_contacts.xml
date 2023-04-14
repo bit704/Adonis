@@ -8,7 +8,7 @@
         android:contentDescription="@string/avatar"
         android:layout_width="@dimen/contacts_avatar"
         android:layout_height="@dimen/contacts_avatar"
-        android:layout_margin="@dimen/contacts_margin"
+        android:layout_margin="@dimen/margin"
         android:src="@mipmap/ic_launcher">
     </ImageView>
 
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:maxLines="1"
         android:layout_height="@dimen/contacts_nickname"
-        android:layout_margin="@dimen/contacts_margin">
+        android:layout_margin="@dimen/margin">
     </TextView>
 
 </RelativeLayout>

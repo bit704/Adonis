@@ -17,6 +17,7 @@
         android:layout_height="@dimen/login_text_height"
         android:layout_marginVertical="@dimen/login_text_margin_vertical"
         android:inputType="text"
+        android:imeOptions="actionNext"
         android:importantForAutofill="no">
     </EditText>
 
@@ -29,6 +30,7 @@
         android:layout_marginVertical="@dimen/login_text_margin_vertical"
         android:selectAllOnFocus="true"
         android:inputType="textFilter"
+        android:imeOptions="actionNext"
         android:importantForAutofill="no">
     </EditText>
 
@@ -40,6 +42,7 @@
         android:layout_height="@dimen/login_text_height"
         android:layout_marginVertical="@dimen/login_text_margin_vertical"
         android:inputType="textPassword"
+        android:imeOptions="actionNext"
         android:importantForAutofill="no">
     </EditText>
 
@@ -51,6 +54,7 @@
         android:layout_height="@dimen/login_text_height"
         android:layout_marginVertical="@dimen/login_text_margin_vertical"
         android:inputType="textPassword"
+        android:imeOptions="actionDone"
         android:importantForAutofill="no">
     </EditText>
 

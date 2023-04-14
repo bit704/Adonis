@@ -8,10 +8,14 @@ import android.os.IBinder
 import android.util.Log
 import com.alibaba.fastjson.JSON
 import com.example.adonis.entity.ActionString
+import com.example.adonis.entity.Code
 import com.example.adonis.entity.FilterString
+import com.example.adonis.entity.Message
+import com.example.adonis.entity.ReplyMessage
+import com.example.adonis.entity.UserInfoMessage
 import com.example.adonis.utils.Client
 import java.net.URI
-import java.util.*
+import java.util.UUID
 
 class WebSocketService : Service() {
     private val tag = "Client"
@@ -39,66 +43,67 @@ class WebSocketService : Service() {
 
     private fun initClient(){
         val uri = URI.create("ws://8.130.67.208:8080/ws")
-        client = object : Client(uri) {
-            override fun onMessage(message: String?) {
-                Log.i(tag, message.toString())
-                val msg = JSON.parseObject(message, com.example.adonis.entity.Message::class.java)
-                if (msg.id != null) {
-
-                    when (msg.type) {
-                        FilterString.REPLY_MESSAGE -> {
+        try {
+            client = object : Client(uri) {
+                override fun onMessage(message: String?) {
+                    Log.i("Client Received", message.toString())
+                    val msg =
+                        JSON.parseObject(message, com.example.adonis.entity.Message::class.java)
+                    if (msg.id != null) {
+                        if (msg.type == FilterString.REPLY_MESSAGE) {
                             val replyMessage = msg.replyMessage
-                            val action = messageMap[replyMessage.messageToReplyId]
-                            if (action != null) {
-                                when (action) {
-                                    ActionString.SIGN_UP -> {
-                                        val intent = Intent(ActionString.SIGN_UP)
-                                        intent.putExtra(
-                                            FilterString.REPLY_MESSAGE,
-                                            replyMessage.replyCode
-                                        )
-                                        sendBroadcast(intent)
-                                        messageMap.remove(replyMessage.messageToReplyId)
-                                    }
-                                    ActionString.SIGN_IN -> {
-                                        val intent = Intent(ActionString.SIGN_IN)
-                                        intent.putExtra(
-                                            FilterString.REPLY_MESSAGE,
-                                            replyMessage.replyCode
-                                        )
-                                        sendBroadcast(intent)
-                                        messageMap.remove(replyMessage.messageToReplyId)
-                                    }
-                                    ActionString.REQUEST -> {
-                                        messageMap.remove(replyMessage.messageToReplyId)
-                                    }
+                            if (messageMap.remove(replyMessage.messageToReplyId) == null) {
+                                return
+                            }
+                        } else {
+                            val reply = Message()
+                            val replyMessage = ReplyMessage()
+                            replyMessage.replyCode = Code.RECEIVED
+                            replyMessage.messageToReplyId = msg.id
+                            reply.id = UUID.randomUUID().toString()
+                            reply.type = FilterString.REPLY_MESSAGE
+                            reply.replyMessage = replyMessage
+                            val replyJSON = JSON.toJSONString(reply)
+                            sendMessage(replyJSON)
+
+                            when (msg.type) {
+                                FilterString.USER_INFO_MESSAGE -> {
+                                    val userInfoMessage: UserInfoMessage = msg.userInfoMessage
+                                    val intent = Intent(FilterString.USER_INFO_MESSAGE)
+                                    intent.putExtra(FilterString.COED, userInfoMessage.code)
+                                    sendBroadcast(intent)
+                                }
+
+                                FilterString.USER_ONLINE_MESSAGE -> {
+                                    val userOnlineMessage = msg.userOnlineMessage
+                                    val intent = Intent(FilterString.USER_ONLINE_MESSAGE)
+                                    val initInfo = JSON.toJSONString(userOnlineMessage)
+                                    intent.putExtra(FilterString.USER_ONLINE_MESSAGE, initInfo)
+                                    sendBroadcast(intent)
+                                }
+
+                                FilterString.FRIEND_INFO_MESSAGE -> {
+                                    val friendInfoMessage = msg.friendInfoMessage
+                                    val intent = Intent(FilterString.FRIEND_INFO_MESSAGE)
+                                    val jsonInfo = JSON.toJSONString(friendInfoMessage)
+                                    intent.putExtra(FilterString.FRIEND_INFO_MESSAGE, jsonInfo)
+                                    sendBroadcast(intent)
+                                }
+
+                                FilterString.DIALOGUE_INFO_MESSAGE -> {
+
                                 }
                             }
                         }
-
-                        FilterString.USER_ONLINE_MESSAGE -> {
-                            val userOnlineMessage = msg.userOnlineMessage
-                            val intent = Intent(ActionString.MAIN_INFO)
-                            val initInfo = JSON.toJSONString(userOnlineMessage)
-                            intent.putExtra("type", FilterString.USER_ONLINE_MESSAGE)
-                            intent.putExtra(FilterString.USER_ONLINE_MESSAGE, initInfo)
-                            sendBroadcast(intent)
-                        }
-
-                        FilterString.FRIEND_INFO_MESSAGE -> {
-
-                        }
-
-                        FilterString.DIALOGUE_INFO_MESSAGE -> {
-
-                        }
-
                     }
+                    Log.i("MessageMap", messageMap.toString())
+                    super.onMessage(message)
                 }
-                super.onMessage(message)
             }
+            connectServer()
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
         }
-        connectServer()
     }
 
     private fun connectServer(){
@@ -121,7 +126,20 @@ class WebSocketService : Service() {
             }
         }.start()
     }
-    fun sendMessage(message: String?, id: String?, type: String?){
+    fun sendMessage(message: String?, id: String?){
+        if (this::client.isInitialized) {
+            try {
+                client.send(message)
+                Log.i("Client Send", message.toString())
+                if (id != null)
+                    messageMap[id.toString()] = message.toString()
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun sendMessage(message: String?, id: String?, type: Int?){
         if (this::client.isInitialized) {
             try {
                 client.send(message)
@@ -133,7 +151,6 @@ class WebSocketService : Service() {
             }
         }
     }
-
     fun sendMessage(message: String?) {
         if (this::client.isInitialized) {
             try {

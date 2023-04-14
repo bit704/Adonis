@@ -22,10 +22,42 @@
             android:contentDescription="@string/more"
             android:layout_width="@dimen/main_button"
             android:layout_height="@dimen/main_button"
+            android:layout_margin="@dimen/margin"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true">
         </Button>
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/item_contacts_new"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/contacts_avatar"
+            android:layout_height="@dimen/contacts_avatar"
+            android:layout_margin="@dimen/margin"
+            android:src="@mipmap/ic_launcher">
+        </ImageView>
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/contacts_nickname"
+            android:layout_margin="@dimen/margin"
+            android:text="@string/new_friends"
+            android:gravity="center_vertical">
+        </TextView>
+
+        <TextView
+            android:id="@+id/text_contacts_new_num"
+            android:layout_width="@dimen/contacts_new_num"
+            android:layout_height="@dimen/contacts_new_num"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/margin">
+        </TextView>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_contacts"

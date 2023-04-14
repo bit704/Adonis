@@ -14,17 +14,19 @@ public class Message {
      * 首字母小写！
      * replyMessage 回复消息
      * userOpMessage 用户操作消息
+     * userInfoMessage 用户信息消息
      * friendOpMessage 好友操作消息
      * friendInfoMessage 对话信息消息
-     * dialogueInfoMessage 对话信息消息
+     * dialogueMessage 对话信息消息
      * userOnlineMessage 是用户离线期间存在服务器的消息，用户登录在线时发送给用户
      */
     private String type;
     private ReplyMessage replyMessage;
     private UserOpMessage userOpMessage;
+    private UserInfoMessage userInfoMessage;
     private FriendOpMessage friendOpMessage;
     private FriendInfoMessage friendInfoMessage;
-    private DialogueInfoMessage dialogueInfoMessage;
+    private DialogueMessage dialogueMessage;
     private UserOnlineMessage userOnlineMessage;
 
     public String getId() {
@@ -59,6 +61,14 @@ public class Message {
         this.userOpMessage = userOpMessage;
     }
 
+    public UserInfoMessage getUserInfoMessage() {
+        return userInfoMessage;
+    }
+
+    public void setUserInfoMessage(UserInfoMessage userInfoMessage) {
+        this.userInfoMessage = userInfoMessage;
+    }
+
     public FriendOpMessage getFriendOpMessage() {
         return friendOpMessage;
     }
@@ -75,12 +85,12 @@ public class Message {
         this.friendInfoMessage = friendInfoMessage;
     }
 
-    public DialogueInfoMessage getDialogueInfoMessage() {
-        return dialogueInfoMessage;
+    public DialogueMessage getDialogueInfoMessage() {
+        return dialogueMessage;
     }
 
-    public void setDialogueInfoMessage(DialogueInfoMessage dialogueInfoMessage) {
-        this.dialogueInfoMessage = dialogueInfoMessage;
+    public void setDialogueInfoMessage(DialogueMessage dialogueMessage) {
+        this.dialogueMessage = dialogueMessage;
     }
 
     public UserOnlineMessage getUserOnlineMessage() {
@@ -98,24 +108,15 @@ public class Message {
                 ", type='" + type + '\'' +
                 ", replyMessage=" + replyMessage +
                 ", userOpMessage=" + userOpMessage +
+                ", userInfoMessage=" + userInfoMessage +
                 ", friendOpMessage=" + friendOpMessage +
                 ", friendInfoMessage=" + friendInfoMessage +
-                ", dialogueInfoMessage=" + dialogueInfoMessage +
+                ", dialogueMessage=" + dialogueMessage +
                 ", userOnlineMessage=" + userOnlineMessage +
                 '}';
     }
 
     public Message() {
-    }
-
-    public Message(String id, String type, ReplyMessage replyMessage, UserOpMessage userOpMessage, FriendOpMessage friendOpMessage, DialogueInfoMessage dialogueInfoMessage, UserOnlineMessage userOnlineMessage) {
-        this.id = id;
-        this.type = type;
-        this.replyMessage = replyMessage;
-        this.userOpMessage = userOpMessage;
-        this.friendOpMessage = friendOpMessage;
-        this.dialogueInfoMessage = dialogueInfoMessage;
-        this.userOnlineMessage = userOnlineMessage;
     }
 
     public Message(ReplyMessage replyMessage) {
@@ -130,16 +131,22 @@ public class Message {
         this.userOpMessage = userOpMessage;
     }
 
+    public Message(UserInfoMessage userInfoMessage) {
+        this.id = UUID.randomUUID().toString();
+        this.type = "userInfoMessage";
+        this.userInfoMessage = userInfoMessage;
+    }
+
     public Message(FriendOpMessage friendOpMessage) {
         this.id = UUID.randomUUID().toString();
         this.type = "friendOpMessage";
         this.friendOpMessage = friendOpMessage;
     }
 
-    public Message(DialogueInfoMessage dialogueInfoMessage) {
+    public Message(DialogueMessage dialogueMessage) {
         this.id = UUID.randomUUID().toString();
-        this.type = "dialogueInfoMessage";
-        this.dialogueInfoMessage = dialogueInfoMessage;
+        this.type = "dialogueMessage";
+        this.dialogueMessage = dialogueMessage;
     }
 
     public Message(UserOnlineMessage userOnlineMessage) {

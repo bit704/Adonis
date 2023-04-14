@@ -17,6 +17,11 @@
     <string name="request">好友请求</string>
     <string name="avatar">头像</string>
     <string name="send">发送</string>
+    <string name="not_exist">该用户不存在</string>
+    <string name="new_friends">新的朋友</string>
+    <string name="agree">同意</string>
+    <string name="add">添加</string>
+    <string name="exit">退出</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -2,37 +2,35 @@ package com.example.adonis.entity;
 
 public class FriendInfoMessage {
     /**
-     * 好友id
+     * 见MessageCode下编码
+     */
+    private int code;
+
+    /**
+     * 涉及此消息的用户id
      */
     private String id;
     /**
-     * 好友nickname
+     * 涉及此消息的用户nickname
      */
     private String nickname;
 
     /**
-     * 好友状态
-     * -2: 此好友是您的单向好友（您没删它，它删了您）
-     * -1: 此好友已注销
-     * 0: 此好友正申请将您加入好友列表
-     * 1: 此好友已将您加入好友列表
-     * 2: 此好友已将您拉黑
-     * 3: 此好友拒绝您的好友申请
-     * 4: 此用户存在
-     * 5: 此用户不存在
-     * 6: 此用户在线
-     * 7： 此用户不在线
-     */
-    private int status;
-    /**
-     * 您对该好友的自定义备注名
+     * 您对该用户的自定义备注名
      */
     private String customNickname;
     /**
-     * 如果好友状态是0、2、3
-     * 备注内容
+     * 涉及此消息的备注内容
      */
     private String memo;
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
 
     public String getId() {
         return id;
@@ -58,14 +56,6 @@ public class FriendInfoMessage {
         this.customNickname = customNickname;
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
     public String getMemo() {
         return memo;
     }
@@ -77,11 +67,22 @@ public class FriendInfoMessage {
     @Override
     public String toString() {
         return "FriendInfoMessage{" +
-                "id='" + id + '\'' +
+                "code=" + code +
+                ", id='" + id + '\'' +
                 ", nickname='" + nickname + '\'' +
-                ", customname='" + customNickname + '\'' +
-                ", status=" + status +
+                ", customNickname='" + customNickname + '\'' +
                 ", memo='" + memo + '\'' +
                 '}';
+    }
+
+    public FriendInfoMessage() {
+    }
+
+    public FriendInfoMessage(int code, String id, String nickname, String customNickname, String memo) {
+        this.code = code;
+        this.id = id;
+        this.nickname = nickname;
+        this.customNickname = customNickname;
+        this.memo = memo;
     }
 }
