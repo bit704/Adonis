@@ -81,7 +81,7 @@ public class UserService {
                 uif = uif_op_success;
             }
             // 校验消息内用户ID与session拥有用户ID是否一致
-        } else if (!Dispatcher.session2UserIdMap.get(session).equals(userId)) {
+        } else if (!userId.equals(Dispatcher.session2UserIdMap.get(session))) {
             throw new UserInfoException(hack);
         }
         // 校验用户是否在线
@@ -138,46 +138,41 @@ public class UserService {
         List<FriendInfoMessage> friendInfoMessageList = new ArrayList<>();
         List<DialogueMessage> dialogueMessageList = new ArrayList<>();
 
-        QueryWrapper<Friend> friendQueryWrapper = new QueryWrapper<>();
-        friendQueryWrapper.eq("subjectId", userId);
-        List<Friend> friendList = friendMapper.selectList(friendQueryWrapper);
+        QueryWrapper<Friend> friendQueryWrapper_o = new QueryWrapper<>();
+        friendQueryWrapper_o.eq("objectId", userId);
 
-        for (Friend friend : friendList) {
+        List<Friend> friendList = new ArrayList<>(friendMapper.selectList(friendQueryWrapper_o));
+
+        for (Friend friend_o : friendList) {
             FriendInfoMessage friendInfoMessage = new FriendInfoMessage();
             // 填写好友id
-            friendInfoMessage.setId(friend.getObjectId());
-            User friendUser = userMapper.selectById(friend.getObjectId());
+            friendInfoMessage.setId(friend_o.getSubjectId());
+            User friendUser = userMapper.selectById(friend_o.getSubjectId());
             // 此用户还在，没有被注销
             if (friendUser != null) {
-                friendInfoMessage.setNickname(friendUser.getNickname());
-                friendInfoMessage.setCustomNickname(friend.getCustomNickname());
-                friendInfoMessage.setMemo(friend.getMemo());
 
-                // 查询好友对自己的关系，填写status
+                friendInfoMessage.setNickname(friendUser.getNickname());
+                friendInfoMessage.setMemo(friend_o.getMemo());
+
+                // 查询自己对好友的关系
                 String friendId = friendUser.getId();
-                QueryWrapper<Friend> friendQueryWrapper_os = new QueryWrapper<>();
-                friendQueryWrapper_os
-                        .eq("subjectId", friendId)
-                        .eq("objectId", userId);
-                Friend friend_os = friendMapper.selectOne(friendQueryWrapper_os);
-                if (friend_os != null) {
-                    // 填写好友状态
-                    switch (friend_os.getStatus()) {
-                        case 0 -> {
-                            friendInfoMessage.setCode(fif_add.getId());
+                QueryWrapper<Friend> friendQueryWrapper_so = new QueryWrapper<>();
+                friendQueryWrapper_so
+                        .eq("subjectId", userId)
+                        .eq("objectId", friendId);
+                Friend friend_so = friendMapper.selectOne(friendQueryWrapper_so);
+
+                switch (friend_o.getStatus()) {
+                    case 0 -> friendInfoMessage.setCode(fif_add.getId());
+                    case 1 -> {
+                        friendInfoMessage.setCode(fif_already_add.getId());
+                        if (friend_so != null) {
+                            friendInfoMessage.setCustomNickname(friend_so.getCustomNickname());
                         }
-                        case 1 -> {
-                            friendInfoMessage.setCode(fif_already_add.getId());
-                        }
-                        case 2 -> {
-                            friendInfoMessage.setCode(fif_block.getId());
-                        }
-                        case 3 -> {
-                            friendInfoMessage.setCode(fif_reject.getId());
-                        }
+
                     }
-                } else {
-                    friendInfoMessage.setCode(fif_your_single.getId());
+                    case 2 -> friendInfoMessage.setCode(fif_block.getId());
+                    case 3 -> friendInfoMessage.setCode(fif_reject.getId());
                 }
 
                 // 收集离线聊天记录
@@ -194,11 +189,44 @@ public class UserService {
                             dialogue.getOccurredTime(),
                             dialogue.getLastedTime()));
                 }
+                // 聊天记录发完之后即删除
+                dialogueMapper.delete(dialogueQueryWrapper);
             } else {
                 friendInfoMessage.setCode(fif_not_exist.getId());
             }
             friendInfoMessageList.add(friendInfoMessage);
         }
+
+        QueryWrapper<Friend> friendQueryWrapper_s = new QueryWrapper<>();
+        friendQueryWrapper_s
+                .eq("subjectId", userId);
+        friendList = new ArrayList<>(friendMapper.selectList(friendQueryWrapper_s));
+        for (Friend friend_s : friendList) {
+            QueryWrapper<Friend> friendQueryWrapper_os = new QueryWrapper<>();
+            friendQueryWrapper_os
+                    .eq("subjectId", friend_s.getObjectId())
+                    .eq("objectId", userId);
+            Friend friend_os = friendMapper.selectOne(friendQueryWrapper_os);
+            if (friend_os == null) {
+                FriendInfoMessage friendInfoMessage = new FriendInfoMessage();
+                // 填写好友id
+                friendInfoMessage.setId(friend_s.getObjectId());
+                User friendUser = userMapper.selectById(friend_s.getObjectId());
+                if (friendUser != null) {
+                    friendInfoMessage.setNickname(friendUser.getNickname());
+                }
+                friendInfoMessage.setMemo(friend_s.getMemo());
+
+                switch (friend_s.getStatus()) {
+                    case 0 -> friendInfoMessage.setCode(fif_repeat_add.getId());
+                    case 1, 2, 3 -> friendInfoMessage.setCode(fif_your_single.getId());
+                }
+
+                friendInfoMessageList.add(friendInfoMessage);
+            }
+        }
+
+
         // 发送
         Dispatcher.sendMessage(session, new Message(new UserOnlineMessage(friendInfoMessageList, dialogueMessageList)));
 

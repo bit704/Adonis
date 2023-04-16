@@ -43,7 +43,7 @@ public enum MessageCode {
      * FriendInfoMessage
      * 以下的“此用户”指FriendInfoMessage的id对应的用户
      */
-    fif_op_success(400, "好友操作成功"),
+    fif_op_success(400, "您对此用户的好友操作成功"),
     fif_add(401, "此用户正申请将您加入好友列表"),
     fif_already_add(402, "此用户已将您加入好友列表"),
     fif_block(403, "此用户已将您拉黑"),
@@ -52,8 +52,8 @@ public enum MessageCode {
     fif_not_exist(406, "此用户不存在,已注销或从未注册过"),
     fif_online(407, "此用户在线"),
     fif_offline(408, "此用户不在线"),
-    fif_your_single(409, "此用户是您的单向好友（您没删它，它删了您）"),
-    fif_repeat_add(410, "已经对此用户发送过同样的好友申请"),
+    fif_your_single(409, "此用户是您的单向好友（它在您列表，您不在它列表）"),
+    fif_repeat_add(410, "已经对此用户发送过好友申请"),
     fif_two_way(411, "此用户和您是双向好友"),
     fif_not_two_way(412, "此用户和您不是双向好友");
 

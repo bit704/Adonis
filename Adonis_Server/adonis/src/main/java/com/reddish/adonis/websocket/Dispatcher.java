@@ -65,11 +65,11 @@ public class Dispatcher {
                 throw new MessageException(illegal_type);
             }
 
-            // 先发reply表示收到
-            sendMesageForReply(session, message, 0);
             switch (messageType) {
                 // 首字母小写
                 case "userOpMessage" -> {
+                    // 先发reply表示收到
+                    sendMesageForReply(session, message, 0);
                     if (message.getUserOpMessage() == null) {
                         throw new MessageException(unconformity);
                     } else {
@@ -77,6 +77,8 @@ public class Dispatcher {
                     }
                 }
                 case "friendOpMessage" -> {
+                    // 先发reply表示收到
+                    sendMesageForReply(session, message, 0);
                     if (message.getFriendOpMessage() == null) {
                         throw new MessageException(unconformity);
                     } else {
@@ -84,11 +86,16 @@ public class Dispatcher {
                     }
                 }
                 case "dialogueInfoMessage" -> {
+                    // 先发reply表示收到
+                    sendMesageForReply(session, message, 0);
                     if (message.getDialogueInfoMessage() == null) {
                         throw new MessageException(unconformity);
                     } else {
                         dialogueService.handle(message.getDialogueInfoMessage(), session);
                     }
+                }
+                case "replyMessage" -> {
+                    return;
                 }
                 default -> throw new MessageException(illegal_type);
             }
@@ -109,7 +116,12 @@ public class Dispatcher {
 
     // 发送消息
     public static void sendMessage(Session session, Message message) {
-        session.getAsyncRemote().sendText(JSON.toJSONString(message));
+        try {
+            session.getAsyncRemote().sendText(JSON.toJSONString(message));
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+            logger.info("异步发送消息失败！");
+        }
     }
 
     // 回复消息
