@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.reddish.adonis.mapper")
+@MapperScan("com.reddish.adonis.DAO")
 public class AdonisApplication {
 
     public static void main(String[] args) {

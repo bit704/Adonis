@@ -1,26 +1,26 @@
-package com.reddish.adonis.service.entity;
+package com.reddish.adonis.AO;
 
-public class FriendOpMessage {
-
+public class FriendInfoMessage {
     /**
      * 见MessageCode下编码
      */
     private int code;
+
     /**
-     * 请求方账号，即发出此message的用户账号，简称为s
+     * 涉及此消息的用户id
      */
-    private String subjectId;
+    private String id;
     /**
-     * 被请求方账号，简称为o
+     * 涉及此消息的用户nickname
      */
-    private String objectId;
+    private String nickname;
+
     /**
-     * s对o的自定义备注名
+     * 您对该用户的自定义备注名
      */
     private String customNickname;
     /**
-     * 添加好友时的申请备注
-     * 如：你好！我是XXX。
+     * 涉及此消息的备注内容
      */
     private String memo;
 
@@ -32,20 +32,20 @@ public class FriendOpMessage {
         this.code = code;
     }
 
-    public String getSubjectId() {
-        return subjectId;
+    public String getId() {
+        return id;
     }
 
-    public void setSubjectId(String subjectId) {
-        this.subjectId = subjectId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getObjectId() {
-        return objectId;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setObjectId(String objectId) {
-        this.objectId = objectId;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getCustomNickname() {
@@ -66,22 +66,22 @@ public class FriendOpMessage {
 
     @Override
     public String toString() {
-        return "FriendOpMessage{" +
+        return "FriendInfoMessage{" +
                 "code=" + code +
-                ", subjectId='" + subjectId + '\'' +
-                ", objectId='" + objectId + '\'' +
+                ", id='" + id + '\'' +
+                ", nickname='" + nickname + '\'' +
                 ", customNickname='" + customNickname + '\'' +
                 ", memo='" + memo + '\'' +
                 '}';
     }
 
-    public FriendOpMessage() {
+    public FriendInfoMessage() {
     }
 
-    public FriendOpMessage(int code, String subjectId, String objectId, String customNickname, String memo) {
+    public FriendInfoMessage(int code, String id, String nickname, String customNickname, String memo) {
         this.code = code;
-        this.subjectId = subjectId;
-        this.objectId = objectId;
+        this.id = id;
+        this.nickname = nickname;
         this.customNickname = customNickname;
         this.memo = memo;
     }

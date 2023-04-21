@@ -1,7 +1,7 @@
-package com.reddish.adonis.mapper;
+package com.reddish.adonis.DAO;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.reddish.adonis.mapper.entity.Friend;
+import com.reddish.adonis.DO.Friend;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

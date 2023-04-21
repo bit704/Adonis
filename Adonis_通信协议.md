@@ -10,15 +10,15 @@
 
 ### 2.1 消息类
 
-消息类位于`Adonis\Adonis_Server\adonis\src\main\java\com\reddish\adonis\service\entity`。
+消息类位于`Adonis_Server/adonis/src/main/java/com/reddish/adonis/AO`。
 
 ### 2.2 消息代码
 
-消息代码位于`Adonis_Server/adonis/src/main/java/com/reddish/adonis/service/entity/MessageCode.java`。
+消息代码位于`Adonis_Server/adonis/src/main/java/com/reddish/adonis/AO/MessageCode.java`。
 
 ### 2.3 异常代码
 
-异常类位于`Adonis\Adonis_Server\adonis\src\main\java\com\reddish\adonis\exception`。
+异常类位于`Adonis_Server/adonis/src/main/java/com/reddish/adonis/exception/ExceptionCode.java`。
 
 异常表示开发过程中可能出现的错误，以及应由客户端预防而不应在服务端出现的错误，实际中并无用途。
 

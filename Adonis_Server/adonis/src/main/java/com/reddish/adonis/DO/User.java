@@ -1,4 +1,4 @@
-package com.reddish.adonis.mapper.entity;
+package com.reddish.adonis.DO;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;

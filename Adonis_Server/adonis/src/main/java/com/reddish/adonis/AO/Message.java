@@ -1,4 +1,4 @@
-package com.reddish.adonis.service.entity;
+package com.reddish.adonis.AO;
 
 import java.util.UUID;
 

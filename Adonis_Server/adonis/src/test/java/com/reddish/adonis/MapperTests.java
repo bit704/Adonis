@@ -1,7 +1,7 @@
 package com.reddish.adonis;
 
-import com.reddish.adonis.mapper.UserMapper;
-import com.reddish.adonis.mapper.entity.User;
+import com.reddish.adonis.DAO.UserMapper;
+import com.reddish.adonis.DO.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

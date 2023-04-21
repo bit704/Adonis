@@ -1,4 +1,4 @@
-package com.reddish.adonis.service.entity;
+package com.reddish.adonis.AO;
 
 public class ReplyMessage {
 

@@ -4,21 +4,21 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.reddish.adonis.exception.FriendInfoException;
 import com.reddish.adonis.exception.MessageException;
-import com.reddish.adonis.mapper.FriendMapper;
-import com.reddish.adonis.mapper.UserMapper;
-import com.reddish.adonis.mapper.entity.Friend;
-import com.reddish.adonis.mapper.entity.User;
-import com.reddish.adonis.service.entity.FriendInfoMessage;
-import com.reddish.adonis.service.entity.FriendOpMessage;
-import com.reddish.adonis.service.entity.Message;
-import com.reddish.adonis.service.entity.MessageCode;
+import com.reddish.adonis.DAO.FriendMapper;
+import com.reddish.adonis.DAO.UserMapper;
+import com.reddish.adonis.DO.Friend;
+import com.reddish.adonis.DO.User;
+import com.reddish.adonis.AO.FriendInfoMessage;
+import com.reddish.adonis.AO.FriendOpMessage;
+import com.reddish.adonis.AO.Message;
+import com.reddish.adonis.AO.MessageCode;
 import com.reddish.adonis.websocket.Dispatcher;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.Session;
 
 import static com.reddish.adonis.exception.ExceptionCode.*;
-import static com.reddish.adonis.service.entity.MessageCode.*;
+import static com.reddish.adonis.AO.MessageCode.*;
 
 
 @Service
