@@ -97,7 +97,7 @@ public class FriendService {
         int code = friendOpMessage.getCode();
         MessageCode messageCode = MessageCode.getCodeById(code);
         if (messageCode == null) {
-            throw new MessageException(illegal_code);
+            throw new MessageException(ILLEGAL_CODE);
         }
 
         // 查看表中是否有添加好友双方user
@@ -108,31 +108,31 @@ public class FriendService {
 
         // 不判断user_o是否存在，因为对方可能已经注销
         if (user_s == null) {
-            throw new FriendInfoException(extreme_error);
+            throw new FriendInfoException(EXTREME_ERROR);
         }
         if (user_s.equals(user_o)
-                && !fop_query_exist.equals(messageCode)
-                && !fop_query_online.equals(messageCode)
+                && !FOP_QUERY_EXIST.equals(messageCode)
+                && !FOP_QUERY_ONLINE.equals(messageCode)
         ) {
-            throw new FriendInfoException(not_self);
+            throw new FriendInfoException(NOT_SELF);
         }
 
         Friend friend_so = queryFriend(subjectId, objectId);
         Friend friend_os = queryFriend(objectId, subjectId);
 
         switch (messageCode) {
-            case fop_add -> {
+            case FOP_ADD -> {
 
                 // 被对方拉黑了
                 if (friend_os != null && friend_os.getStatus() == 2) {
-                    sendInfoForOp(friendOpMessage, fif_block, objectId, subjectId);
+                    sendInfoForOp(friendOpMessage, FIF_BLOCK, objectId, subjectId);
                     return;
                 }
 
                 if (friend_so != null) {
                     // s申请将o加入好友列表
                     if (friend_so.getStatus() == 1) {
-                        sendInfoForOp(friendOpMessage, fif_already_add, objectId, subjectId);
+                        sendInfoForOp(friendOpMessage, FIF_ALREADY_ADD, objectId, subjectId);
                         return;
                     } else if (friend_so.getStatus() == 2 || friend_so.getStatus() == 3) {
                         // 拉黑了对方，又重新给对方发送好友申请，自动把拉黑状态删除
@@ -152,13 +152,13 @@ public class FriendService {
 
                 // 对方刚好在线，直接发给o
                 if (Dispatcher.isOnline(objectId)) {
-                    sendInfoForOp(friendOpMessage, fif_add, subjectId, objectId);
+                    sendInfoForOp(friendOpMessage, FIF_ADD, subjectId, objectId);
                 }
 
-                sendInfoForOp(friendOpMessage, fif_op_success, objectId, subjectId);
+                sendInfoForOp(friendOpMessage, FIF_OP_SUCCESS, objectId, subjectId);
 
             }
-            case fop_consent -> {
+            case FOP_CONSENT -> {
 
                 // o申请将s加入好友列表，s同意
                 // s将o加入好友列表，将申请状态更新为同意状态
@@ -175,77 +175,77 @@ public class FriendService {
 
                 // 对方刚好在线，告知o，s已经同意
                 if (Dispatcher.isOnline(subjectId)) {
-                    sendInfoForOp(friendOpMessage, fif_already_add, subjectId, objectId);
+                    sendInfoForOp(friendOpMessage, FIF_ALREADY_ADD, subjectId, objectId);
                 }
 
-                sendInfoForOp(friendOpMessage, fif_op_success, objectId, subjectId);
+                sendInfoForOp(friendOpMessage, FIF_OP_SUCCESS, objectId, subjectId);
 
             }
-            case fop_reject -> {
+            case FOP_REJECT -> {
 
                 // o申请将s加入好友列表，s拒绝
                 deleteFriend(objectId, subjectId);
                 // 告知o，s拒绝
                 if (Dispatcher.isOnline(objectId)) {
-                    sendInfoForOp(friendOpMessage, fif_reject, subjectId, objectId);
+                    sendInfoForOp(friendOpMessage, FIF_REJECT, subjectId, objectId);
                 } else {
                     // 存起来，等o上线后告知
                     updateStatus(subjectId, objectId, 3);
                 }
-                sendInfoForOp(friendOpMessage, fif_op_success, objectId, subjectId);
+                sendInfoForOp(friendOpMessage, FIF_OP_SUCCESS, objectId, subjectId);
 
             }
-            case fop_delete -> {
+            case FOP_DELETE -> {
 
                 // 这个不用告知o，因为是单向删除，s还在o的好友列表中，只是o不能给s发消息了
                 // s申请将o从好友列表删除
                 deleteFriend(subjectId, objectId);
-                sendInfoForOp(friendOpMessage, fif_op_success, objectId, subjectId);
+                sendInfoForOp(friendOpMessage, FIF_OP_SUCCESS, objectId, subjectId);
 
             }
-            case fop_query_exist -> {
+            case FOP_QUERY_EXIST -> {
 
                 User user = userMapper.selectById(objectId);
                 if (user != null) {
-                    sendInfoForOp(friendOpMessage, fif_exist, objectId, subjectId);
+                    sendInfoForOp(friendOpMessage, FIF_EXIST, objectId, subjectId);
                 } else {
-                    sendInfoForOp(friendOpMessage, fif_not_exist, objectId, subjectId);
+                    sendInfoForOp(friendOpMessage, FIF_NOT_EXIST, objectId, subjectId);
                 }
 
             }
-            case fop_query_online -> {
+            case FOP_QUERY_ONLINE -> {
 
                 if (Dispatcher.isOnline(objectId)) {
-                    sendInfoForOp(friendOpMessage, fif_online, objectId, subjectId);
+                    sendInfoForOp(friendOpMessage, FIF_ONLINE, objectId, subjectId);
                 } else {
-                    sendInfoForOp(friendOpMessage, fif_offline, objectId, subjectId);
+                    sendInfoForOp(friendOpMessage, FIF_OFFLINE, objectId, subjectId);
                 }
 
             }
-            case fop_block -> {
+            case FOP_BLOCK -> {
 
                 // 拉黑好友
                 updateStatus(subjectId, objectId, 2);
-                sendInfoForOp(friendOpMessage, fif_op_success, objectId, subjectId);
+                sendInfoForOp(friendOpMessage, FIF_OP_SUCCESS, objectId, subjectId);
 
             }
-            case fop_custom_nickname -> {
+            case FOP_CUSTOM_NICKNAME -> {
 
                 // 更新对好友的自定义备注
                 updateCustomNickname(subjectId, objectId, friendOpMessage.getCustomNickname());
-                sendInfoForOp(friendOpMessage, fif_op_success, objectId, subjectId);
+                sendInfoForOp(friendOpMessage, FIF_OP_SUCCESS, objectId, subjectId);
 
             }
-            case fop_query_friendship -> {
+            case FOP_QUERY_FRIENDSHIP -> {
 
                 if (friend_so.getStatus() == 1 && friend_os.getStatus() == 1) {
-                    sendInfoForOp(friendOpMessage, fif_two_way, objectId, subjectId);
+                    sendInfoForOp(friendOpMessage, FIF_TWO_WAY, objectId, subjectId);
                 } else {
-                    sendInfoForOp(friendOpMessage, fif_not_two_way, objectId, subjectId);
+                    sendInfoForOp(friendOpMessage, FIF_NOT_TWO_WAY, objectId, subjectId);
                 }
 
             }
-            default -> throw new MessageException(illegal_fop_code);
+            default -> throw new MessageException(ILLEGAL_FOP_CODE);
         }
     }
 

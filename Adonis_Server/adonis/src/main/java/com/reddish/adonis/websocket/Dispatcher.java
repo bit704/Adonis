@@ -62,7 +62,7 @@ public class Dispatcher {
             }
 
             if (messageType == null) {
-                throw new MessageException(illegal_type);
+                throw new MessageException(ILLEGAL_TYPE);
             }
 
             switch (messageType) {
@@ -71,7 +71,7 @@ public class Dispatcher {
                     // 先发reply表示收到
                     sendMesageForReply(session, message, 0);
                     if (message.getUserOpMessage() == null) {
-                        throw new MessageException(unconformity);
+                        throw new MessageException(UNCONFORMITY);
                     } else {
                         userService.handle(message.getUserOpMessage(), session);
                     }
@@ -80,7 +80,7 @@ public class Dispatcher {
                     // 先发reply表示收到
                     sendMesageForReply(session, message, 0);
                     if (message.getFriendOpMessage() == null) {
-                        throw new MessageException(unconformity);
+                        throw new MessageException(UNCONFORMITY);
                     } else {
                         friendService.handle(message.getFriendOpMessage(), session);
                     }
@@ -89,7 +89,7 @@ public class Dispatcher {
                     // 先发reply表示收到
                     sendMesageForReply(session, message, 0);
                     if (message.getDialogueInfoMessage() == null) {
-                        throw new MessageException(unconformity);
+                        throw new MessageException(UNCONFORMITY);
                     } else {
                         dialogueService.handle(message.getDialogueInfoMessage(), session);
                     }
@@ -97,7 +97,7 @@ public class Dispatcher {
                 case "replyMessage" -> {
                     return;
                 }
-                default -> throw new MessageException(illegal_type);
+                default -> throw new MessageException(ILLEGAL_TYPE);
             }
         } catch (MessageException e) {
             logger.info(e.getMessage());
