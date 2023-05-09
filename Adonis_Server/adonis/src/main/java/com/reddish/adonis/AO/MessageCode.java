@@ -44,18 +44,19 @@ public enum MessageCode {
      * 以下的“此用户”指FriendInfoMessage的id对应的用户
      */
     FIF_OP_SUCCESS(400, "您对此用户的好友操作成功"),
-    FIF_ADD(401, "此用户正申请将您加入好友列表"),
-    FIF_ALREADY_ADD(402, "此用户已将您加入好友列表"),
-    FIF_BLOCK(403, "此用户已将您拉黑"),
-    FIF_REJECT(404, "此用户拒绝您的好友申请"),
-    FIF_EXIST(405, "此用户存在"),
-    FIF_NOT_EXIST(406, "此用户不存在,已注销或从未注册过"),
-    FIF_ONLINE(407, "此用户在线"),
-    FIF_OFFLINE(408, "此用户不在线"),
-    FIF_YOUR_SINGLE(409, "此用户是您的单向好友（它在您列表，您不在它列表）"),
-    FIF_REPEAT_ADD(410, "已经对此用户发送过好友申请"),
-    FIF_TWO_WAY(411, "此用户和您是双向好友"),
-    FIF_NOT_TWO_WAY(412, "此用户和您不是双向好友");
+    FIF_ADD_YOU(401, "此用户正申请将您加入好友列表"),
+    FIF_ADD_TO(402, "您正申请将此用户加入好友列表"),
+    FIF_ADD_CONSENT(403, "此用户已同意将您加入好友列表"),
+    FIF_BLOCK(404, "此用户已将您拉黑"),
+    FIF_REJECT(405, "此用户拒绝您的好友申请"),
+    FIF_EXIST(406, "此用户存在"),
+    FIF_NOT_EXIST(407, "此用户不存在,已注销或从未注册过"),
+    FIF_ONLINE(408, "此用户在线"),
+    FIF_OFFLINE(409, "此用户不在线"),
+    FIF_SINGLE_FOR_YOU(410, "此用户是您的单向好友（您列表有它，它列表没您）"),
+    FIF_SINGLE_ON_YOU(411, "此用户是您的单向好友（您列表没它，它列表有您）"),
+    FIF_TWO_WAY(412, "此用户和您是双向好友"),
+    FIF_FREE(413, "此用户和您没有任何好友关系");
 
     private final int id;
     private final String desc;

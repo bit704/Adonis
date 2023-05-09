@@ -58,7 +58,7 @@ public class DialogueService {
         QueryWrapper<Friend> queryWrapper_rs = new QueryWrapper<>();
         queryWrapper_rs.eq("subjectId", senderId).eq("objectId", receiverId);
         Friend friend_os = friendMapper.selectOne(queryWrapper_rs);
-        if (friend_so == null || friend_os == null) {
+        if (friend_so.getStatus() != 1 || friend_os.getStatus() != 1) {
             throw new DialogueInfoException(ExceptionCode.STRANGER);
         }
 

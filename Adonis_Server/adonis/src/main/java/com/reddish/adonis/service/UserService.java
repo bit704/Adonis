@@ -15,8 +15,7 @@ import com.reddish.adonis.websocket.Dispatcher;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.Session;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.reddish.adonis.exception.ExceptionCode.*;
 import static com.reddish.adonis.AO.MessageCode.*;
@@ -95,6 +94,7 @@ public class UserService {
                     uif = UIF_OP_SUCCESS;
                 }
                 case UOP_DELETE -> {
+                    // TODO 还应该删除与其相关的好友信息和对话信息
                     userMapper.deleteById(userId);
                     uif = UIF_OP_SUCCESS;
                 }
@@ -135,27 +135,27 @@ public class UserService {
 
     public void sendUserOnlineMessage(Session session, String userId) {
 
+        //向登录用户X发送上线消息
         List<FriendInfoMessage> friendInfoMessageList = new ArrayList<>();
         List<DialogueMessage> dialogueMessageList = new ArrayList<>();
 
+        //首先查询X作为客体的好友关系
         QueryWrapper<Friend> friendQueryWrapper_o = new QueryWrapper<>();
         friendQueryWrapper_o.eq("objectId", userId);
-
         List<Friend> friendList = new ArrayList<>(friendMapper.selectList(friendQueryWrapper_o));
 
         for (Friend friend_o : friendList) {
             FriendInfoMessage friendInfoMessage = new FriendInfoMessage();
-            // 填写好友id
-            friendInfoMessage.setId(friend_o.getSubjectId());
-            User friendUser = userMapper.selectById(friend_o.getSubjectId());
-            // 此用户还在，没有被注销
+            // 此处的好友是好友关系中的主体
+            String friendId = friend_o.getSubjectId();
+            friendInfoMessage.setId(friendId);
+            User friendUser = userMapper.selectById(friendId);
+            // 好友还在，没有注销
             if (friendUser != null) {
-
                 friendInfoMessage.setNickname(friendUser.getNickname());
                 friendInfoMessage.setMemo(friend_o.getMemo());
 
-                // 查询自己对好友的关系
-                String friendId = friendUser.getId();
+                // 查询X为主体此好友为客体的关系
                 QueryWrapper<Friend> friendQueryWrapper_so = new QueryWrapper<>();
                 friendQueryWrapper_so
                         .eq("subjectId", userId)
@@ -163,13 +163,15 @@ public class UserService {
                 Friend friend_so = friendMapper.selectOne(friendQueryWrapper_so);
 
                 switch (friend_o.getStatus()) {
-                    case 0 -> friendInfoMessage.setCode(FIF_ADD.getId());
+                    case 0 -> friendInfoMessage.setCode(FIF_ADD_YOU.getId());
                     case 1 -> {
-                        friendInfoMessage.setCode(FIF_ALREADY_ADD.getId());
-                        if (friend_so != null) {
+                        if (friend_so != null && friend_so.getStatus() == 1) {
+                            // 填入备注昵称。这种情况下才可能已有备注昵称。
                             friendInfoMessage.setCustomNickname(friend_so.getCustomNickname());
+                            friendInfoMessage.setCode(FIF_TWO_WAY.getId());
+                        } else {
+                            friendInfoMessage.setCode(FIF_SINGLE_ON_YOU.getId());
                         }
-
                     }
                     case 2 -> friendInfoMessage.setCode(FIF_BLOCK.getId());
                     case 3 -> friendInfoMessage.setCode(FIF_REJECT.getId());
@@ -191,22 +193,30 @@ public class UserService {
                 }
                 // 聊天记录发完之后即删除
                 dialogueMapper.delete(dialogueQueryWrapper);
+
             } else {
                 friendInfoMessage.setCode(FIF_NOT_EXIST.getId());
             }
             friendInfoMessageList.add(friendInfoMessage);
         }
 
+        //其次查询X作为主体的好友关系
         QueryWrapper<Friend> friendQueryWrapper_s = new QueryWrapper<>();
         friendQueryWrapper_s
                 .eq("subjectId", userId);
         friendList = new ArrayList<>(friendMapper.selectList(friendQueryWrapper_s));
         for (Friend friend_s : friendList) {
+            // 此处的好友是好友关系中的客体
+            String friendId = friend_s.getObjectId();
+
+            // 查询X为客体此好友为主体的关系
             QueryWrapper<Friend> friendQueryWrapper_os = new QueryWrapper<>();
             friendQueryWrapper_os
-                    .eq("subjectId", friend_s.getObjectId())
+                    .eq("subjectId", friendId)
                     .eq("objectId", userId);
             Friend friend_os = friendMapper.selectOne(friendQueryWrapper_os);
+
+            // friend_os为空的才没有在之前查询过，需要补充
             if (friend_os == null) {
                 FriendInfoMessage friendInfoMessage = new FriendInfoMessage();
                 // 填写好友id
@@ -214,18 +224,25 @@ public class UserService {
                 User friendUser = userMapper.selectById(friend_s.getObjectId());
                 if (friendUser != null) {
                     friendInfoMessage.setNickname(friendUser.getNickname());
-                }
-                friendInfoMessage.setMemo(friend_s.getMemo());
+                    friendInfoMessage.setMemo(friend_s.getMemo());
 
-                switch (friend_s.getStatus()) {
-                    case 0 -> friendInfoMessage.setCode(FIF_REPEAT_ADD.getId());
-                    case 1, 2, 3 -> friendInfoMessage.setCode(FIF_YOUR_SINGLE.getId());
+                    if (friend_s.getStatus() == 0) {
+                        friendInfoMessage.setCode(FIF_ADD_TO.getId());
+                    } else {
+                        friendInfoMessage.setCode(FIF_SINGLE_FOR_YOU.getId());
+                    }
+                } else {
+                    friendInfoMessage.setCode(FIF_NOT_EXIST.getId());
                 }
-
                 friendInfoMessageList.add(friendInfoMessage);
             }
         }
 
+        // 对话消息排序后再发出，旧消息在前新消息在后
+        dialogueMessageList.sort((a, b) -> {
+            long r = a.getOccurredTime() - b.getOccurredTime();
+            return r > 0 ? 1 : (r == 0 ? 0 : -1);
+        });
 
         // 发送
         Dispatcher.sendMessage(session, new Message(new UserOnlineMessage(friendInfoMessageList, dialogueMessageList)));

@@ -17,7 +17,7 @@ public enum ExceptionCode {
     NOT_SELF(302, "好友操作涉及双方不能相同"),
 
     SHADOW_MAN(401, "消息发送与接收有一方不存在，可能已注销"),
-    STRANGER(402, "消息接收方和自己不是双向好友"),
+    STRANGER(402, "消息接收方和自己不是双向好友就发送了消息"),
     ;
 
     private final int id;

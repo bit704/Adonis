@@ -38,7 +38,7 @@ public class FriendService {
         friendInfoMessage.setCode(messageCode.getId());
         friendInfoMessage.setId(infoId);
         // 发出friendOpMessage的用户
-        User user = userMapper.selectById(friendOpMessage.getObjectId());
+        User user = userMapper.selectById(friendOpMessage.getSubjectId());
         friendInfoMessage.setNickname(user.getNickname());
         // 此字段在发送此类回复时其实没有用
         friendInfoMessage.setCustomNickname(friendOpMessage.getCustomNickname());
@@ -132,7 +132,7 @@ public class FriendService {
                 if (friend_so != null) {
                     // s申请将o加入好友列表
                     if (friend_so.getStatus() == 1) {
-                        sendInfoForOp(friendOpMessage, FIF_ALREADY_ADD, objectId, subjectId);
+                        sendInfoForOp(friendOpMessage, FIF_ADD_CONSENT, objectId, subjectId);
                         return;
                     } else if (friend_so.getStatus() == 2 || friend_so.getStatus() == 3) {
                         // 拉黑了对方，又重新给对方发送好友申请，自动把拉黑状态删除
@@ -152,7 +152,7 @@ public class FriendService {
 
                 // 对方刚好在线，直接发给o
                 if (Dispatcher.isOnline(objectId)) {
-                    sendInfoForOp(friendOpMessage, FIF_ADD, subjectId, objectId);
+                    sendInfoForOp(friendOpMessage, FIF_ADD_YOU, subjectId, objectId);
                 }
 
                 sendInfoForOp(friendOpMessage, FIF_OP_SUCCESS, objectId, subjectId);
@@ -175,8 +175,10 @@ public class FriendService {
 
                 // 对方刚好在线，告知o，s已经同意
                 if (Dispatcher.isOnline(subjectId)) {
-                    sendInfoForOp(friendOpMessage, FIF_ALREADY_ADD, subjectId, objectId);
+                    sendInfoForOp(friendOpMessage, FIF_ADD_CONSENT, subjectId, objectId);
                 }
+
+                // TODO 同意之后给双方发送系统默认消息
 
                 sendInfoForOp(friendOpMessage, FIF_OP_SUCCESS, objectId, subjectId);
 
@@ -240,8 +242,12 @@ public class FriendService {
 
                 if (friend_so.getStatus() == 1 && friend_os.getStatus() == 1) {
                     sendInfoForOp(friendOpMessage, FIF_TWO_WAY, objectId, subjectId);
+                } else if (friend_so.getStatus() == 1) {
+                    sendInfoForOp(friendOpMessage, FIF_SINGLE_FOR_YOU, objectId, subjectId);
+                } else if (friend_os.getStatus() == 1) {
+                    sendInfoForOp(friendOpMessage, FIF_SINGLE_ON_YOU, objectId, subjectId);
                 } else {
-                    sendInfoForOp(friendOpMessage, FIF_NOT_TWO_WAY, objectId, subjectId);
+                    sendInfoForOp(friendOpMessage, FIF_FREE, objectId, subjectId);
                 }
 
             }
