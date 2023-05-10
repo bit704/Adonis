@@ -5,17 +5,16 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adonis.R
 import com.example.adonis.activity.AddActivity
 import com.example.adonis.activity.SingleChatActivity
+import com.example.adonis.application.AdonisApplication
 import com.example.adonis.entity.DialogueMessage
+import com.example.adonis.entity.FilterString
 import com.example.adonis.utils.NewsAdapter
-import kotlin.math.abs
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,7 +31,7 @@ class NewsFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private val newsAdapter = NewsAdapter()
-
+    private lateinit var data: AdonisApplication
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +45,8 @@ class NewsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        data = activity?.application as AdonisApplication
+
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_news, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview_news)
@@ -56,8 +57,10 @@ class NewsFragment : Fragment() {
         recyclerView.layoutManager = layout
 
         newsAdapter.setItemClickListener(object : NewsAdapter.OnItemClickListener {
-            override fun onItemClick() {
+            override fun onItemClick(holder: NewsAdapter.NewsHolder) {
                 val intent = Intent(activity, SingleChatActivity::class.java)
+                intent.putExtra(FilterString.ID, holder.id)
+                intent.putExtra(FilterString.NICKNAME, holder.nickname.text)
                 startActivity(intent)
             }
 
@@ -112,8 +115,8 @@ class NewsFragment : Fragment() {
 
 
 
-    fun initNewsList(list: List<DialogueMessage>) {
-        newsAdapter.initNewsList(list)
+    fun initNewsList() {
+        newsAdapter.initNewsList(data)
         newsAdapter.notifyDataSetChanged()
     }
 

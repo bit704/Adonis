@@ -36,12 +36,14 @@
 
         <ImageView
             android:id="@+id/confirm_avatar"
+            android:layout_width="@dimen/avatar"
+            android:layout_height="@dimen/avatar"
+            android:layout_marginStart="@dimen/margin"
+            android:layout_marginTop="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"
+            android:layout_marginBottom="@dimen/margin"
             android:contentDescription="@string/avatar"
-            android:src="@mipmap/ic_launcher"
-            android:layout_margin="@dimen/margin"
-            android:layout_width="@dimen/confirm_avatar"
-            android:layout_height="@dimen/confirm_avatar">
-        </ImageView>
+            android:src="@mipmap/ic_launcher"></ImageView>
 
         <LinearLayout
             android:layout_toEndOf="@+id/confirm_avatar"
@@ -51,14 +53,14 @@
             <TextView
                 android:id="@+id/confirm_nickname"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/confirm_nickname"
+                android:layout_height="@dimen/nickname"
                 android:layout_margin="@dimen/margin">
             </TextView>
             
             <TextView
                 android:id="@+id/confirm_id"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/confirm_id"
+                android:layout_height="@dimen/id"
                 android:layout_margin="@dimen/margin">
             </TextView>
         </LinearLayout>

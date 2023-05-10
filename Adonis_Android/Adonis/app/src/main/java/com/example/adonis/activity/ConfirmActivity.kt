@@ -59,14 +59,14 @@ class ConfirmActivity : AppCompatActivity() {
                 val jsonInfo = p1?.getStringExtra(FilterString.FRIEND_INFO_MESSAGE)
                 val friendInfoMessage = JSON.parseObject(jsonInfo, FriendInfoMessage::class.java)
                 val code = friendInfoMessage.code
-                if (code == MessageCode.fif_op_success.id) { finish() }
+                if (code == MessageCode.FIF_OP_SUCCESS.id) { finish() }
             }
         }
 
         confirm.setOnClickListener {
             val message = Message()
             val friendOpMessage = FriendOpMessage()
-            friendOpMessage.code = MessageCode.fop_add.id
+            friendOpMessage.code = MessageCode.FOP_ADD.id
             friendOpMessage.subjectId = userId
             friendOpMessage.objectId = friendId
             friendOpMessage.customNickname = remark.text.toString()
@@ -75,7 +75,7 @@ class ConfirmActivity : AppCompatActivity() {
             message.type = FilterString.FRIEND_OP_MESSAGE
             message.friendOpMessage = friendOpMessage
             val msgJSON = JSON.toJSONString(message)
-            service.sendMessage(msgJSON, message.id, MessageCode.fop_add.id)
+            service.sendMessage(msgJSON, message.id, MessageCode.FOP_ADD.id)
             hideKeyBoards()
         }
     }

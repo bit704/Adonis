@@ -74,7 +74,7 @@ class SignupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            userOpMessage.code = MessageCode.uop_sign_up.id
+            userOpMessage.code = MessageCode.UOP_SIGN_UP.id
             userOpMessage.id = id
             userOpMessage.nickname = nickname
             userOpMessage.password = pwd
@@ -82,7 +82,7 @@ class SignupActivity : AppCompatActivity() {
             message.id = UUID.randomUUID().toString()
             message.userOpMessage = userOpMessage
             val msg = JSON.toJSONString(message)
-            service.sendMessage(msg, message.id, MessageCode.uop_sign_in.id)
+            service.sendMessage(msg, message.id, MessageCode.UOP_SIGN_UP.id)
 
         }
 

@@ -61,12 +61,12 @@ class AddActivity : AppCompatActivity() {
                 val jsonInfo = p1?.getStringExtra(FilterString.FRIEND_INFO_MESSAGE)
                 val friendInfoMessage = JSON.parseObject(jsonInfo, FriendInfoMessage::class.java)
                 val status = friendInfoMessage.code
-                if (status == MessageCode.fif_exist.id) {
+                if (status == MessageCode.FIF_EXIST.id) {
                     adapter.showResult(friendInfoMessage)
                     adapter.notifyDataSetChanged()
                     notExist.visibility = TextView.INVISIBLE
                 }
-                else if (status == MessageCode.fif_not_exist.id) {
+                else if (status == MessageCode.FIF_NOT_EXIST.id) {
                     adapter.showNotExistResult()
                     adapter.notifyDataSetChanged()
                     notExist.visibility = TextView.VISIBLE
@@ -85,12 +85,12 @@ class AddActivity : AppCompatActivity() {
                     val friendOpMessage = FriendOpMessage()
                     friendOpMessage.subjectId = userId
                     friendOpMessage.objectId = searchId
-                    friendOpMessage.code = MessageCode.fop_query_exist.id
+                    friendOpMessage.code = MessageCode.FOP_QUERY_EXIST.id
                     message.id = UUID.randomUUID().toString()
                     message.type = FilterString.FRIEND_OP_MESSAGE
                     message.friendOpMessage = friendOpMessage
                     val msg = JSON.toJSONString(message)
-                    service.sendMessage(msg, message.id, MessageCode.fop_query_exist.id)
+                    service.sendMessage(msg, message.id, MessageCode.FOP_QUERY_EXIST.id)
 
                     hideKeyBoards()
                 }

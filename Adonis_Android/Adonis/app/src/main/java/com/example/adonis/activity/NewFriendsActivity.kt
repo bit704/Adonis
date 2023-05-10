@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.fastjson.JSON
 import com.example.adonis.R
+import com.example.adonis.application.AdonisApplication
 import com.example.adonis.entity.ActionString
 
 import com.example.adonis.entity.FilterString
@@ -30,14 +31,16 @@ class NewFriendsActivity : AppCompatActivity() {
 
     private var userId: String? = null
     private val adapter = NewFriendsAdapter()
-    private var newFriendsList = mutableListOf<FriendInfoMessage>()
+
+    private val addedFriends = mutableListOf<FriendInfoMessage>()
+
+    private lateinit var data: AdonisApplication
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_friends)
 
-        val jsonInfo = intent.getStringExtra(FilterString.DATA)
-        newFriendsList = JSON.parseArray(jsonInfo, FriendInfoMessage::class.java)
+        data = application as AdonisApplication
 
         val serviceIntent = Intent(this, WebSocketService::class.java)
         val connection = NewFriendsConnection()
@@ -56,20 +59,20 @@ class NewFriendsActivity : AppCompatActivity() {
             override fun onAgreeButtonClick(holder: NewFriendsAdapter.NewFriendsViewHolder) {
                 val message = Message()
                 val friendOpMessage = FriendOpMessage()
-                friendOpMessage.code = MessageCode.fop_consent.id
+                friendOpMessage.code = MessageCode.FOP_CONSENT.id
                 friendOpMessage.subjectId = userId
                 friendOpMessage.objectId = holder.id
                 message.id = UUID.randomUUID().toString()
                 message.type = FilterString.FRIEND_OP_MESSAGE
                 message.friendOpMessage = friendOpMessage
                 val jsonMessage = JSON.toJSONString(message)
-                service.sendMessage(jsonMessage, message.id, MessageCode.fop_consent.id)
+                service.sendMessage(jsonMessage, message.id, MessageCode.FOP_CONSENT.id)
             }
 
         })
         recyclerView.adapter = adapter
 
-        adapter.initNewFriendsList(newFriendsList)
+        adapter.initNewFriendsList(data.getNewFriends())
         adapter.notifyDataSetChanged()
 
         intentFilter.addAction(FilterString.FRIEND_INFO_MESSAGE)
@@ -77,10 +80,15 @@ class NewFriendsActivity : AppCompatActivity() {
             override fun onReceive(p0: Context?, p1: Intent?) {
                 val jsonInfo = p1?.getStringExtra(FilterString.FRIEND_INFO_MESSAGE)
                 val info = JSON.parseObject(jsonInfo, FriendInfoMessage::class.java)
-                if (info.code == MessageCode.fif_op_success.id) {
+                if (info.code == MessageCode.FIF_OP_SUCCESS.id) {
 
                 }
             }
+        }
+
+        moreButton.setOnClickListener {
+            val intent = Intent(this, AddActivity::class.java)
+            startActivity(intent)
         }
 
         backButton.setOnClickListener { finish() }
