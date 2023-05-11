@@ -4,6 +4,9 @@ import java.util.List;
 
 public class UserOnlineMessage {
     private List<FriendInfoMessage> friendInfoMessageList;
+    /**
+     * 服务端按从旧到新排序后发
+     */
     private List<DialogueMessage> dialogueMessageList;
 
     public List<FriendInfoMessage> getFriendInfoMessageList() {

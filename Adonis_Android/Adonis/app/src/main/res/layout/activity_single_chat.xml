@@ -8,6 +8,7 @@
     tools:context=".activity.SingleChatActivity">
 
     <RelativeLayout
+
         android:layout_width="match_parent"
         android:layout_height="@dimen/main_tool_height">
 
@@ -22,7 +23,7 @@
         </Button>
 
         <TextView
-            android:id="@+id/text_nickname"
+            android:id="@+id/text_chat_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -50,6 +51,7 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -61,20 +63,32 @@
 
         </Button>
 
-        <EditText
-            android:id="@+id/edit_text_chat_input"
+        <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="@dimen/chat_input_height"
-            android:layout_weight="1"
-            android:layout_margin="@dimen/margin">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
-        </EditText>
+            <EditText
+                android:id="@+id/edit_text_chat_input"
+                android:layout_width="match_parent"
+                android:inputType="text"
+                android:layout_height="wrap_content"
+                android:maxHeight="@dimen/chat_input_max_height"
+                android:imeOptions="actionSend"
+                android:layout_margin="@dimen/margin">
+            </EditText>
+
+            <LinearLayout
+                android:id="@+id/layout_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"/>
+        </FrameLayout>
 
         <Button
-            android:id="@+id/button_chat_send"
+            android:id="@+id/button_chat_files"
             android:layout_width="@dimen/chat_button_send_width"
             android:layout_height="@dimen/chat_button_send_height"
-            android:text="@string/send"
             android:layout_margin="@dimen/margin">
 
         </Button>

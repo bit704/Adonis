@@ -16,12 +16,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.alibaba.fastjson.JSON
 import com.example.adonis.R
-import com.example.adonis.entity.ActionString
-import com.example.adonis.entity.FilterString
-import com.example.adonis.entity.Message
-import com.example.adonis.entity.MessageCode
-import com.example.adonis.entity.UserOnlineMessage
-import com.example.adonis.entity.UserOpMessage
+import com.example.adonis.application.AdonisApplication
+import com.example.adonis.entity.*
 import com.example.adonis.fragment.ContactsFragment
 import com.example.adonis.fragment.NewsFragment
 import com.example.adonis.fragment.PersonalFragment
@@ -49,12 +45,16 @@ class MainActivity : AppCompatActivity(){
     private val fragmentList = mutableListOf<Fragment>()
     private lateinit var userId: String
 
+    private lateinit var data: AdonisApplication
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val pref = getSharedPreferences(FilterString.DATA, MODE_PRIVATE)
         userId = pref.getString(FilterString.ID, null).toString()
+
+        data = application as AdonisApplication
 
         val newsButton:ImageButton = findViewById(R.id.button_news)
         val contactsButton:ImageButton = findViewById(R.id.button_contacts)
@@ -75,7 +75,10 @@ class MainActivity : AppCompatActivity(){
             addToList(personalFragment)
         }
 
+        intentFilter.addAction(FilterString.UPDATE_NEWS)
         intentFilter.addAction(FilterString.USER_ONLINE_MESSAGE)
+        intentFilter.addAction(FilterString.FRIEND_INFO_MESSAGE)
+        intentFilter.addAction(FilterString.DIALOGUE_INFO_MESSAGE)
         receiver = object: BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
                 Log.i("Receiver", "received")
@@ -83,8 +86,41 @@ class MainActivity : AppCompatActivity(){
                     FilterString.USER_ONLINE_MESSAGE -> {
                         val initInfo = p1.getStringExtra(FilterString.USER_ONLINE_MESSAGE)
                         val userOnlineMessage = JSON.parseObject(initInfo, UserOnlineMessage::class.java)
-                        contactsFragment?.initContacts(userOnlineMessage.friendInfoMessageList)
-                        newsFragment?.initNewsList(userOnlineMessage.dialogueInfoMessageList)
+                        data.initInfo(userOnlineMessage.friendInfoMessageList, userOnlineMessage.dialogueInfoMessageList)
+                        contactsFragment?.initContacts()
+                        newsFragment?.initNewsList()
+                    }
+                    FilterString.FRIEND_INFO_MESSAGE -> {
+                        val jsonInfo = p1.getStringExtra(FilterString.FRIEND_INFO_MESSAGE)
+                        val type = p1.getIntExtra(FilterString.TYPE, Code.DEFAULT_CODE)
+                        val friendInfo = JSON.parseObject(jsonInfo, FriendInfoMessage::class.java)
+                        when (friendInfo.code) {
+                            MessageCode.FIF_OP_SUCCESS.id -> {
+                                when (type) {
+                                    MessageCode.FOP_ADD.id -> {
+                                        data.addNewFriends(friendInfo)
+                                        contactsFragment?.updateNewFriends(friendInfo)
+                                    }
+                                    MessageCode.FOP_CONSENT.id -> {
+                                        data.addNewFriends(friendInfo)
+                                        contactsFragment?.addContacts(friendInfo)
+                                    }
+                                    MessageCode.FOP_REJECT.id -> {
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    FilterString.DIALOGUE_INFO_MESSAGE -> {
+                        val jsonMessage = p1.getStringExtra(FilterString.DIALOGUE_INFO_MESSAGE)
+                        val msg = JSON.parseObject(jsonMessage, DialogueMessage::class.java)
+                        newsFragment?.addNewsList(msg)
+                    }
+                    FilterString.UPDATE_NEWS -> {
+                        val jsonMessage = p1.getStringExtra(FilterString.DIALOGUE_INFO_MESSAGE)
+                        val msg = JSON.parseObject(jsonMessage, DialogueMessage::class.java)
+                        newsFragment?.addNewsList(msg)
                     }
                 }
             }
@@ -98,21 +134,21 @@ class MainActivity : AppCompatActivity(){
         val mainConnection = MainConnection()
         val serviceIntent = Intent(this, WebSocketService::class.java)
         bindService(serviceIntent, mainConnection, BIND_AUTO_CREATE)
+
+        Log.i("Receiver", "register")
+        registerReceiver(receiver, intentFilter)
     }
 
     inner class OnClick: View.OnClickListener {
         override fun onClick(view: View?) {
             when(view?.id){
                 R.id.button_news -> {
-
                     showFragment(newsFragment!!)
                 }
                 R.id.button_contacts -> {
-
                     showFragment(contactsFragment!!)
                 }
                 R.id.button_personal -> {
-
                     showFragment(personalFragment!!)
                 }
             }
@@ -172,11 +208,11 @@ class MainActivity : AppCompatActivity(){
             val userOp = UserOpMessage()
             msg.id = UUID.randomUUID().toString()
             msg.type = FilterString.USER_OP_MESSAGE
-            userOp.code = MessageCode.uop_request_online_message.id
+            userOp.code = MessageCode.UOP_REQUEST_ONLINE_MESSAGE.id
             userOp.id = userId
             msg.userOpMessage = userOp
             val request = JSON.toJSONString(msg)
-            service.sendMessage(request, msg.id, MessageCode.uop_request_online_message.id)
+            service.sendMessage(request, msg.id, MessageCode.UOP_REQUEST_ONLINE_MESSAGE.id)
         }
 
         override fun onServiceDisconnected(p0: ComponentName?) {
@@ -184,14 +220,9 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.i("Receiver", "register")
-        registerReceiver(receiver, intentFilter)
-    }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroy() {
+        super.onDestroy()
         Log.i("Receiver", "unregister")
         unregisterReceiver(receiver)
     }

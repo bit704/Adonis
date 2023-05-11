@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import com.alibaba.fastjson.JSON
-import com.example.adonis.entity.ActionString
 import com.example.adonis.entity.Code
 import com.example.adonis.entity.FilterString
 import com.example.adonis.entity.Message
@@ -18,13 +17,15 @@ import java.net.URI
 import java.util.UUID
 
 class WebSocketService : Service() {
-    private val tag = "Client"
+
+    private var replyType: Int? = null
     private lateinit var client: Client
     private val binder = SocketBinder()
     private val handler = Handler()
     private val runnable = HeartBeat()
     private val heartBeatRate: Long = 10 * 1000
-    private val messageMap = mutableMapOf<String, String>()
+    private val opMap = mutableMapOf<String, Int>()
+    private val dialogueMap = mutableMapOf<String, String>()
 
     override fun onBind(p0: Intent?): IBinder? {
         return binder
@@ -47,14 +48,18 @@ class WebSocketService : Service() {
             client = object : Client(uri) {
                 override fun onMessage(message: String?) {
                     Log.i("Client Received", message.toString())
+                    Log.i("MessageMap Before:", opMap.toString())
                     val msg =
                         JSON.parseObject(message, com.example.adonis.entity.Message::class.java)
                     if (msg.id != null) {
                         if (msg.type == FilterString.REPLY_MESSAGE) {
                             val replyMessage = msg.replyMessage
-                            if (messageMap.remove(replyMessage.messageToReplyId) == null) {
+                            replyType = opMap[replyMessage.messageToReplyId]
+                            if (opMap.remove(replyMessage.messageToReplyId) == null && dialogueMap.remove(replyMessage.messageToReplyId) == null) {
                                 return
                             }
+                            val dialogIntent = Intent(FilterString.REPLY_MESSAGE)
+                            sendBroadcast(dialogIntent)
                         } else {
                             val reply = Message()
                             val replyMessage = ReplyMessage()
@@ -70,6 +75,7 @@ class WebSocketService : Service() {
                                 FilterString.USER_INFO_MESSAGE -> {
                                     val userInfoMessage: UserInfoMessage = msg.userInfoMessage
                                     val intent = Intent(FilterString.USER_INFO_MESSAGE)
+                                    intent.putExtra(FilterString.TYPE, replyType)
                                     intent.putExtra(FilterString.COED, userInfoMessage.code)
                                     sendBroadcast(intent)
                                 }
@@ -86,17 +92,22 @@ class WebSocketService : Service() {
                                     val friendInfoMessage = msg.friendInfoMessage
                                     val intent = Intent(FilterString.FRIEND_INFO_MESSAGE)
                                     val jsonInfo = JSON.toJSONString(friendInfoMessage)
+                                    intent.putExtra(FilterString.TYPE, replyType)
                                     intent.putExtra(FilterString.FRIEND_INFO_MESSAGE, jsonInfo)
                                     sendBroadcast(intent)
                                 }
 
                                 FilterString.DIALOGUE_INFO_MESSAGE -> {
-
+                                    val dialogueMessage = msg.dialogueInfoMessage
+                                    val intent = Intent(FilterString.DIALOGUE_INFO_MESSAGE)
+                                    val jsonMessage = JSON.toJSONString(dialogueMessage)
+                                    intent.putExtra(FilterString.DIALOGUE_INFO_MESSAGE, jsonMessage)
+                                    sendBroadcast(intent)
                                 }
                             }
                         }
                     }
-                    Log.i("MessageMap", messageMap.toString())
+                    Log.i("MessageMap After:", opMap.toString())
                     super.onMessage(message)
                 }
             }
@@ -126,26 +137,27 @@ class WebSocketService : Service() {
             }
         }.start()
     }
+
     fun sendMessage(message: String?, id: String?){
         if (this::client.isInitialized) {
             try {
                 client.send(message)
-                Log.i("Client Send", message.toString())
+                Log.i("Client:", message.toString())
                 if (id != null)
-                    messageMap[id.toString()] = message.toString()
+                    dialogueMap[id.toString()] = message.toString()
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    fun sendMessage(message: String?, id: String?, type: Int?){
+    fun sendMessage(message: String?, id: String?, type: Int){
         if (this::client.isInitialized) {
             try {
                 client.send(message)
-                Log.i(tag, message.toString())
+                Log.i("Client:", message.toString())
                 if (id != null)
-                    messageMap[id.toString()] = type.toString()
+                    opMap[id.toString()] = type
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
             }
@@ -155,7 +167,6 @@ class WebSocketService : Service() {
         if (this::client.isInitialized) {
             try {
                 client.send(message)
-                Log.i(tag, message.toString())
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
             }
@@ -178,12 +189,12 @@ class WebSocketService : Service() {
             if (this@WebSocketService::client.isInitialized) {
                 if (client.isClosed) {
                     reconnectServer()
-                    Log.d(tag, "ws连接关闭，已重连")
+                    Log.d("Client:", "ws连接关闭，已重连")
                 }
             }
             else {
                 initClient()
-                Log.d(tag, "client为空，已重新初始化")
+                Log.d("Client:", "client为空，已重新初始化")
             }
             handler.postDelayed(this, heartBeatRate)
         }

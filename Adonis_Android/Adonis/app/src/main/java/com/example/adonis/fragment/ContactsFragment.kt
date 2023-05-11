@@ -1,6 +1,7 @@
 package com.example.adonis.fragment
 
 import android.app.Activity
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +19,8 @@ import com.alibaba.fastjson.JSON
 import com.example.adonis.R
 import com.example.adonis.activity.AddActivity
 import com.example.adonis.activity.NewFriendsActivity
+import com.example.adonis.activity.UserInfoActivity
+import com.example.adonis.application.AdonisApplication
 import com.example.adonis.entity.FilterString
 import com.example.adonis.entity.FriendInfoMessage
 import com.example.adonis.entity.MessageCode
@@ -41,6 +44,7 @@ class ContactsFragment : Fragment() {
     private val adapter = ContactsAdapter()
     private val contacts = mutableListOf<FriendInfoMessage>()
     private val newFriends = mutableListOf<FriendInfoMessage>()
+    private lateinit var data: AdonisApplication
 
     private var newNum: TextView? = null
 
@@ -56,6 +60,8 @@ class ContactsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        data = activity?.application as AdonisApplication
+
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_contacts, container, false)
         val moreButton = view.findViewById<Button>(R.id.button_contacts_more)
@@ -65,13 +71,19 @@ class ContactsFragment : Fragment() {
         val layout = LinearLayoutManager(recyclerView.context)
         layout.orientation = LinearLayoutManager.VERTICAL
 
+        adapter.setItemClickedListener(object : ContactsAdapter.OnItemClickedListener {
+            override fun onItemClick(holder: ContactsAdapter.ContactsHolder) {
+                val intent = Intent(activity, UserInfoActivity::class.java)
+                intent.putExtra(FilterString.ID, holder.id)
+                startActivity(intent)
+            }
+        })
+
         recyclerView.layoutManager = layout
         recyclerView.adapter = adapter
 
         itemNew.setOnClickListener {
             val intent = Intent(activity, NewFriendsActivity::class.java)
-            val jsonData = JSON.toJSONString(newFriends)
-            intent.putExtra(FilterString.DATA, jsonData)
             startActivity(intent)
         }
 
@@ -93,23 +105,20 @@ class ContactsFragment : Fragment() {
         return view
     }
 
-    fun initContacts(info: List<FriendInfoMessage>) {
-        for (item in info) {
-            if (item.code == MessageCode.fif_already_add.id) {
-                contacts.add(item)
-            }
-            else {
-                newFriends.add(item)
-            }
-        }
-        newNum?.text = newFriends.size.toString()
-        adapter.initContacts(contacts)
+    fun initContacts() {
+        newNum?.text = data.getNewFriends().size.toString()
+        adapter.initContacts(data.getContacts())
         adapter.notifyDataSetChanged()
     }
 
     fun addContacts(user: FriendInfoMessage) {
         adapter.addContacts(user)
         adapter.notifyDataSetChanged()
+    }
+
+    fun updateNewFriends(user: FriendInfoMessage) {
+        data.addNewFriends(user)
+        newNum?.text = data.getNewFriends().size.toString()
     }
 
     companion object {

@@ -16,6 +16,7 @@ import android.widget.Toast
 
 import com.alibaba.fastjson.JSON
 import com.example.adonis.R
+import com.example.adonis.application.AdonisApplication
 import com.example.adonis.entity.Code
 import com.example.adonis.entity.FilterString
 import com.example.adonis.entity.Message
@@ -43,6 +44,8 @@ class LoginActivity : AppCompatActivity() {
         val buttonLogin:Button = findViewById(R.id.button_login)
         val buttonSignup:Button = findViewById(R.id.button_signup)
 
+        val data = application as AdonisApplication
+
         buttonLogin.setOnClickListener {
             val id = textUser.text.toString()
             val pwd = textPassword.text.toString()
@@ -66,14 +69,14 @@ class LoginActivity : AppCompatActivity() {
 
             val userOpMessage = UserOpMessage()
             val message = Message()
-            userOpMessage.code = MessageCode.uop_sign_in.id
+            userOpMessage.code = MessageCode.UOP_SIGN_IN.id
             userOpMessage.id = id
             userOpMessage.password = pwd
             message.id = UUID.randomUUID().toString()
             message.type = FilterString.USER_OP_MESSAGE
             message.userOpMessage = userOpMessage
             val msg = JSON.toJSONString(message)
-            service.sendMessage(msg, message.id, MessageCode.uop_sign_in.id)
+            service.sendMessage(msg, message.id, MessageCode.UOP_SIGN_IN.id)
 
         }
 
@@ -110,6 +113,7 @@ class LoginActivity : AppCompatActivity() {
                     editor.putString(FilterString.ID, textUser.text.toString())
                     editor.putBoolean(FilterString.IF_ONLINE, true)
                     editor.apply()
+                    data.initMyID(textUser.text.toString())
                     val intent = Intent()
                     intent.setClass(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)

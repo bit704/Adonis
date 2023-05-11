@@ -18,6 +18,9 @@ class NewFriendsAdapter: Adapter<NewFriendsAdapter.NewFriendsViewHolder>() {
 
     private val REQUEST: Int = 1
     private val INVITATION: Int = 2
+    private val ADDED: Int = 3
+    private val AGREE: Int = 4
+    private val REFUSE: Int = 5
 
     inner class NewFriendsViewHolder(itemView: View) : ViewHolder(itemView) {
         val avatar: ImageView = itemView.findViewById(R.id.new_friends_avatar)
@@ -41,24 +44,50 @@ class NewFriendsAdapter: Adapter<NewFriendsAdapter.NewFriendsViewHolder>() {
         holder.nickname.text = list[position].nickname
         holder.request.text = list[position].memo
         holder.id = list[position].id
-        if (getItemViewType(position) == INVITATION) {
-            holder.button.setOnClickListener {
-                if (listener != null) {
-                    listener?.onAgreeButtonClick(holder)
+
+        holder.button.isClickable = false
+        when(getItemViewType(position))  {
+            INVITATION-> {
+                holder.button.isClickable = true
+                holder.button.setOnClickListener {
+                   if (listener != null) {
+                       listener?.onAgreeButtonClick(holder)
+                   }
                 }
             }
-        } else {
-            holder.button.isClickable = false
-            holder.button.text = "待通过"
+            REQUEST -> {
+                holder.button.text = "待通过"
+            }
+            ADDED -> {
+                holder.button.text = "已通过"
+            }
+            REFUSE -> {
+                holder.button.text = "已拒绝"
+            }
+            AGREE -> {
+                holder.button.text = "已添加"
+            }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         var type: Int = 0
-        type = if (list[position].code == MessageCode.fif_add.id) {
-            INVITATION
-        } else {
-            REQUEST
+        type = when (list[position].code) {
+            MessageCode.FIF_ADD_YOU.id -> {
+                INVITATION
+            }
+            MessageCode.FIF_OP_SUCCESS.id -> {
+                ADDED
+            }
+            MessageCode.FIF_ADD_TO.id -> {
+                REQUEST
+            }
+            MessageCode.FIF_ADD_CONSENT.id -> {
+                AGREE
+            }
+            else -> {
+                REFUSE
+            }
         }
         return type
     }
@@ -72,6 +101,16 @@ class NewFriendsAdapter: Adapter<NewFriendsAdapter.NewFriendsViewHolder>() {
     }
 
     fun initNewFriendsList(list: MutableList<FriendInfoMessage>) {
-        this.list.addAll(list)
+        this.list = list
+    }
+
+    fun addNewFriends(user: FriendInfoMessage) {
+        list.add(0, user)
+        notifyItemInserted(0)
+        notifyItemChanged(0)
+    }
+    fun updateStates(position: Int) {
+        list[position].code = MessageCode.FIF_OP_SUCCESS.id
+        notifyItemChanged(position)
     }
 }

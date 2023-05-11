@@ -13,10 +13,13 @@ import com.example.adonis.entity.FriendInfoMessage
 
 class ContactsAdapter: RecyclerView.Adapter<ContactsAdapter.ContactsHolder>() {
     private var contacts = mutableListOf<FriendInfoMessage>()
+    private var listener: OnItemClickedListener? = null
 
     inner class ContactsHolder(itemView: View) : ViewHolder(itemView){
         val avatar = itemView.findViewById<ImageView>(R.id.contacts_avatar)
         val nickname = itemView.findViewById<TextView>(R.id.contacts_nickname)
+        var id: String? = null
+        var remark: String? = null
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactsHolder {
@@ -29,14 +32,32 @@ class ContactsAdapter: RecyclerView.Adapter<ContactsAdapter.ContactsHolder>() {
     }
 
     override fun onBindViewHolder(holder: ContactsHolder, position: Int) {
-        holder.nickname.text = contacts[position].nickname
+        holder.id = contacts[position].id
+        if (contacts[position].customNickname != null) {
+            holder.nickname.text = contacts[position].customNickname
+            holder.remark = contacts[position].customNickname
+        } else {
+            holder.nickname.text = contacts[position].nickname
+        }
+        holder.itemView.setOnClickListener {
+            listener?.onItemClick(holder)
+        }
+
     }
 
-    fun initContacts(contacts: List<FriendInfoMessage>) {
-        this.contacts.addAll(contacts.toMutableList())
+    fun initContacts(contacts: MutableList<FriendInfoMessage>) {
+        this.contacts = contacts
     }
 
     fun addContacts(user: FriendInfoMessage) {
         contacts.add(user)
+    }
+
+    interface OnItemClickedListener {
+        fun onItemClick(holder: ContactsHolder)
+    }
+
+    fun setItemClickedListener(listener: OnItemClickedListener) {
+        this.listener = listener
     }
 }
