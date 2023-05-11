@@ -1,23 +1,23 @@
-package com.reddish.adonis.service;
+package com.reddish.adonis.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.reddish.adonis.AO.*;
-import com.reddish.adonis.exception.MessageException;
-import com.reddish.adonis.exception.UserInfoException;
+import com.reddish.adonis.Manager.Exception.MessageException;
+import com.reddish.adonis.Manager.Exception.UserInfoException;
 import com.reddish.adonis.DAO.DialogueMapper;
 import com.reddish.adonis.DAO.FriendMapper;
 import com.reddish.adonis.DAO.UserMapper;
 import com.reddish.adonis.DO.Dialogue;
 import com.reddish.adonis.DO.Friend;
 import com.reddish.adonis.DO.User;
-import com.reddish.adonis.websocket.Dispatcher;
+import com.reddish.adonis.Websocket.Dispatcher;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.Session;
 import java.util.*;
 
-import static com.reddish.adonis.exception.ExceptionCode.*;
+import static com.reddish.adonis.Manager.Exception.ExceptionCode.*;
 import static com.reddish.adonis.AO.MessageCode.*;
 
 @Service

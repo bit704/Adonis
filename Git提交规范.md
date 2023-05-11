@@ -7,6 +7,8 @@
 
 三个字段: type (必须)， content(必须) 和 scope(可选)。
 
+（注意，`:`后需要带空格）
+
 1. type用于说明该 commit 的类型的：
 
    feat: 新功能(feature)

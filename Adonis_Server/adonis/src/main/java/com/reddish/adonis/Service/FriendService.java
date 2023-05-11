@@ -1,9 +1,10 @@
-package com.reddish.adonis.service;
+package com.reddish.adonis.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.reddish.adonis.exception.FriendInfoException;
-import com.reddish.adonis.exception.MessageException;
+import com.reddish.adonis.Manager.DAOManager;
+import com.reddish.adonis.Manager.Exception.FriendInfoException;
+import com.reddish.adonis.Manager.Exception.MessageException;
 import com.reddish.adonis.DAO.FriendMapper;
 import com.reddish.adonis.DAO.UserMapper;
 import com.reddish.adonis.DO.Friend;
@@ -12,12 +13,13 @@ import com.reddish.adonis.AO.FriendInfoMessage;
 import com.reddish.adonis.AO.FriendOpMessage;
 import com.reddish.adonis.AO.Message;
 import com.reddish.adonis.AO.MessageCode;
-import com.reddish.adonis.websocket.Dispatcher;
+import com.reddish.adonis.Manager.SendManager;
+import com.reddish.adonis.Websocket.Dispatcher;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.Session;
 
-import static com.reddish.adonis.exception.ExceptionCode.*;
+import static com.reddish.adonis.Manager.Exception.ExceptionCode.*;
 import static com.reddish.adonis.AO.MessageCode.*;
 
 
@@ -27,21 +29,37 @@ public class FriendService {
     private final UserMapper userMapper;
     private final FriendMapper friendMapper;
 
-    public FriendService(UserMapper userMapper, FriendMapper friendMapper) {
+    private final DAOManager DAOManager;
+    private final SendManager sendManager;
+
+    public FriendService(UserMapper userMapper, FriendMapper friendMapper, DAOManager DAOManager, SendManager sendManager) {
         this.userMapper = userMapper;
         this.friendMapper = friendMapper;
+        this.DAOManager = DAOManager;
+        this.sendManager = sendManager;
     }
 
 
     private void sendInfoForOp(FriendOpMessage friendOpMessage, MessageCode messageCode, String infoId, String send2Id) {
         FriendInfoMessage friendInfoMessage = new FriendInfoMessage();
+
+        // 消息代码
         friendInfoMessage.setCode(messageCode.getId());
+
+        // 此消息要说明的用户
         friendInfoMessage.setId(infoId);
-        // 发出friendOpMessage的用户
-        User user = userMapper.selectById(friendOpMessage.getSubjectId());
-        friendInfoMessage.setNickname(user.getNickname());
-        // 此字段在发送此类回复时其实没有用
+
+        // friendOpMessage指定要操作的用户
+        User user = userMapper.selectById(friendOpMessage.getObjectId());
+        if (user != null) {
+            // 好友昵称
+            friendInfoMessage.setNickname(user.getNickname());
+        }
+
+        // 对好友的备注昵称
         friendInfoMessage.setCustomNickname(friendOpMessage.getCustomNickname());
+
+        // 备注
         friendInfoMessage.setMemo(friendOpMessage.getMemo());
 
         Message message = new Message(friendInfoMessage);
@@ -140,14 +158,14 @@ public class FriendService {
                         // 或被对方拒绝，又重新给对方发送好友申请
                         // 也要先删除好友关系
                         deleteFriend(subjectId, objectId);
-                        friendMapper.insert(new Friend(subjectId, objectId, 0, null, friendOpMessage.getMemo()));
+                        friendMapper.insert(new Friend(subjectId, objectId, 0, friendOpMessage.getCustomNickname(), friendOpMessage.getMemo()));
                         // 已经申请过了，更新一下申请
                     } else if (friend_so.getStatus() == 0) {
                         updateMemo(subjectId, objectId, friendOpMessage.getMemo());
                     }
                 } else {
                     // 直接写入数据库
-                    friendMapper.insert(new Friend(subjectId, objectId, 0, null, friendOpMessage.getMemo()));
+                    friendMapper.insert(new Friend(subjectId, objectId, 0, friendOpMessage.getCustomNickname(), friendOpMessage.getMemo()));
                 }
 
                 // 对方刚好在线，直接发给o
@@ -161,24 +179,28 @@ public class FriendService {
             case FOP_CONSENT -> {
 
                 // o申请将s加入好友列表，s同意
-                // s将o加入好友列表，将申请状态更新为同意状态
-                updateStatus(subjectId, objectId, 1);
+                // o对s的申请改为o和s已是好友
+                updateStatus(objectId, subjectId, 1);
 
-                // o也将s加入好友列表
-                if (friend_os == null) {
+                // s将o加入好友列表
+                if (friend_so == null) {
                     // o没给s发过好友申请，需要插入
-                    friendMapper.insert(new Friend(objectId, subjectId, 1, null, friend_so.getMemo()));
+                    friendMapper.insert(new Friend(subjectId, objectId, 1, null, null));
                 } else {
-                    // 只需更新
-                    updateStatus(objectId, subjectId, 1);
+                    // 已有申请，只需更新
+                    updateStatus(subjectId, objectId, 1);
                 }
 
-                // 对方刚好在线，告知o，s已经同意
-                if (Dispatcher.isOnline(subjectId)) {
+                // o刚好在线，告知o，s已经同意
+                if (Dispatcher.isOnline(objectId)) {
                     sendInfoForOp(friendOpMessage, FIF_ADD_CONSENT, subjectId, objectId);
                 }
 
-                // TODO 同意之后给双方发送系统默认消息
+                // 同意之后给双方发送系统默认消息
+                sendManager.sendDialogue(subjectId, objectId,
+                        "我们已经是好友了，快来聊天吧！", System.currentTimeMillis(), 0);
+                sendManager.sendDialogue(objectId, subjectId,
+                        "我们已经是好友了，快来聊天吧！", System.currentTimeMillis(), 0);
 
                 sendInfoForOp(friendOpMessage, FIF_OP_SUCCESS, objectId, subjectId);
 

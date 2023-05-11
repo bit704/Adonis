@@ -1,4 +1,4 @@
-package com.reddish.adonis.exception;
+package com.reddish.adonis.Manager.Exception;
 
 public enum ExceptionCode {
     /**

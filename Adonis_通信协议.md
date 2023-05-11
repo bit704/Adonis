@@ -28,49 +28,25 @@
 
 6. **DialogueInfoMessage**用于客户端向服务端发送和接收对话消息。
 
-   > 注意，客户端不需要填写DialogueInfoMessage的occurredTime字段，服务端会填写，以服务端中转时间表示消息发送时间。
-
 7. **UserOnlineMessage**用于服务端在客户端登录上线时，给其发送**离线期间**的消息，包括FriendInfoMessage和DialogueInfoMessage。用户**请求后**再发送。
 
 ### 2.2 消息代码
 
 消息代码位于`Adonis_Server/adonis/src/main/java/com/reddish/adonis/AO/MessageCode.java`。
 
-消息代码由枚举类的枚举对象表示，含有一个数字用作标识符，一个字符串用作解释性说明
+消息代码由具体消息对象携带，用枚举类的枚举对象表示，含有一个数字用作标识符，一个字符串用作解释性说明
 
 ### 2.3 异常代码
 
-异常类位于`Adonis_Server/adonis/src/main/java/com/reddish/adonis/exception/ExceptionCode.java`。
+异常代码位于`Adonis_Server/adonis/src/main/java/com/reddish/adonis/exception/ExceptionCode.java`。
 
-异常表示开发过程中可能出现的错误，以及应由客户端预防而不应在服务端出现的错误，实际中并无用途。
+异常代码由ReplyMessage对象携带，异常表示开发过程中可能出现的错误，以及应由客户端预防而不应在服务端出现的错误，实际中并无用途。
 
-## 3 协议说明
+## 3 详细说明
 
-### 3.1 UserOnlineMessage说明
+### 3.1 UserOpMessage和UserInfoMessage说明
 
-dialogueMessageList列表内含用户离线期间收到的所有DialogueMessage，按时间先后排序（以occurredTime作为排序字段）。
-
-friendInfoMessageList列表内含好友相关的所有FriendInfoMessage。
-
-这里的FriendInfoMessage会有的消息代码如下：
-
-FIF_ADD_YOU 此用户正申请将您加入好友列表
-
-FIF_ADD_TO 您正申请将此用户加入好友列表
-
-FIF_TWO_WAY 此用户和您是双向好友
-
-FIF_SINGLE_ON_YOU 此用户是您的单向好友（您列表没它，它列表有您）
-
-FIF_SINGLE_FOR_YOU 此用户是您的单向好友（您列表没它，它列表有您）
-
-FIF_BLOCK 此用户已将您拉黑
-
-FIF_REJECT 此用户拒绝您的好友申请
-
-FIF_NOT_EXIST 此用户已经注销，不存在了
-
-### 3.2 FriendOpMessage和FriendInfoMessage关系说明
+### 3.2 FriendOpMessage和FriendInfoMessage说明
 
 > 以下称FriendOpMessage中subjectId对应的用户为s，objectId对应的用户为o。
 
@@ -95,6 +71,36 @@ s发送FOP_BLOCK拉黑好友o。
 s发送FOP_CUSTOM_NICKNAME修改对好友o的备注昵称。
 
 s发送FOP_QUERY_FRIENDSHIP查询自己与o的好友关系，可能收到FIF_TWO_WAY、FIF_SINGLE_FOR_YOU、FIF_SINGLE_ON_YOU、FIF_FREE。
+
+FIF_OP_SUCCESS用来回复所有成功的FriendOpMessage。
+
+### 3.3 DialogueInfoMessage说明
+
+注意，客户端不需要填写DialogueInfoMessage的occurredTime字段，服务端会填写，以服务端中转时间表示消息发送时间。
+
+### 3.4 UserOnlineMessage说明
+
+dialogueMessageList列表内含用户离线期间收到的所有DialogueMessage，按时间先后排序（以occurredTime作为排序字段）。
+
+friendInfoMessageList列表内含好友相关的所有FriendInfoMessage。
+
+这里的FriendInfoMessage会有的消息代码如下：
+
+FIF_ADD_YOU 此用户正申请将您加入好友列表
+
+FIF_ADD_TO 您正申请将此用户加入好友列表
+
+FIF_TWO_WAY 此用户和您是双向好友
+
+FIF_SINGLE_ON_YOU 此用户是您的单向好友（您列表没它，它列表有您）
+
+FIF_SINGLE_FOR_YOU 此用户是您的单向好友（您列表没它，它列表有您）
+
+FIF_BLOCK 此用户已将您拉黑
+
+FIF_REJECT 此用户拒绝您的好友申请
+
+FIF_NOT_EXIST 此用户已经注销，不存在了
 
 ## 4 设计思路
 

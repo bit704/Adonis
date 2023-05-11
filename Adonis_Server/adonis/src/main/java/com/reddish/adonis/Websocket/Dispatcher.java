@@ -1,10 +1,13 @@
-package com.reddish.adonis.websocket;
+package com.reddish.adonis.Websocket;
 
 import com.alibaba.fastjson2.JSON;
-import com.reddish.adonis.exception.*;
-import com.reddish.adonis.service.DialogueService;
-import com.reddish.adonis.service.FriendService;
-import com.reddish.adonis.service.UserService;
+import com.reddish.adonis.Manager.Exception.DialogueInfoException;
+import com.reddish.adonis.Manager.Exception.FriendInfoException;
+import com.reddish.adonis.Manager.Exception.MessageException;
+import com.reddish.adonis.Manager.Exception.UserInfoException;
+import com.reddish.adonis.Service.DialogueService;
+import com.reddish.adonis.Service.FriendService;
+import com.reddish.adonis.Service.UserService;
 import com.reddish.adonis.AO.Message;
 import com.reddish.adonis.AO.ReplyMessage;
 import org.slf4j.Logger;
@@ -15,7 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.websocket.Session;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.reddish.adonis.exception.ExceptionCode.*;
+import static com.reddish.adonis.Manager.Exception.ExceptionCode.*;
 
 @Component
 public class Dispatcher {
