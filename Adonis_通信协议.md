@@ -46,13 +46,39 @@
 
 ### 3.1 UserOpMessage和UserInfoMessage说明
 
+客户端向服务端发送UserOpMessage，服务端向客户端发送UserInfoMessage。
+
+**其中消息代码所有可能的情况如下**
+
+UIF_OP_SUCCESS用来回复**所有**已成功处理的UserOpMessage。下面是其它情况。
+
+发送UOP_SIGN_IN请求登录，可能收到UIF_NOT_EXIST、UIF_WORRY_PASSWORD。
+
+发送UOP_SIGN_UP请求注册，可能收到UIF_ALREADY_EXIST、UIF_INCOMPLETE_INFO。
+
+下面情况均需要操作放在线，不在线会发送UIF_OFFLINE。
+
+发送UOP_SIGN_OUT下线。
+
+发送UOP_DELETE请求注销。
+
+发送UOP_CHANGE_NICKNAME修改昵称，可能收到UIF_NO_NICKNAME。
+
+发送UOP_CHANGE_PASSWORD修改密码，可能收到UIF_NO_PASSWORD。
+
+发送UOP_REQUEST_ONLINE_MESSAGE请求在线消息（同步自己不在线时的消息），必然收到UIF_REPLY_ONLINE_MESSAGE，然后服务端会发送UserOnlineMessage给请求方。
+
 ### 3.2 FriendOpMessage和FriendInfoMessage说明
+
+客户端向服务端发送FriendOpMessage，服务端向客户端发送FriendInfoMessage（不仅向操作发送方发送，也可能向操作涉及方发送）。
 
 > 以下称FriendOpMessage中subjectId对应的用户为s，objectId对应的用户为o。
 
-对于每一个FriendOpMessage，如果操作成功，s**必然**收到一个消息代码为FIF_OP_SUCCESS的FriendInfoMessage。
+FriendInfoMessage用于告知好友操作相关方（s、o）额外信息。
 
-除此之外，FriendInfoMessage用于告知好友操作相关方（s、o）额外信息。
+**其中消息代码所有可能的情况如下**
+
+FIF_OP_SUCCESS用来回复**所有**已成功处理的FriendOpMessage。下面是其它情况。
 
 s发送FOP_ADD请求添加o为好友，s可能收到FIF_BLOCK、FIF_ADD_CONSENT，o可能收到FIF_ADD_YOU。
 
@@ -72,11 +98,11 @@ s发送FOP_CUSTOM_NICKNAME修改对好友o的备注昵称。
 
 s发送FOP_QUERY_FRIENDSHIP查询自己与o的好友关系，可能收到FIF_TWO_WAY、FIF_SINGLE_FOR_YOU、FIF_SINGLE_ON_YOU、FIF_FREE。
 
-FIF_OP_SUCCESS用来回复所有成功的FriendOpMessage。
+### 3.3 DialogueMessage说明
 
-### 3.3 DialogueInfoMessage说明
+其中**lastedTime**字段表示消息存活时间T，由客户端填写。当消息查收方查看该消息后经过时间T，该消息会自动销毁。若T=0，表示该消息存活时间为无限。用长整型表示，单位为毫秒，意思是T的大小。
 
-注意，客户端不需要填写DialogueInfoMessage的occurredTime字段，服务端会填写，以服务端中转时间表示消息发送时间。
+客户端不需要填写**occurredTime**字段，服务端会填写，以服务端中转时间表示消息发送时间。用长整型表示，单位为毫秒，意义是自1970年1月1日 00:00:00 GMT到消息发送时刻经过的毫秒数，
 
 ### 3.4 UserOnlineMessage说明
 
@@ -101,6 +127,10 @@ FIF_BLOCK 此用户已将您拉黑
 FIF_REJECT 此用户拒绝您的好友申请
 
 FIF_NOT_EXIST 此用户已经注销，不存在了
+
+### 3.5 ReplyMessage说明
+
+ReplyMessage包含的异常代码应只用于开发调试。
 
 ## 4 设计思路
 

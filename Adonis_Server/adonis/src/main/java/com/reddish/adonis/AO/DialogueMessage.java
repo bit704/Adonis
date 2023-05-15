@@ -15,7 +15,7 @@ public class DialogueMessage {
     private String content;
     /**
      * 消息发送时间
-     * 自 1970 年 1 月 1 日 00:00:00 GMT 到 消息发送时刻 经过了多少毫秒
+     * 自1970年1月1日 00:00:00 GMT到消息发送时刻经过的毫秒数
      * 由服务端填写，以消息到达服务端的时间为准
      */
     private long occurredTime;
