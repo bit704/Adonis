@@ -1,10 +1,10 @@
 package com.reddish.adonis.Service;
 
+import com.reddish.adonis.AO.DialogueMessage;
 import com.reddish.adonis.Manager.DAOManager;
 import com.reddish.adonis.Manager.Exception.DialogueInfoException;
 import com.reddish.adonis.Manager.Exception.ExceptionCode;
 import com.reddish.adonis.Manager.Exception.MessageException;
-import com.reddish.adonis.AO.DialogueMessage;
 import com.reddish.adonis.Manager.SendManager;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +29,8 @@ public class DialogueService {
         String receiverId = dialogueMessage.getReceiverId();
 
         // 聊天双方是否都存在
-        if (!DAOManager.judgeUserExist(senderId) ||
-                !DAOManager.judgeUserExist(receiverId)) {
+        if (DAOManager.selectUserById(senderId) == null ||
+                DAOManager.selectUserById(receiverId) == null) {
             throw new DialogueInfoException(ExceptionCode.SHADOW_MAN);
         }
 

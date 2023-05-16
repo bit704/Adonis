@@ -1,47 +1,39 @@
 package com.reddish.adonis.Service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.reddish.adonis.AO.*;
-import com.reddish.adonis.Manager.Exception.MessageException;
-import com.reddish.adonis.Manager.Exception.UserInfoException;
-import com.reddish.adonis.DAO.DialogueMapper;
-import com.reddish.adonis.DAO.FriendMapper;
-import com.reddish.adonis.DAO.UserMapper;
 import com.reddish.adonis.DO.Dialogue;
 import com.reddish.adonis.DO.Friend;
 import com.reddish.adonis.DO.User;
+import com.reddish.adonis.Manager.DAOManager;
+import com.reddish.adonis.Manager.Exception.MessageException;
+import com.reddish.adonis.Manager.Exception.UserInfoException;
+import com.reddish.adonis.Manager.SendManager;
 import com.reddish.adonis.Websocket.Dispatcher;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.Session;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static com.reddish.adonis.Manager.Exception.ExceptionCode.*;
 import static com.reddish.adonis.AO.MessageCode.*;
+import static com.reddish.adonis.Manager.Exception.ExceptionCode.*;
 
 @Service
 public class UserService {
+    private final DAOManager daoManager;
 
-    private final UserMapper userMapper;
-    private final FriendMapper friendMapper;
-    private final DialogueMapper dialogueMapper;
+    private final SendManager sendManager;
 
-    public UserService(UserMapper userMapper, FriendMapper friendMapper, DialogueMapper dialogueMapper) {
-        this.userMapper = userMapper;
-        this.friendMapper = friendMapper;
-        this.dialogueMapper = dialogueMapper;
-    }
-
-    private void sendInfoForOp(MessageCode messageCode, Session session) {
-        Dispatcher.sendMessage(session, new Message(new UserInfoMessage(messageCode.getId())));
+    public UserService(DAOManager daoManager, SendManager sendManager) {
+        this.daoManager = daoManager;
+        this.sendManager = sendManager;
     }
 
     public void handle(UserOpMessage userOpMessage, Session session) throws MessageException, UserInfoException {
 
         String userId = userOpMessage.getId();
         // 查看表中是否有该user
-        User user = userMapper.selectById(userId);
+        User user = daoManager.selectUserById(userId);
 
         int code = userOpMessage.getCode();
         MessageCode messageCode = MessageCode.getCodeById(code);
@@ -74,9 +66,9 @@ public class UserService {
             } else if (userId == null || userOpMessage.getNickname() == null || userOpMessage.getPassword() == null) {
                 uif = UIF_INCOMPLETE_INFO;
             } else {
-                userMapper.insert(new User(userId, userOpMessage.getNickname(), userOpMessage.getPassword()));
+                daoManager.createNewUser(userId, userOpMessage.getNickname(), userOpMessage.getPassword());
                 // 默认自己是自己的好友
-                friendMapper.insert(new Friend(userId, userId, 1, null, null));
+                daoManager.createNewFriendship(userId, userId);
                 uif = UIF_OP_SUCCESS;
             }
             // 校验消息内用户ID与session拥有用户ID是否一致
@@ -95,28 +87,24 @@ public class UserService {
                 }
                 case UOP_DELETE -> {
                     // TODO 还应该删除与其相关的好友信息和对话信息
-                    userMapper.deleteById(userId);
+                    daoManager.deleteUser(userId);
                     uif = UIF_OP_SUCCESS;
                 }
                 case UOP_CHANGE_NICKNAME -> {
-                    UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
-                    String nickname_new = userOpMessage.getNickname();
-                    if (nickname_new == null) {
+                    String nicknameNew = userOpMessage.getNickname();
+                    if (nicknameNew == null) {
                         uif = UIF_NO_NICKNAME;
                     } else {
-                        updateWrapper.eq("id", userId).set("nickname", nickname_new);
-                        userMapper.update(null, updateWrapper);
+                        daoManager.updateUserNickname(userId, nicknameNew);
                         uif = UIF_OP_SUCCESS;
                     }
                 }
                 case UOP_CHANGE_PASSWORD -> {
-                    UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
-                    String password_new = userOpMessage.getPassword();
-                    if (password_new == null) {
+                    String passwordNew = userOpMessage.getPassword();
+                    if (passwordNew == null) {
                         uif = UIF_NO_PASSWORD;
                     } else {
-                        updateWrapper.eq("id", userId).set("password", password_new);
-                        userMapper.update(null, updateWrapper);
+                        daoManager.updateUserPassword(userId, passwordNew);
                         uif = UIF_OP_SUCCESS;
                     }
                 }
@@ -127,7 +115,7 @@ public class UserService {
                 default -> throw new MessageException(ILLEGAL_UOP_CODE);
             }
         }
-        sendInfoForOp(uif, session);
+        sendManager.sendUserInfoForUserOp(uif, session);
         if (UIF_REPLY_ONLINE_MESSAGE.equals(uif)) {
             sendUserOnlineMessage(session, userId);
         }
@@ -135,32 +123,26 @@ public class UserService {
 
     public void sendUserOnlineMessage(Session session, String userId) {
 
-        //向登录用户X发送上线消息
+        // 向登录用户X发送上线消息
         List<FriendInfoMessage> friendInfoMessageList = new ArrayList<>();
         List<DialogueMessage> dialogueMessageList = new ArrayList<>();
 
-        //首先查询X作为客体的好友关系
-        QueryWrapper<Friend> friendQueryWrapper_o = new QueryWrapper<>();
-        friendQueryWrapper_o.eq("objectId", userId);
-        List<Friend> friendList = new ArrayList<>(friendMapper.selectList(friendQueryWrapper_o));
+        // 首先查询X作为客体的好友关系
+        List<Friend> friendList = daoManager.queryFriendsOfObject(userId);
 
         for (Friend friend_o : friendList) {
             FriendInfoMessage friendInfoMessage = new FriendInfoMessage();
             // 此处的好友是好友关系中的主体
             String friendId = friend_o.getSubjectId();
             friendInfoMessage.setId(friendId);
-            User friendUser = userMapper.selectById(friendId);
+            User friendUser = daoManager.selectUserById(friendId);
             // 好友还在，没有注销
             if (friendUser != null) {
                 friendInfoMessage.setNickname(friendUser.getNickname());
                 friendInfoMessage.setMemo(friend_o.getMemo());
 
                 // 查询X为主体此好友为客体的关系
-                QueryWrapper<Friend> friendQueryWrapper_so = new QueryWrapper<>();
-                friendQueryWrapper_so
-                        .eq("subjectId", userId)
-                        .eq("objectId", friendId);
-                Friend friend_so = friendMapper.selectOne(friendQueryWrapper_so);
+                Friend friend_so = daoManager.queryTheFriend(userId, friendId);
 
                 switch (friend_o.getStatus()) {
                     case 0 -> friendInfoMessage.setCode(FIF_ADD_YOU.getId());
@@ -178,11 +160,7 @@ public class UserService {
                 }
 
                 // 收集离线聊天记录
-                QueryWrapper<Dialogue> dialogueQueryWrapper = new QueryWrapper<>();
-                dialogueQueryWrapper
-                        .eq("senderId", friendId)
-                        .eq("receiverId", userId);
-                List<Dialogue> dialogueList = dialogueMapper.selectList(dialogueQueryWrapper);
+                List<Dialogue> dialogueList = daoManager.queryDialogues(friendId, userId);
                 for (Dialogue dialogue : dialogueList) {
                     dialogueMessageList.add(new DialogueMessage(
                             dialogue.getSenderId(),
@@ -191,9 +169,6 @@ public class UserService {
                             dialogue.getOccurredTime(),
                             dialogue.getLastedTime()));
                 }
-                // 聊天记录发完之后即删除
-                dialogueMapper.delete(dialogueQueryWrapper);
-
             } else {
                 friendInfoMessage.setCode(FIF_NOT_EXIST.getId());
             }
@@ -201,27 +176,20 @@ public class UserService {
         }
 
         //其次查询X作为主体的好友关系
-        QueryWrapper<Friend> friendQueryWrapper_s = new QueryWrapper<>();
-        friendQueryWrapper_s
-                .eq("subjectId", userId);
-        friendList = new ArrayList<>(friendMapper.selectList(friendQueryWrapper_s));
+        friendList = daoManager.queryFriendsOfSubject(userId);
         for (Friend friend_s : friendList) {
             // 此处的好友是好友关系中的客体
             String friendId = friend_s.getObjectId();
 
             // 查询X为客体此好友为主体的关系
-            QueryWrapper<Friend> friendQueryWrapper_os = new QueryWrapper<>();
-            friendQueryWrapper_os
-                    .eq("subjectId", friendId)
-                    .eq("objectId", userId);
-            Friend friend_os = friendMapper.selectOne(friendQueryWrapper_os);
+            Friend friend_os = daoManager.queryTheFriend(friendId, userId);
 
             // friend_os为空的才没有在之前查询过，需要补充
             if (friend_os == null) {
                 FriendInfoMessage friendInfoMessage = new FriendInfoMessage();
                 // 填写好友id
                 friendInfoMessage.setId(friend_s.getObjectId());
-                User friendUser = userMapper.selectById(friend_s.getObjectId());
+                User friendUser = daoManager.selectUserById(friend_s.getObjectId());
                 if (friendUser != null) {
                     friendInfoMessage.setNickname(friendUser.getNickname());
                     friendInfoMessage.setMemo(friend_s.getMemo());
