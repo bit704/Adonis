@@ -10,7 +10,7 @@
 
 ### 2.1 消息类
 
-消息类位于`Adonis_Server/adonis/src/main/java/com/reddish/adonis/AO`。
+消息类位于`Adonis_Server/adonis/src/main/java/com/reddish/adonis/Message`。
 
 全部消息均为**Message**类的对象，其**包含且仅包含一个**具体消息类的对象。Message类的对象将id作为唯一标识符，其用UUID生成。
 
