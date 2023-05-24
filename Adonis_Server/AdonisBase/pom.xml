@@ -11,8 +11,8 @@
     <groupId>com.reddish</groupId>
     <artifactId>AdonisBase</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>adonis</name>
-    <description>adonis</description>
+    <name>AdonisBase</name>
+    <description>AdonisBase</description>
     <properties>
         <java.version>19</java.version>
         <spring-cloud.version>2021.0.7</spring-cloud.version>
@@ -41,11 +41,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
 
         <!-- MyBatisPlus依赖 -->
