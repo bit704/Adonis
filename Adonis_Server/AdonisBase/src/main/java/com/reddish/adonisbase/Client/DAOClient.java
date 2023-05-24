@@ -82,8 +82,8 @@ public class DAOClient {
     public void createNewFriendship(@RequestParam String subjectId,
                                     @RequestParam String objectId,
                                     @RequestParam int Status,
-                                    @RequestParam String customNickname,
-                                    @RequestParam String memo) {
+                                    @RequestParam(defaultValue = "") String customNickname,
+                                    @RequestParam(defaultValue = "") String memo) {
         friendMapper.insert(new Friend(subjectId, objectId, Status, customNickname, memo));
     }
 

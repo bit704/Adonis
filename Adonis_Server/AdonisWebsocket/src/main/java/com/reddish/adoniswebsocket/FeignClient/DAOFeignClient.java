@@ -39,8 +39,8 @@ public interface DAOFeignClient {
     void createNewFriendship(@RequestParam String subjectId,
                              @RequestParam String objectId,
                              @RequestParam int Status,
-                             @RequestParam String customNickname,
-                             @RequestParam String memo);
+                             @RequestParam(defaultValue = "") String customNickname,
+                             @RequestParam(defaultValue = "") String memo);
 
     @GetMapping("/DAO/updateFriendStatus")
     void updateFriendStatus(@RequestParam String subjectId,
