@@ -8,6 +8,7 @@ import com.reddish.adonisbase.DAO.UserMapper;
 import com.reddish.adonisbase.DO.Dialogue;
 import com.reddish.adonisbase.DO.Friend;
 import com.reddish.adonisbase.DO.User;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,9 +40,23 @@ public class DAOClient {
         userMapper.insert(new User(userId, nickname, password));
     }
 
-    // 删除用户
+    // 注销用户前删除与其相关的的好友信息和所有对话消息，避免违反外键约束
+    // 使用事务
+    @Transactional
     @GetMapping("/DAO/deleteUser")
     public void deleteUser(@RequestParam String userId) {
+        QueryWrapper<Friend> friendQueryWrapper = new QueryWrapper<>();
+        friendQueryWrapper
+                .eq("subjectId", userId)
+                .or()
+                .eq("objectId", userId);
+        friendMapper.delete(friendQueryWrapper);
+        QueryWrapper<Dialogue> dialogueQueryWrapper = new QueryWrapper<>();
+        friendQueryWrapper
+                .eq("senderId", userId)
+                .or()
+                .eq("receiverId", userId);
+        dialogueMapper.delete(dialogueQueryWrapper);
         userMapper.deleteById(userId);
     }
 

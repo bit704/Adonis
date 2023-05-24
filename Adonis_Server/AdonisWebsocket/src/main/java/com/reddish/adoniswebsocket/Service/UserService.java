@@ -84,7 +84,6 @@ public class UserService {
                     uif = UIF_OP_SUCCESS;
                 }
                 case UOP_DELETE -> {
-                    // TODO 注销前删除与其相关的的好友信息和所有对话消息
                     daoFeignClient.deleteUser(userId);
                     uif = UIF_OP_SUCCESS;
                 }
