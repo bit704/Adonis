@@ -36,7 +36,9 @@ public class DAOClient {
 
     // 创建新用户
     @GetMapping("/DAO/createNewUser")
-    public void createNewUser(@RequestParam String userId, @RequestParam String nickname, @RequestParam String password) {
+    public void createNewUser(@RequestParam String userId,
+                              @RequestParam String nickname,
+                              @RequestParam String password) {
         userMapper.insert(new User(userId, nickname, password));
     }
 
@@ -61,31 +63,34 @@ public class DAOClient {
     }
 
     @GetMapping("/DAO/updateUserPassword")
-    public void updateUserPassword(@RequestParam String userId, @RequestParam String password) {
+    public void updateUserPassword(@RequestParam String userId,
+                                   @RequestParam String password) {
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", userId).set("password", password);
         userMapper.update(null, updateWrapper);
     }
 
     @GetMapping("/DAO/updateUserNickname")
-    public void updateUserNickname(@RequestParam String userId, @RequestParam String nickname) {
+    public void updateUserNickname(@RequestParam String userId,
+                                   @RequestParam String nickname) {
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", userId).set("nickname", nickname);
         userMapper.update(null, updateWrapper);
     }
 
-    @GetMapping("/DAO/createNewFriendship1")
-    public void createNewFriendship(@RequestParam String subjectId, @RequestParam String objectId) {
-        friendMapper.insert(new Friend(subjectId, objectId, 1, null, null));
-    }
-
-    @GetMapping("/DAO/createNewFriendship2")
-    public void createNewFriendship(@RequestParam String subjectId, @RequestParam String objectId, @RequestParam int Status, @RequestParam String customNickname, @RequestParam String memo) {
+    @GetMapping("/DAO/createNewFriendship")
+    public void createNewFriendship(@RequestParam String subjectId,
+                                    @RequestParam String objectId,
+                                    @RequestParam int Status,
+                                    @RequestParam String customNickname,
+                                    @RequestParam String memo) {
         friendMapper.insert(new Friend(subjectId, objectId, Status, customNickname, memo));
     }
 
     @GetMapping("/DAO/updateFriendStatus")
-    public void updateFriendStatus(@RequestParam String subjectId, @RequestParam String objectId, @RequestParam int status) {
+    public void updateFriendStatus(@RequestParam String subjectId,
+                                   @RequestParam String objectId,
+                                   @RequestParam int status) {
         UpdateWrapper<Friend> updateWrapper = new UpdateWrapper<>();
         updateWrapper
                 .eq("subjectId", subjectId)
@@ -95,7 +100,9 @@ public class DAOClient {
     }
 
     @GetMapping("/DAO/updateFriendCustomNickname")
-    public void updateFriendCustomNickname(@RequestParam String subjectId, @RequestParam String objectId, @RequestParam String customNickname) {
+    public void updateFriendCustomNickname(@RequestParam String subjectId,
+                                           @RequestParam String objectId,
+                                           @RequestParam String customNickname) {
         UpdateWrapper<Friend> updateWrapper = new UpdateWrapper<>();
         updateWrapper
                 .eq("subjectId", subjectId)
@@ -105,7 +112,9 @@ public class DAOClient {
     }
 
     @GetMapping("/DAO/updateFriendMemo")
-    public void updateFriendMemo(@RequestParam String subjectId, @RequestParam String objectId, @RequestParam String memo) {
+    public void updateFriendMemo(@RequestParam String subjectId,
+                                 @RequestParam String objectId,
+                                 @RequestParam String memo) {
         UpdateWrapper<Friend> updateWrapper = new UpdateWrapper<>();
         updateWrapper
                 .eq("subjectId", subjectId)
@@ -116,7 +125,8 @@ public class DAOClient {
 
     // 判断objectId是不是subjectId的单向好友
     @GetMapping("/DAO/judgeFriendshipOneWay")
-    public boolean judgeFriendshipOneWay(@RequestParam String subjectId, @RequestParam String objectId) {
+    public boolean judgeFriendshipOneWay(@RequestParam String subjectId,
+                                         @RequestParam String objectId) {
         QueryWrapper<Friend> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("subjectId", subjectId).eq("objectId", objectId);
         Friend friend = friendMapper.selectOne(queryWrapper);
@@ -140,7 +150,8 @@ public class DAOClient {
     }
 
     @GetMapping("/DAO/queryTheFriend")
-    public Friend queryTheFriend(@RequestParam String subjectId, @RequestParam String objectId) {
+    public Friend queryTheFriend(@RequestParam String subjectId,
+                                 @RequestParam String objectId) {
         QueryWrapper<Friend> friendQueryWrapper = new QueryWrapper<>();
         friendQueryWrapper
                 .eq("subjectId", subjectId)
@@ -149,7 +160,8 @@ public class DAOClient {
     }
 
     @GetMapping("/DAO/deleteFriend")
-    public void deleteFriend(@RequestParam String subjectId, @RequestParam String objectId) {
+    public void deleteFriend(@RequestParam String subjectId,
+                             @RequestParam String objectId) {
         QueryWrapper<Friend> queryWrapper = new QueryWrapper<>();
         queryWrapper
                 .eq("subjectId", subjectId)
@@ -158,13 +170,18 @@ public class DAOClient {
     }
 
     @GetMapping("/DAO/saveDialogue")
-    public void saveDialogue(@RequestParam String senderId, @RequestParam String receiverId, @RequestParam String content, @RequestParam long occurredTime, @RequestParam long lastedTime) {
+    public void saveDialogue(@RequestParam String senderId,
+                             @RequestParam String receiverId,
+                             @RequestParam String content,
+                             @RequestParam long occurredTime,
+                             @RequestParam long lastedTime) {
         dialogueMapper.insert(
                 new Dialogue(senderId, receiverId, content, occurredTime, lastedTime));
     }
 
     @GetMapping("/DAO/queryDialogues")
-    public List<Dialogue> queryDialogues(@RequestParam String senderId, @RequestParam String receiverId) {
+    public List<Dialogue> queryDialogues(@RequestParam String senderId,
+                                         @RequestParam String receiverId) {
         QueryWrapper<Dialogue> dialogueQueryWrapper = new QueryWrapper<>();
         dialogueQueryWrapper
                 .eq("senderId", senderId)

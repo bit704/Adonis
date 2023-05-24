@@ -101,7 +101,7 @@ public class FriendService {
                 // s将o加入好友列表
                 if (friend_so == null) {
                     // o没给s发过好友申请，需要插入
-                    daoFeignClient.createNewFriendship(subjectId, objectId, 1, null, null);
+                    daoFeignClient.createNewFriendship(subjectId, objectId, 1, "", "");
                 } else {
                     // 已有申请，只需更新
                     daoFeignClient.updateFriendStatus(subjectId, objectId, 1);

@@ -66,7 +66,7 @@ public class UserService {
             } else {
                 daoFeignClient.createNewUser(userId, userOpMessage.getNickname(), userOpMessage.getPassword());
                 // 默认自己是自己的好友
-                daoFeignClient.createNewFriendship(userId, userId);
+                daoFeignClient.createNewFriendship(userId, userId, 1, "","");
                 uif = UIF_OP_SUCCESS;
             }
             // 校验消息内用户ID与session拥有用户ID是否一致
