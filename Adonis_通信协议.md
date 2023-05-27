@@ -10,7 +10,7 @@
 
 ### 2.1 消息类
 
-消息类位于`Adonis_Server/adonis/src/main/java/com/reddish/adonis/Message`。
+消息类位于`Adonis_Server/AdonisWebsocket/src/main/java/com/reddish/adoniswebsocket/Utils/Message`。
 
 全部消息均为**Message**类的对象，其**包含且仅包含一个**具体消息类的对象。Message类的对象将id作为唯一标识符，其用UUID生成。
 
@@ -30,15 +30,15 @@
 
 7. **UserOnlineMessage**用于服务端在客户端登录上线时，给其发送**离线期间**的消息，包括FriendInfoMessage和DialogueInfoMessage。用户**请求后**再发送。
 
-### 2.2 消息代码
-
-消息代码位于`Adonis_Server/adonis/src/main/java/com/reddish/adonis/AO/MessageCode.java`。
+消息代码位于`MessageCode.java`。
 
 消息代码由具体消息对象携带，用枚举类的枚举对象表示，含有一个数字用作标识符，一个字符串用作解释性说明
 
-### 2.3 异常代码
+### 2.2 异常类
 
-异常代码位于`Adonis_Server/adonis/src/main/java/com/reddish/adonis/exception/ExceptionCode.java`。
+异常类位于`Adonis_Server/AdonisWebsocket/src/main/java/com/reddish/adoniswebsocket/Utils/Exception`。
+
+异常代码位于`ExceptionCode.java`。
 
 异常代码由ReplyMessage对象携带，异常表示开发过程中可能出现的错误，以及应由客户端预防而不应在服务端出现的错误，实际中并无用途。
 

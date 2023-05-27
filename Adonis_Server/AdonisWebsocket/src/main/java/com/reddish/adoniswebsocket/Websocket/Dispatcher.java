@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.reddish.adoniswebsocket.Service.DialogueService;
 import com.reddish.adoniswebsocket.Service.FriendService;
 import com.reddish.adoniswebsocket.Service.UserService;
+import com.reddish.adoniswebsocket.Utils.Constants;
 import com.reddish.adoniswebsocket.Utils.Exception.*;
 import com.reddish.adoniswebsocket.Utils.Message.Message;
 import com.reddish.adoniswebsocket.Utils.Message.ReplyMessage;
@@ -65,7 +66,7 @@ public class Dispatcher {
 
             switch (messageType) {
                 // 首字母小写
-                case "userOpMessage" -> {
+                case Constants.userOpMessage -> {
                     // 先发reply表示收到
                     sendMesageForReply(session, message.getId(), 0);
                     if (message.getUserOpMessage() == null) {
@@ -74,7 +75,7 @@ public class Dispatcher {
                         userService.handle(message.getUserOpMessage(), session);
                     }
                 }
-                case "friendOpMessage" -> {
+                case Constants.friendOpMessage -> {
                     // 先发reply表示收到
                     sendMesageForReply(session, message.getId(), 0);
                     if (message.getFriendOpMessage() == null) {
@@ -83,7 +84,7 @@ public class Dispatcher {
                         friendService.handle(message.getFriendOpMessage());
                     }
                 }
-                case "dialogueMessage" -> {
+                case Constants.dialogueMessage -> {
                     // 先发reply表示收到
                     sendMesageForReply(session, message.getId(), 0);
                     if (message.getDialogueInfoMessage() == null) {
@@ -92,7 +93,7 @@ public class Dispatcher {
                         dialogueService.handle(message.getDialogueInfoMessage());
                     }
                 }
-                case "replyMessage" -> {
+                case Constants.replyMessage -> {
                     return;
                 }
                 default -> throw new MessageException(ExceptionCode.ILLEGAL_TYPE);
