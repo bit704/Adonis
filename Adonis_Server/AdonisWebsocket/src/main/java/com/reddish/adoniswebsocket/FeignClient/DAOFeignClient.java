@@ -1,9 +1,9 @@
 package com.reddish.adoniswebsocket.FeignClient;
 
 
-import com.reddish.adoniswebsocket.DTO.Dialogue;
-import com.reddish.adoniswebsocket.DTO.Friend;
-import com.reddish.adoniswebsocket.DTO.User;
+import com.reddish.adoniswebsocket.Utils.DTO.Dialogue;
+import com.reddish.adoniswebsocket.Utils.DTO.Friend;
+import com.reddish.adoniswebsocket.Utils.DTO.User;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

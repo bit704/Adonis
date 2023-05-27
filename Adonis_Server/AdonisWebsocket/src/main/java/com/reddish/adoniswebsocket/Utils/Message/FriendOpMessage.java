@@ -1,26 +1,26 @@
-package com.reddish.adoniswebsocket.Message;
+package com.reddish.adoniswebsocket.Utils.Message;
 
-public class FriendInfoMessage {
+public class FriendOpMessage {
+
     /**
      * 见MessageCode下编码
      */
     private int code;
-
     /**
-     * 涉及此消息的用户id
+     * 请求方账号，即发出此message的用户账号，简称为s
      */
-    private String id;
+    private String subjectId;
     /**
-     * 涉及此消息的用户nickname
+     * 被请求方账号，简称为o
      */
-    private String nickname;
-
+    private String objectId;
     /**
-     * 您对该用户的自定义备注名
+     * s对o的自定义备注名
      */
     private String customNickname;
     /**
-     * 涉及此消息的备注内容
+     * 添加好友时的申请备注
+     * 如：你好！我是XXX。
      */
     private String memo;
 
@@ -32,20 +32,20 @@ public class FriendInfoMessage {
         this.code = code;
     }
 
-    public String getId() {
-        return id;
+    public String getSubjectId() {
+        return subjectId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setSubjectId(String subjectId) {
+        this.subjectId = subjectId;
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getObjectId() {
+        return objectId;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
     public String getCustomNickname() {
@@ -66,22 +66,22 @@ public class FriendInfoMessage {
 
     @Override
     public String toString() {
-        return "FriendInfoMessage{" +
+        return "FriendOpMessage{" +
                 "code=" + code +
-                ", id='" + id + '\'' +
-                ", nickname='" + nickname + '\'' +
+                ", subjectId='" + subjectId + '\'' +
+                ", objectId='" + objectId + '\'' +
                 ", customNickname='" + customNickname + '\'' +
                 ", memo='" + memo + '\'' +
                 '}';
     }
 
-    public FriendInfoMessage() {
+    public FriendOpMessage() {
     }
 
-    public FriendInfoMessage(int code, String id, String nickname, String customNickname, String memo) {
+    public FriendOpMessage(int code, String subjectId, String objectId, String customNickname, String memo) {
         this.code = code;
-        this.id = id;
-        this.nickname = nickname;
+        this.subjectId = subjectId;
+        this.objectId = objectId;
         this.customNickname = customNickname;
         this.memo = memo;
     }

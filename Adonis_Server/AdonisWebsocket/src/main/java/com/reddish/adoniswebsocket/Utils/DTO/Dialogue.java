@@ -1,4 +1,4 @@
-package com.reddish.adoniswebsocket.DTO;
+package com.reddish.adoniswebsocket.Utils.DTO;
 
 import lombok.*;
 

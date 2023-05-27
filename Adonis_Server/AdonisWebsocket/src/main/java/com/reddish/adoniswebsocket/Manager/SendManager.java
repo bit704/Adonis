@@ -1,8 +1,8 @@
 package com.reddish.adoniswebsocket.Manager;
 
 import com.reddish.adoniswebsocket.FeignClient.DAOFeignClient;
-import com.reddish.adoniswebsocket.Message.*;
-import com.reddish.adoniswebsocket.DTO.User;
+import com.reddish.adoniswebsocket.Utils.DTO.User;
+import com.reddish.adoniswebsocket.Utils.Message.*;
 import com.reddish.adoniswebsocket.Websocket.Dispatcher;
 import org.springframework.stereotype.Component;
 

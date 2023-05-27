@@ -1,4 +1,4 @@
-package com.reddish.adoniswebsocket.Exception;
+package com.reddish.adoniswebsocket.Utils.Exception;
 
 public class FriendInfoException extends Exception {
     public ExceptionCode code;

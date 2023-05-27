@@ -1,4 +1,4 @@
-package com.reddish.adoniswebsocket.Message;
+package com.reddish.adoniswebsocket.Utils.Message;
 
 public class DialogueMessage {
     /**

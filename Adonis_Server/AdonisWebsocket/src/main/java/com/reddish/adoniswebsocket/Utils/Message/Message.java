@@ -1,4 +1,6 @@
-package com.reddish.adoniswebsocket.Message;
+package com.reddish.adoniswebsocket.Utils.Message;
+
+import com.reddish.adoniswebsocket.Utils.Constants;
 
 import java.util.UUID;
 
@@ -121,43 +123,43 @@ public class Message {
 
     public Message(ReplyMessage replyMessage) {
         this.id = UUID.randomUUID().toString();
-        this.type = "replyMessage";
+        this.type = Constants.replyMessage;
         this.replyMessage = replyMessage;
     }
 
     public Message(UserOpMessage userOpMessage) {
         this.id = UUID.randomUUID().toString();
-        this.type = "userOpMessage";
+        this.type = Constants.userOpMessage;
         this.userOpMessage = userOpMessage;
     }
 
     public Message(UserInfoMessage userInfoMessage) {
         this.id = UUID.randomUUID().toString();
-        this.type = "userInfoMessage";
+        this.type = Constants.userInfoMessage;
         this.userInfoMessage = userInfoMessage;
     }
 
     public Message(FriendOpMessage friendOpMessage) {
         this.id = UUID.randomUUID().toString();
-        this.type = "friendOpMessage";
+        this.type = Constants.friendOpMessage;
         this.friendOpMessage = friendOpMessage;
+    }
+
+    public Message(FriendInfoMessage friendInfoMessage) {
+        this.id = UUID.randomUUID().toString();
+        this.type = Constants.friendInfoMessage;
+        this.friendInfoMessage = friendInfoMessage;
     }
 
     public Message(DialogueMessage dialogueMessage) {
         this.id = UUID.randomUUID().toString();
-        this.type = "dialogueMessage";
+        this.type = Constants.dialogueMessage;
         this.dialogueMessage = dialogueMessage;
     }
 
     public Message(UserOnlineMessage userOnlineMessage) {
         this.id = UUID.randomUUID().toString();
-        this.type = "userOnlineMessage";
+        this.type = Constants.userOnlineMessage;
         this.userOnlineMessage = userOnlineMessage;
-    }
-
-    public Message(FriendInfoMessage friendInfoMessage) {
-        this.id = UUID.randomUUID().toString();
-        this.type = "friendInfoMessage";
-        this.friendInfoMessage = friendInfoMessage;
     }
 }

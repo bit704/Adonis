@@ -1,8 +1,8 @@
-package com.reddish.adoniswebsocket.Exception;
+package com.reddish.adoniswebsocket.Utils.Exception;
 
-public class UserInfoException extends Exception {
+public class MessageException extends Exception{
     public ExceptionCode code;
-    public UserInfoException(ExceptionCode code) {
+    public MessageException(ExceptionCode code) {
         this.code = code;
     }
     @Override

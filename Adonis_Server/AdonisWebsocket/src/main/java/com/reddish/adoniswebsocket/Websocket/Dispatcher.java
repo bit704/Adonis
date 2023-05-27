@@ -1,16 +1,12 @@
 package com.reddish.adoniswebsocket.Websocket;
 
 import com.alibaba.fastjson2.JSON;
-import com.reddish.adoniswebsocket.Exception.DialogueInfoException;
-import com.reddish.adoniswebsocket.Exception.FriendInfoException;
-import com.reddish.adoniswebsocket.Exception.MessageException;
-import com.reddish.adoniswebsocket.Exception.UserInfoException;
 import com.reddish.adoniswebsocket.Service.DialogueService;
 import com.reddish.adoniswebsocket.Service.FriendService;
 import com.reddish.adoniswebsocket.Service.UserService;
-import com.reddish.adoniswebsocket.Message.Message;
-import com.reddish.adoniswebsocket.Message.ReplyMessage;
-import com.reddish.adoniswebsocket.Exception.*;
+import com.reddish.adoniswebsocket.Utils.Exception.*;
+import com.reddish.adoniswebsocket.Utils.Message.Message;
+import com.reddish.adoniswebsocket.Utils.Message.ReplyMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +83,7 @@ public class Dispatcher {
                         friendService.handle(message.getFriendOpMessage());
                     }
                 }
-                case "dialogueInfoMessage" -> {
+                case "dialogueMessage" -> {
                     // 先发reply表示收到
                     sendMesageForReply(session, message.getId(), 0);
                     if (message.getDialogueInfoMessage() == null) {

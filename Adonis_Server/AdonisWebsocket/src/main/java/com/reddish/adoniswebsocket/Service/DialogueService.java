@@ -1,11 +1,11 @@
 package com.reddish.adoniswebsocket.Service;
 
-import com.reddish.adoniswebsocket.Exception.DialogueInfoException;
-import com.reddish.adoniswebsocket.Exception.ExceptionCode;
-import com.reddish.adoniswebsocket.Exception.MessageException;
+import com.reddish.adoniswebsocket.Utils.Exception.DialogueInfoException;
+import com.reddish.adoniswebsocket.Utils.Exception.ExceptionCode;
+import com.reddish.adoniswebsocket.Utils.Exception.MessageException;
 import com.reddish.adoniswebsocket.FeignClient.DAOFeignClient;
 import com.reddish.adoniswebsocket.Manager.SendManager;
-import com.reddish.adoniswebsocket.Message.DialogueMessage;
+import com.reddish.adoniswebsocket.Utils.Message.DialogueMessage;
 import org.springframework.stereotype.Service;
 
 @Service
