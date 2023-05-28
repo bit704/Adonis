@@ -87,10 +87,10 @@ public class Dispatcher {
                 case Constants.dialogueMessage -> {
                     // 先发reply表示收到
                     sendMesageForReply(session, message.getId(), 0);
-                    if (message.getDialogueInfoMessage() == null) {
+                    if (message.getDialogueMessage() == null) {
                         throw new MessageException(ExceptionCode.UNCONFORMITY);
                     } else {
-                        dialogueService.handle(message.getDialogueInfoMessage());
+                        dialogueService.handle(message.getDialogueMessage());
                     }
                 }
                 case Constants.replyMessage -> {
@@ -116,10 +116,14 @@ public class Dispatcher {
     // 发送消息
     public static void sendMessage(Session session, Message message) {
         try {
-            session.getAsyncRemote().sendText(JSON.toJSONString(message));
+            String messageString = JSON.toJSONString(message);
+            synchronized (session) {
+                session.getBasicRemote().sendText(messageString);
+            }
+            logger.info("[发送消息]"+messageString);
         } catch (Exception e) {
             logger.info(e.getMessage());
-            logger.info("异步发送消息失败！");
+            logger.info("[异常]发送消息失败！");
         }
     }
 

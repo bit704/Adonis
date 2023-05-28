@@ -87,11 +87,11 @@ public class Message {
         this.friendInfoMessage = friendInfoMessage;
     }
 
-    public DialogueMessage getDialogueInfoMessage() {
+    public DialogueMessage getDialogueMessage() {
         return dialogueMessage;
     }
 
-    public void setDialogueInfoMessage(DialogueMessage dialogueMessage) {
+    public void setDialogueMessage(DialogueMessage dialogueMessage) {
         this.dialogueMessage = dialogueMessage;
     }
 

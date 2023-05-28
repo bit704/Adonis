@@ -34,8 +34,8 @@ public class DialogueService {
 
         // 可以自己给自己发消息，user1和user2可以相同
         // 判断还是不是双向好友
-        if (daoFeignClient.judgeFriendshipOneWay(senderId, receiverId) ||
-                daoFeignClient.judgeFriendshipOneWay(receiverId, senderId)) {
+        if (!daoFeignClient.judgeFriendshipOneWay(senderId, receiverId) ||
+                !daoFeignClient.judgeFriendshipOneWay(receiverId, senderId)) {
             throw new DialogueInfoException(ExceptionCode.STRANGER);
         }
         sendManager.sendDialogue(senderId, receiverId,

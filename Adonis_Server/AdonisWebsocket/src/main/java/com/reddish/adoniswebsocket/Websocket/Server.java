@@ -16,7 +16,7 @@ public class Server {
     @OnOpen
     public void onOpen(Session session) {
         Dispatcher.selfId2SessionMap.put(session.getId(), session);
-        logger.info("[新连接]" + " session:" + session.getId() + " 当前连接数：" + Dispatcher.selfId2SessionMap.size());
+        logger.info("[新连接]" + "session:" + session.getId() + " 当前连接数：" + Dispatcher.selfId2SessionMap.size());
     }
 
     @OnClose
@@ -30,7 +30,7 @@ public class Server {
             Dispatcher.session2UserIdMap.remove(session);
             Dispatcher.userId2SessionMap.remove(userId);
         }
-        logger.info("[关闭连接]" + " session:" + session.getId() + " 当前连接数：" + Dispatcher.selfId2SessionMap.size());
+        logger.info("[关闭连接]" + "session:" + session.getId() + " 当前连接数：" + Dispatcher.selfId2SessionMap.size());
     }
 
     @OnMessage
