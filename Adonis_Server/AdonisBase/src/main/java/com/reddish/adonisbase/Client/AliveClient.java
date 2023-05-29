@@ -1,5 +1,6 @@
 package com.reddish.adonisbase.Client;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,7 +13,7 @@ public class AliveClient {
         this.aliveInfo = aliveInfo;
     }
 
-    @PostMapping("/alive")
+    @GetMapping("/alive")
     public AliveInfo alive(){
         return aliveInfo;
     }

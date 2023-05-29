@@ -1,7 +1,7 @@
 package com.reddish.adoniswebsocket.Client;
 
 import com.reddish.adoniswebsocket.FeignClient.AliveFeignClient;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class AliveClient {
         this.aliveFeignClient = aliveFeignClient;
     }
 
-    @RequestMapping("/alive")
+    @GetMapping("/alive")
     List<AliveInfo> alive() {
         return new ArrayList<>(Arrays.asList(aliveFeignClient.alive(), aliveInfo));
     }
