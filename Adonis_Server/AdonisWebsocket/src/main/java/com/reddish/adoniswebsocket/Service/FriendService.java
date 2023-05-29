@@ -178,11 +178,12 @@ public class FriendService {
             }
             case FOP_QUERY_FRIENDSHIP -> {
 
-                if (friend_so.getStatus() == 1 && friend_os.getStatus() == 1) {
+                if (friend_so != null && friend_os != null &&
+                        friend_so.getStatus() == 1 && friend_os.getStatus() == 1) {
                     sendManager.sendFriendInfoForOp(friendOpMessage, FIF_TWO_WAY, objectId, subjectId);
-                } else if (friend_so.getStatus() == 1) {
+                } else if (friend_so != null && friend_so.getStatus() == 1) {
                     sendManager.sendFriendInfoForOp(friendOpMessage, FIF_SINGLE_FOR_YOU, objectId, subjectId);
-                } else if (friend_os.getStatus() == 1) {
+                } else if (friend_os != null && friend_os.getStatus() == 1) {
                     sendManager.sendFriendInfoForOp(friendOpMessage, FIF_SINGLE_ON_YOU, objectId, subjectId);
                 } else {
                     sendManager.sendFriendInfoForOp(friendOpMessage, FIF_FREE, objectId, subjectId);

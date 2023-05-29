@@ -99,16 +99,16 @@ public class Dispatcher {
                 default -> throw new MessageException(ExceptionCode.ILLEGAL_TYPE);
             }
         } catch (MessageException e) {
-            logger.info(e.getMessage());
+            logger.info("[异常]" + e.getMessage());
             sendMesageForReply(session, message.getId(), e.code.getId());
         } catch (UserInfoException e) {
-            logger.info(e.getMessage());
+            logger.info("[异常]" + e.getMessage());
             sendMesageForReply(session, message.getId(), e.code.getId());
         } catch (FriendInfoException e) {
-            logger.info(e.getMessage());
+            logger.info("[异常]" + e.getMessage());
             sendMesageForReply(session, message.getId(), e.code.getId());
         } catch (DialogueInfoException e) {
-            logger.info(e.getMessage());
+            logger.info("[异常]" + e.getMessage());
             sendMesageForReply(session, message.getId(), e.code.getId());
         }
     }
@@ -120,7 +120,7 @@ public class Dispatcher {
             synchronized (session) {
                 session.getBasicRemote().sendText(messageString);
             }
-            logger.info("[发送消息]"+messageString);
+            logger.info("[发送消息]" + messageString);
         } catch (Exception e) {
             logger.info(e.getMessage());
             logger.info("[异常]发送消息失败！");
