@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.adonis.R
 import com.example.adonis.entity.*
@@ -32,8 +33,9 @@ class ConfirmActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_confirm)
 
-        friendId = intent.getStringExtra(FilterString.ID)
-        friendNickname = intent.getStringExtra(FilterString.NICKNAME)
+        val user = JSON.parseObject(intent.getStringExtra(FilterString.DATA), FriendInfoMessage::class.java)
+        friendId = user.id
+        friendNickname = user.nickname
         userId = getSharedPreferences(FilterString.DATA, MODE_PRIVATE).getString(FilterString.ID, null)
 
         val id: TextView = findViewById(R.id.confirm_id)
@@ -54,12 +56,24 @@ class ConfirmActivity : AppCompatActivity() {
         bindService(serviceIntent, connection, BIND_AUTO_CREATE)
 
         intentFilter.addAction(FilterString.FRIEND_INFO_MESSAGE)
+        intentFilter.addAction(FilterString.OFF_LINE)
         receiver = object: BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
-                val jsonInfo = p1?.getStringExtra(FilterString.FRIEND_INFO_MESSAGE)
-                val friendInfoMessage = JSON.parseObject(jsonInfo, FriendInfoMessage::class.java)
-                val code = friendInfoMessage.code
-                if (code == MessageCode.FIF_OP_SUCCESS.id) { finish() }
+                when(p1?.action) {
+                    FilterString.OFF_LINE -> {
+                        Toast.makeText(this@ConfirmActivity, "网络异常, 请稍后重试！", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    FilterString.FRIEND_INFO_MESSAGE -> {
+                        val jsonInfo = p1.getStringExtra(FilterString.FRIEND_INFO_MESSAGE)
+                        val friendInfoMessage =
+                            JSON.parseObject(jsonInfo, FriendInfoMessage::class.java)
+                        val code = friendInfoMessage.code
+                        if (code == MessageCode.FIF_OP_SUCCESS.id) {
+                            finish()
+                        }
+                    }
+                }
             }
         }
 

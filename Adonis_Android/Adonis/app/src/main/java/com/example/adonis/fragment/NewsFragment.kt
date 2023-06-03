@@ -1,43 +1,42 @@
 package com.example.adonis.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Button
 import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adonis.R
 import com.example.adonis.activity.AddActivity
+import com.example.adonis.activity.MainActivity
 import com.example.adonis.activity.SingleChatActivity
 import com.example.adonis.application.AdonisApplication
 import com.example.adonis.entity.DialogueMessage
 import com.example.adonis.entity.FilterString
 import com.example.adonis.utils.NewsAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [NewsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class NewsFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var onlineTag: Boolean = true
     private val newsAdapter = NewsAdapter()
     private lateinit var data: AdonisApplication
+
+    private var isChecking = false
+
+    private val timeHandler = TimeHandler()
+    private val timeThread = TimeThread()
+
+    private var onlineText: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            onlineTag = it.getBoolean(FilterString.ONLINE_STATE)
         }
     }
 
@@ -51,6 +50,9 @@ class NewsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_news, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview_news)
         val moreButton = view.findViewById<Button>(R.id.button_news_more)
+        onlineText = view.findViewById(R.id.text_online_state)
+
+        updateOnlineState(onlineTag)
 
         val layout = LinearLayoutManager(view.context)
         layout.orientation = LinearLayoutManager.VERTICAL
@@ -61,6 +63,9 @@ class NewsFragment : Fragment() {
                 val intent = Intent(activity, SingleChatActivity::class.java)
                 intent.putExtra(FilterString.ID, holder.id)
                 intent.putExtra(FilterString.NICKNAME, holder.nickname.text)
+                newsAdapter.clearUnread(holder.id!!)
+                val mainActivity = activity as MainActivity
+                mainActivity.updateUnread(holder.id!!)
                 startActivity(intent)
             }
 
@@ -85,6 +90,7 @@ class NewsFragment : Fragment() {
             popupMenu.show()
         }
 
+
 //        val onGesture = OnGesture()
 //        gestureDetector = GestureDetector(recyclerView.context, onGesture)
 //        recyclerView.setOnTouchListener(this)
@@ -94,21 +100,11 @@ class NewsFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment NewsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(online: Boolean) =
             NewsFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putBoolean(FilterString.ONLINE_STATE, online)
                 }
             }
     }
@@ -117,10 +113,54 @@ class NewsFragment : Fragment() {
 
     fun initNewsList() {
         newsAdapter.initNewsList(data)
-        newsAdapter.notifyDataSetChanged()
+        if (!isChecking)
+            timeThread.start()
     }
 
-    fun addNewsList(news: DialogueMessage) {
-        newsAdapter.addNewsList(news)
+    fun addNewsList(news: DialogueMessage, tag: Boolean) {
+        newsAdapter.addNewsList(news, tag)
     }
+
+    fun clearUnread(id: String) {
+        newsAdapter.clearUnread(id)
+    }
+
+    fun deleteNews(id: String) {
+        newsAdapter.deleteNews(id)
+    }
+
+    fun updateOnlineState(tag: Boolean) {
+        if (tag) {
+            onlineText!!.visibility = ViewGroup.GONE
+        } else {
+            onlineText!!.visibility = ViewGroup.VISIBLE
+        }
+    }
+
+    @SuppressLint("HandlerLeak")
+    inner class TimeHandler: Handler() {
+        override fun handleMessage(msg: android.os.Message) {
+            super.handleMessage(msg)
+            when(msg.what) {
+                1 -> newsAdapter.updateNewsList()
+            }
+        }
+    }
+
+    inner class TimeThread: Thread() {
+        override fun run() {
+            super.run()
+            isChecking = true
+            while (isChecking) {
+                sleep(1000)
+                timeHandler.sendEmptyMessage(1)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isChecking = false
+    }
+
 }

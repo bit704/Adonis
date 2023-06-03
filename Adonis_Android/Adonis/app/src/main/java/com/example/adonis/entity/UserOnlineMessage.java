@@ -17,11 +17,11 @@ public class UserOnlineMessage {
         this.friendInfoMessageList = friendInfoMessageList;
     }
 
-    public List<DialogueMessage> getDialogueInfoMessageList() {
+    public List<DialogueMessage> getDialogueMessageList() {
         return dialogueMessageList;
     }
 
-    public void setDialogueInfoMessageList(List<DialogueMessage> dialogueMessageList) {
+    public void setDialogueMessageList(List<DialogueMessage> dialogueMessageList) {
         this.dialogueMessageList = dialogueMessageList;
     }
 

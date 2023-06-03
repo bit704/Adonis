@@ -7,30 +7,60 @@
         android:id="@+id/news_avatar"
         android:layout_width="@dimen/news_avatar"
         android:layout_height="@dimen/news_avatar"
+        android:layout_margin="@dimen/margin"
         android:src="@mipmap/ic_launcher">
     </ImageView>
 
     <LinearLayout
+        android:layout_margin="@dimen/margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/news_avatar"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/news_name"
-            android:text="@string/app_name"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/news_name"
-            android:maxLines="1">
-        </TextView>
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/news_name"
+                android:text="@string/app_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/news_name"
+                android:maxLines="1">
+            </TextView>
 
-        <TextView
-            android:id="@+id/news_message"
-            android:text="@string/app_name"
+            <TextView
+                android:id="@+id/text_news_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@id/news_name"
+                android:layout_marginEnd="@dimen/margin">
+            </TextView>
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/news_message"
-            android:maxLines="1">
-        </TextView>
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/news_message"
+                android:text="@string/app_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/news_message"
+                android:maxLines="1">
+            </TextView>
+
+            <TextView
+                android:id="@+id/text_news_unread_count"
+                android:layout_width="@dimen/news_unread_count"
+                android:layout_height="@dimen/news_unread_count"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@id/news_message"
+                android:layout_marginEnd="@dimen/margin">
+            </TextView>
+        </RelativeLayout>
     </LinearLayout>
 
 </RelativeLayout>

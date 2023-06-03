@@ -1,5 +1,7 @@
 package com.example.adonis.entity;
 
+import androidx.annotation.Nullable;
+
 public class FriendInfoMessage {
     /**
      * 见MessageCode下编码
@@ -85,4 +87,25 @@ public class FriendInfoMessage {
         this.customNickname = customNickname;
         this.memo = memo;
     }
+
+    public FriendInfoMessage(FriendInfoMessage msg) {
+        this.code = msg.code;
+        this.id = msg.id;
+        this.nickname = msg.nickname;
+        this.customNickname = msg.customNickname;
+        this.memo = msg.memo;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (this.getClass() != obj.getClass()) return false;
+        FriendInfoMessage user = (FriendInfoMessage) obj;
+        if (!this.id.equals(user.id)) return false;
+        if (!this.nickname.equals(user.id)) return false;
+        if (!this.customNickname.equals(user.id)) return false;
+        return this.memo.equals(user.memo);
+    }
+
 }

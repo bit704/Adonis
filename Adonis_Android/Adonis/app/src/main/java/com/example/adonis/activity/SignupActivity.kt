@@ -53,7 +53,7 @@ class SignupActivity : AppCompatActivity() {
             val id = userEditText.text.toString()
             val pwd = pwdEditText.text.toString()
             val confirmPwd = confirmEditText.text.toString()
-            if (nickname.isEmpty()) {
+            if (nickname.isBlank()) {
                 Toast.makeText(this, "昵称不能为空！", Toast.LENGTH_SHORT).show()
                 showKeyBoards(nameEditText)
                 return@setOnClickListener
@@ -108,19 +108,31 @@ class SignupActivity : AppCompatActivity() {
         }
 
         intentFilter.addAction(FilterString.USER_INFO_MESSAGE)
+        intentFilter.addAction(FilterString.OFF_LINE)
         receiver = object: BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
-                val code = p1?.getIntExtra(FilterString.COED, Code.DEFAULT_CODE)
-                if (code == 200) {
-                    val data = Intent()
-                    data.putExtra(FilterString.RESULT, Code.SUCCESS)
-                    setResult(RESULT_CODE, data)
-                    finish()
-                }
-                else if (code == 201) {
-                    val toast = Toast.makeText(this@SignupActivity, "账号已存在，请重新设置！", Toast.LENGTH_SHORT)
-                    toast.setGravity(Gravity.BOTTOM, 0, 100)
-                    toast.show()
+                when(p1?.action) {
+                    FilterString.OFF_LINE -> {
+                        Toast.makeText(this@SignupActivity, "网络异常, 请稍后重试！", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    FilterString.USER_INFO_MESSAGE -> {
+                        val code = p1?.getIntExtra(FilterString.CODE, Code.DEFAULT_CODE)
+                        if (code == 200) {
+                            val data = Intent()
+                            data.putExtra(FilterString.RESULT, Code.SUCCESS)
+                            setResult(RESULT_CODE, data)
+                            finish()
+                        } else if (code == 201) {
+                            val toast = Toast.makeText(
+                                this@SignupActivity,
+                                "账号已存在，请重新设置！",
+                                Toast.LENGTH_SHORT
+                            )
+                            toast.setGravity(Gravity.BOTTOM, 0, 100)
+                            toast.show()
+                        }
+                    }
                 }
             }
         }

@@ -1,23 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/chat_others_avatar"
-        android:src="@mipmap/ic_launcher"
-        android:layout_alignParentStart="true"
-        android:layout_width="@dimen/chat_avatar"
-        android:layout_height="@dimen/chat_avatar">
-    </ImageView>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/text_chat_others"
-        android:layout_toEndOf="@id/chat_others_avatar"
+        android:id="@+id/text_chat_others_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="@dimen/chat_message_max_width"
-        android:textSize="@dimen/chat_message">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin"
+        android:visibility="gone">
     </TextView>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_chat_others_time"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginHorizontal="@dimen/margin">
+        <ImageView
+            android:id="@+id/chat_others_avatar"
+            android:src="@mipmap/ic_launcher"
+            android:layout_alignParentStart="true"
+            android:layout_width="@dimen/chat_avatar"
+            android:layout_height="@dimen/chat_avatar">
+        </ImageView>
+
+        <TextView
+            android:id="@+id/text_chat_others"
+            android:layout_toEndOf="@id/chat_others_avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin"
+            android:maxWidth="@dimen/chat_message_max_width"
+            android:textSize="@dimen/chat_message">
+        </TextView>
+
+        <TextView
+            android:id="@+id/text_chat_others_lasted_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/text_chat_others"
+            android:layout_alignBottom="@id/text_chat_others"
+            android:layout_marginStart="@dimen/margin"
+            android:visibility="gone">
+        </TextView>
+    </RelativeLayout>
 </RelativeLayout>

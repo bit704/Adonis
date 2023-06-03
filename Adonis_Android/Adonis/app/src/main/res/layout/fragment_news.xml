@@ -28,6 +28,16 @@
         </Button>
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/text_online_state"
+        android:text="@string/online_state"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginVertical="@dimen/margin">
+    </TextView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_news"
         android:layout_width="match_parent"

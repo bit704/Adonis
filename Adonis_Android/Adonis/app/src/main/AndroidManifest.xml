@@ -15,6 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Adonis"
         tools:targetApi="31">
+
+        <activity
+            android:name=".activity.EditUserInfoActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.UserInfoActivity"
             android:exported="false" />

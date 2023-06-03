@@ -5,7 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import com.example.adonis.R
+import com.example.adonis.activity.MainActivity
+import com.example.adonis.application.AdonisApplication
+import com.example.adonis.entity.FriendInfoMessage
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,6 +26,10 @@ class PersonalFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var data: AdonisApplication
+    private var myInfo: FriendInfoMessage? = null
+    private var idView: TextView? = null
+    private var nameView: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +43,20 @@ class PersonalFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        data = activity?.application as AdonisApplication
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_personal, container, false)
+        val view = inflater.inflate(R.layout.fragment_personal, container, false)
+        val exitButton: Button = view.findViewById(R.id.button_personal_exit)
+        idView = view.findViewById(R.id.personal_id)
+        nameView = view.findViewById(R.id.personal_nickname)
+
+        exitButton.setOnClickListener {
+            val mainActivity = activity as MainActivity
+            mainActivity.sendExitMessage()
+        }
+
+        return view
     }
 
     companion object {
@@ -57,4 +78,12 @@ class PersonalFragment : Fragment() {
                 }
             }
     }
+
+    fun initInfo() {
+        myInfo = data.getMyInfo()
+        idView?.text = myInfo?.id
+        nameView?.text = myInfo?.nickname
+    }
+
+
 }

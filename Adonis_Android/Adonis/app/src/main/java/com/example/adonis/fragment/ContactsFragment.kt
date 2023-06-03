@@ -1,10 +1,7 @@
 package com.example.adonis.fragment
 
-import android.app.Activity
-import android.app.Application
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -23,9 +20,7 @@ import com.example.adonis.activity.UserInfoActivity
 import com.example.adonis.application.AdonisApplication
 import com.example.adonis.entity.FilterString
 import com.example.adonis.entity.FriendInfoMessage
-import com.example.adonis.entity.MessageCode
 import com.example.adonis.utils.ContactsAdapter
-import java.io.Serializable
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -42,8 +37,7 @@ class ContactsFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private val adapter = ContactsAdapter()
-    private val contacts = mutableListOf<FriendInfoMessage>()
-    private val newFriends = mutableListOf<FriendInfoMessage>()
+
     private lateinit var data: AdonisApplication
 
     private var newNum: TextView? = null
@@ -74,7 +68,7 @@ class ContactsFragment : Fragment() {
         adapter.setItemClickedListener(object : ContactsAdapter.OnItemClickedListener {
             override fun onItemClick(holder: ContactsAdapter.ContactsHolder) {
                 val intent = Intent(activity, UserInfoActivity::class.java)
-                intent.putExtra(FilterString.ID, holder.id)
+                intent.putExtra(FilterString.DATA, JSON.toJSONString(holder.data))
                 startActivity(intent)
             }
         })
@@ -106,19 +100,36 @@ class ContactsFragment : Fragment() {
     }
 
     fun initContacts() {
-        newNum?.text = data.getNewFriends().size.toString()
-        adapter.initContacts(data.getContacts())
-        adapter.notifyDataSetChanged()
+        val num = data.getNewFriendsNum()
+        if (num == 0) {
+            newNum?.text = ""
+        } else {
+            newNum?.text = num.toString()
+        }
+        adapter.initContacts(data.getContacts(), data.getMyID())
     }
 
     fun addContacts(user: FriendInfoMessage) {
         adapter.addContacts(user)
-        adapter.notifyDataSetChanged()
+        updateNewFriendsNum()
     }
 
-    fun updateNewFriends(user: FriendInfoMessage) {
-        data.addNewFriends(user)
-        newNum?.text = data.getNewFriends().size.toString()
+    fun deleteContacts(id: String) {
+        adapter.deleteContacts(id)
+    }
+
+    fun updateContact(info: FriendInfoMessage) {
+        adapter.updateContacts(info)
+    }
+
+
+    private fun updateNewFriendsNum() {
+        val num = data.getNewFriendsNum()
+        if (num == 1) {
+            newNum?.text = ""
+        } else {
+            newNum?.text = (num - 1).toString()
+        }
     }
 
     companion object {

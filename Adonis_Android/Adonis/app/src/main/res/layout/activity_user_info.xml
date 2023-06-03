@@ -22,12 +22,11 @@
             android:layout_marginEnd="@dimen/margin"
             android:layout_marginBottom="@dimen/margin"
             android:contentDescription="@string/back">
-
         </Button>
 
 
         <Button
-            android:id="@+id/button_user_info_more"
+            android:id="@+id/button_user_info_edit"
             android:layout_width="@dimen/main_button"
             android:layout_height="@dimen/main_button"
             android:layout_alignParentEnd="true"
@@ -35,9 +34,7 @@
             android:layout_marginStart="@dimen/margin"
             android:layout_marginTop="@dimen/margin"
             android:layout_marginEnd="@dimen/margin"
-            android:layout_marginBottom="@dimen/margin"
-            android:contentDescription="@string/add_friends">
-
+            android:layout_marginBottom="@dimen/margin">
         </Button>
     </RelativeLayout>
 
@@ -88,6 +85,7 @@
     
     <Button
         android:id="@+id/button_user_info_chat"
+        android:text="@string/send_message"
         android:layout_gravity="center_horizontal"
         android:layout_width="@dimen/user_info_button_width"
         android:layout_height="@dimen/user_info_button_height">

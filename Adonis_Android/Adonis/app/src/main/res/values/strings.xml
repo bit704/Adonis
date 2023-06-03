@@ -13,15 +13,32 @@
     <string name="back">返回</string>
     <string name="add_hint">请输入用户账号</string>
     <string name="add_friends">添加好友</string>
+    <string name="setting">设置</string>
     <string name="remark">添加备注</string>
+    <string name="update_remark">修改备注</string>
     <string name="request">好友请求</string>
     <string name="avatar">头像</string>
     <string name="send">发送</string>
     <string name="not_exist">该用户不存在</string>
     <string name="new_friends">新的朋友</string>
     <string name="agree">同意</string>
+    <string name="agree_tag">√</string>
+    <string name="reject_tag">×</string>
     <string name="add">添加</string>
     <string name="exit">退出</string>
+    <string name="set_time">设置显示时间</string>
+    <string name="hours">时</string>
+    <string name="minutes">分</string>
+    <string name="seconds">秒</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确认</string>
+    <string name="block">拉黑用户</string>
+    <string name="block_yes">拉黑</string>
+    <string name="block_no">取消</string>
+    <string name="send_message">发送消息</string>
+    <string name="delete_friend">删除好友</string>
+    <string name="reject">拒绝</string>
+    <string name="online_state">网络状态异常，请检查网络</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

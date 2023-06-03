@@ -1,30 +1,28 @@
 package com.example.adonis.activity
 
 import android.content.*
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
-import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-
+import androidx.appcompat.app.AppCompatActivity
 import com.alibaba.fastjson.JSON
 import com.example.adonis.R
 import com.example.adonis.application.AdonisApplication
-import com.example.adonis.entity.Code
-import com.example.adonis.entity.FilterString
-import com.example.adonis.entity.Message
-import com.example.adonis.entity.MessageCode
-import com.example.adonis.entity.UserOpMessage
+import com.example.adonis.entity.*
 import com.example.adonis.services.WebSocketService
-import java.util.UUID
+import java.util.*
 
+
+@Suppress("DEPRECATION")
 class LoginActivity : AppCompatActivity() {
     lateinit var binder: WebSocketService.SocketBinder
     lateinit var service: WebSocketService
@@ -34,10 +32,24 @@ class LoginActivity : AppCompatActivity() {
     private val REQUEST_CODE = 1
     private val RESULT_CODE = 2
 
+    private lateinit var myID: String
+    private lateinit var myPWD: String
+    private var mWindowHeight = 0
+    private var globalLayoutListener: OnGlobalLayoutListener? = null
+    private var getHeight: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         Log.i("Activity Info", "Login Create")
+
+        if (intent.getBooleanExtra(FilterString.AUTO_LOGIN, false)) {
+            Toast.makeText(this, "账号信息变更，请重新登录！", Toast.LENGTH_SHORT).show()
+        }
+
+        val loginConnection = LoginConnection()
+        val serviceIntent = Intent(this, WebSocketService::class.java)
+        bindService(serviceIntent, loginConnection, BIND_AUTO_CREATE)
 
         val textUser:EditText = findViewById(R.id.edit_text_user)
         val textPassword:EditText = findViewById(R.id.edit_text_password)
@@ -47,31 +59,33 @@ class LoginActivity : AppCompatActivity() {
         val data = application as AdonisApplication
 
         buttonLogin.setOnClickListener {
-            val id = textUser.text.toString()
-            val pwd = textPassword.text.toString()
+            myID = textUser.text.toString()
+            myPWD = textPassword.text.toString()
 
             hideKeyBoards()
-            if (id.isEmpty() && pwd.isEmpty()) {
+            if (myID.isEmpty() && myPWD.isEmpty()) {
                 Toast.makeText(this, "请输入账号和密码！", Toast.LENGTH_SHORT).show()
                 showKeyBoards(textUser)
                 return@setOnClickListener
             }
-            if (id.isEmpty()) {
+            if (myID.isEmpty()) {
                 Toast.makeText(this, "请输入账号！", Toast.LENGTH_SHORT).show()
                 showKeyBoards(textUser)
                 return@setOnClickListener
             }
-            if (pwd.isEmpty()) {
+            if (myPWD.isEmpty()) {
                 Toast.makeText(this, "请输入密码！", Toast.LENGTH_SHORT).show()
                 showKeyBoards(textPassword)
                 return@setOnClickListener
             }
 
+            buttonLogin.isClickable = false
+
             val userOpMessage = UserOpMessage()
             val message = Message()
             userOpMessage.code = MessageCode.UOP_SIGN_IN.id
-            userOpMessage.id = id
-            userOpMessage.password = pwd
+            userOpMessage.id = myID
+            userOpMessage.password = myPWD
             message.id = UUID.randomUUID().toString()
             message.type = FilterString.USER_OP_MESSAGE
             message.userOpMessage = userOpMessage
@@ -100,29 +114,60 @@ class LoginActivity : AppCompatActivity() {
             false
         }
 
-        val loginConnection = LoginConnection()
-        val serviceIntent = Intent(this, WebSocketService::class.java)
-        bindService(serviceIntent, loginConnection, BIND_AUTO_CREATE)
 
         intentFilter.addAction(FilterString.USER_INFO_MESSAGE)
+        intentFilter.addAction(FilterString.OFF_LINE)
         receiver = object : BroadcastReceiver(){
             override fun onReceive(p0: Context?, p1: Intent?) {
-                val code = p1?.getIntExtra(FilterString.COED, Code.DEFAULT_CODE)
-                if (code == 200) {
-                    val editor = getSharedPreferences(FilterString.DATA, MODE_PRIVATE).edit()
-                    editor.putString(FilterString.ID, textUser.text.toString())
-                    editor.putBoolean(FilterString.IF_ONLINE, true)
-                    editor.apply()
-                    data.initMyID(textUser.text.toString())
-                    val intent = Intent()
-                    intent.setClass(this@LoginActivity, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    Toast.makeText(this@LoginActivity, "账号或密码错误，请重新输入！", Toast.LENGTH_SHORT).show()
+                when(p1?.action) {
+                    FilterString.OFF_LINE -> {
+                        Toast.makeText(this@LoginActivity, "网络异常, 请稍后重试！", Toast.LENGTH_SHORT).show()
+                    }
+                    FilterString.USER_INFO_MESSAGE -> {
+                        val code = p1.getIntExtra(FilterString.CODE, Code.DEFAULT_CODE)
+                        if (code == 200) {
+                            val editor =
+                                getSharedPreferences(FilterString.DATA, MODE_PRIVATE).edit()
+                            editor.putString(FilterString.ID, myID)
+                            editor.putString(FilterString.PASSWORD, myPWD)
+                            editor.putBoolean(FilterString.IF_ONLINE, true)
+                            editor.apply()
+                            data.initMyID(myID)
+                            service.initMyID(myID)
+                            val intent = Intent()
+                            intent.setClass(this@LoginActivity, MainActivity::class.java)
+                            intent.putExtra(FilterString.ONLINE_STATE, true)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            buttonLogin.isClickable = true
+                            Toast.makeText(this@LoginActivity, "账号或密码错误，请重新输入！", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
                 }
             }
         }
+
+        globalLayoutListener = OnGlobalLayoutListener {
+            if (getHeight) return@OnGlobalLayoutListener
+            val r = Rect()
+            window.decorView.getWindowVisibleDisplayFrame(r)
+            val height: Int = r.height()
+            if (mWindowHeight == 0) {
+                mWindowHeight = height
+            } else {
+                if (mWindowHeight != height) {
+                    val softKeyboardHeight: Int = mWindowHeight - height
+                    val editor = getSharedPreferences(FilterString.DATA, MODE_PRIVATE).edit()
+                    editor.putInt(FilterString.SOFT_INPUT_HEIGHT, softKeyboardHeight)
+                    editor.apply()
+                    getHeight = true
+                }
+            }
+        }
+
+        window.decorView.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
     }
 
     inner class LoginConnection: ServiceConnection{
@@ -187,5 +232,10 @@ class LoginActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         unregisterReceiver(receiver)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        window.decorView.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
     }
 }

@@ -41,13 +41,44 @@
     <Button
         android:id="@+id/button_new_friends"
         android:layout_width="@dimen/new_friends_button_width"
-
-        android:layout_height="@dimen/new_friends_button_height"
-        android:layout_alignParentEnd="true"
+        android:layout_height="@dimen/new_friends_button_width"
         android:layout_centerVertical="true"
-        android:layout_margin="@dimen/margin"
+        android:layout_toStartOf="@id/button_reject_friends"
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginBottom="@dimen/margin"
         android:contentDescription="@string/agree"
-        android:text="@string/agree">
-
+        android:text="@string/agree_tag"
+        android:visibility="gone">
     </Button>
+
+    <Button
+        android:id="@+id/button_reject_friends"
+        android:layout_width="@dimen/new_friends_button_width"
+        android:layout_height="@dimen/new_friends_button_width"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_marginBottom="@dimen/margin"
+        android:contentDescription="@string/agree"
+        android:text="@string/reject_tag"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone">
+    </Button>
+
+    <TextView
+        android:id="@+id/tag_new_friends"
+        android:layout_width="@dimen/new_friends_tag_width"
+        android:layout_height="@dimen/new_friends_tag_height"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_marginBottom="@dimen/margin"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:lines="1"
+        android:visibility="gone">
+    </TextView>
 </RelativeLayout>

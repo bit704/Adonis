@@ -50,8 +50,8 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <LinearLayout
 
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -86,7 +86,7 @@
         </FrameLayout>
 
         <Button
-            android:id="@+id/button_chat_files"
+            android:id="@+id/button_chat_set_time"
             android:layout_width="@dimen/chat_button_send_width"
             android:layout_height="@dimen/chat_button_send_height"
             android:layout_margin="@dimen/margin">
@@ -94,5 +94,114 @@
         </Button>
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/layout_chat_set_time"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/button_chat_cancel"
+                    android:text="@string/cancel"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/chat_set_time_height"
+                    android:layout_alignParentStart="true">
+                </Button>
+
+                <TextView
+                    android:text="@string/set_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+                </TextView>
+
+                <Button
+                    android:id="@+id/button_chat_confirm"
+                    android:text="@string/confirm"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/chat_set_time_height"
+                    android:layout_alignParentEnd="true">
+                </Button>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:orientation="vertical">
+                    <TextView
+                        android:text="@string/hours"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                    </TextView>
+                    <NumberPicker
+                        android:id="@+id/number_picker_chat_hours"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:descendantFocusability="blocksDescendants">
+                    </NumberPicker>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"
+                    android:orientation="vertical">
+                    <TextView
+                        android:text="@string/minutes"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                    </TextView>
+                    <NumberPicker
+                        android:id="@+id/number_picker_chat_minutes"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:descendantFocusability="blocksDescendants">
+                    </NumberPicker>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:orientation="vertical">
+                    <TextView
+                        android:text="@string/seconds"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                    </TextView>
+                    <NumberPicker
+                        android:id="@+id/number_picker_chat_seconds"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:descendantFocusability="blocksDescendants">
+                    </NumberPicker>
+                </LinearLayout>
+
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

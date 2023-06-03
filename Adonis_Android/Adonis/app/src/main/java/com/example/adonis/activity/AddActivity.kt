@@ -1,5 +1,6 @@
 package com.example.adonis.activity
 
+import android.annotation.SuppressLint
 import android.content.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,10 +12,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.fastjson.JSON
 import com.example.adonis.R
+import com.example.adonis.application.AdonisApplication
 import com.example.adonis.entity.*
 import com.example.adonis.services.WebSocketService
 import com.example.adonis.utils.AddAdapter
@@ -27,6 +30,7 @@ class AddActivity : AppCompatActivity() {
     lateinit var service: WebSocketService
     private lateinit var receiver: BroadcastReceiver
     private val intentFilter = IntentFilter()
+    private var data: AdonisApplication? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +40,8 @@ class AddActivity : AppCompatActivity() {
         val addConnection = AddConnection()
         bindService(serviceIntent, addConnection, BIND_AUTO_CREATE)
 
-
-        userId = getSharedPreferences(FilterString.DATA, MODE_PRIVATE).getString(FilterString.ID, null)
+        data = application as AdonisApplication
+        userId = data!!.getMyID()
 
         val notExist: TextView = findViewById(R.id.add_not_exist)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview_results)
@@ -46,30 +50,50 @@ class AddActivity : AppCompatActivity() {
         adapter.setAddButtonClickListener(object : AddAdapter.OnAddButtonClickListener{
             override fun onAddButtonClick(holder: AddAdapter.AddViewHolder) {
                 val intent = Intent(this@AddActivity, ConfirmActivity::class.java)
-                intent.putExtra(FilterString.ID, holder.user.text.toString())
-                intent.putExtra(FilterString.NICKNAME, holder.nickname.text.toString())
+                intent.putExtra(FilterString.DATA, JSON.toJSONString(holder.data))
                 startActivity(intent)
             }
         })
+        adapter.setItemClickListener(object : AddAdapter.OnItemClickListener {
+            override fun onItemClick(holder: AddAdapter.AddViewHolder) {
+                val intent = Intent(this@AddActivity, UserInfoActivity::class.java)
+                intent.putExtra(FilterString.DATA, JSON.toJSONString(holder.data))
+                startActivity(intent)
+            }
+        })
+        adapter.initMyID(userId!!)
 
         recyclerView.layoutManager = layout
         recyclerView.adapter = adapter
 
         intentFilter.addAction(FilterString.FRIEND_INFO_MESSAGE)
+        intentFilter.addAction(FilterString.OFF_LINE)
         receiver = object: BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
-                val jsonInfo = p1?.getStringExtra(FilterString.FRIEND_INFO_MESSAGE)
-                val friendInfoMessage = JSON.parseObject(jsonInfo, FriendInfoMessage::class.java)
-                val status = friendInfoMessage.code
-                if (status == MessageCode.FIF_EXIST.id) {
-                    adapter.showResult(friendInfoMessage)
-                    adapter.notifyDataSetChanged()
-                    notExist.visibility = TextView.INVISIBLE
-                }
-                else if (status == MessageCode.FIF_NOT_EXIST.id) {
-                    adapter.showNotExistResult()
-                    adapter.notifyDataSetChanged()
-                    notExist.visibility = TextView.VISIBLE
+                when(p1?.action) {
+                    FilterString.OFF_LINE -> {
+                        Toast.makeText(this@AddActivity, "网络异常, 请稍后重试！", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    FilterString.FRIEND_INFO_MESSAGE -> {
+                        val jsonInfo = p1?.getStringExtra(FilterString.FRIEND_INFO_MESSAGE)
+                        val friendInfoMessage =
+                            JSON.parseObject(jsonInfo, FriendInfoMessage::class.java)
+                        val status = friendInfoMessage.code
+                        if (status == MessageCode.FIF_EXIST.id) {
+                            val user = data!!.findUserByID(friendInfoMessage.id)
+                            val tag = user != null
+                            if (tag)
+                                adapter.showResult(user!!, true)
+                            else
+                                adapter.showResult(friendInfoMessage, false)
+                            notExist.visibility = TextView.GONE
+                        } else if (status == MessageCode.FIF_NOT_EXIST.id) {
+                            adapter.showNotExistResult()
+
+                            notExist.visibility = TextView.VISIBLE
+                        }
+                    }
                 }
             }
         }
