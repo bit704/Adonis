@@ -18,7 +18,7 @@ Adonis前后端分离，前端包括安卓端、网页端，后端采用微服�
 
 #### 1.2.1 用例图
 
-![用例图](https://bit704.oss-cn-beijing.aliyuncs.com/image/2023-06-01-%E7%94%A8%E4%BE%8B%E5%9B%BE.png)
+![用例图](./pic/用例图.png)
 
 #### 1.2.2 详细功能列表
 
@@ -66,11 +66,11 @@ AES加密算法，使用Base64编码、ECB模式、PKCS7-PKCS5填充算法、256
 
 #### 1.2.3 安卓端运行截图
 
-
+略。
 
 #### 1.2.4 网页端运行截图
 
-
+略。
 
 ### 1.3 领域模型
 
@@ -82,7 +82,7 @@ AES加密算法，使用Base64编码、ECB模式、PKCS7-PKCS5填充算法、256
 
 ### 1.4 使用核心用例展示系统动态特性
 
-
+![](./pic/登录时序图.png)
 
 ## 2 系统设计
 
@@ -104,11 +104,11 @@ AES加密算法，使用Base64编码、ECB模式、PKCS7-PKCS5填充算法、256
 
 #### 2.1.2 安卓端
 
-
+略。
 
 #### 2.1.3 网页端
 
-
+略。
 
 ### 2.2 通信协议
 
@@ -256,7 +256,7 @@ Message类的id用UUID生成以确保唯一性，作用有二：
 
 2. 同一条消息可能被重复发送（TCP的超时重传机制），去重。
 
-
+略。
 
 ### 2.4 组件图
 
@@ -302,27 +302,59 @@ mysql  Ver 8.0.32-0ubuntu0.22.04.2 for Linux on x86_64 ((Ubuntu))
 
 #### 3.1.3 安卓端运行环境
 
+**Kotlin版本**
 
+org.jetbrains.kotlin.android   version 1.8.0
+
+**Android版本**
+
+com.android.application version '7.4.2'
+
+com.android.library version '7.4.2'
 
 #### 3.1.4 Vue端运行环境
 
+**node版本**
 
+v18.14.0
+
+**npm版本**
+
+9.3.1
+
+**gulp-cli版本**
+
+2.3.0
 
 ### 3.2 安装与卸载方法
 
 #### 3.2.1 服务端
 
-保证9000、8080、8001端口不被占用，然后启动EurekaServer-0.0.1-SNAPSHOT.jar、AdonisWebsocket-0.0.1-SNAPSHOT.jar、AdonisBase-0.0.1-SNAPSHOT.jar。
+保证9000、8080、8001端口不被占用，然后启动EurekaServer-0.0.1-SNAPSHOT.jar、AdonisWebsocket-0.0.1-SNAPSHOT.jar、AdonisBase-0.0.1-SNAPSHOT.jar。启动脚本见源代码文件夹Adonis_Server目录下的startAll.sh脚本。
 
 #### 3.2.2 安卓端
 
- 
+ 用户正常安装卸载安卓app即可。
 
 #### 3.2.3 Vue端
 
+首先在node官网下载安装包安装node。
 
+之后使用命令安装npm工具，命令如下。
 
+```bash
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+```
 
+再使用命令安装vue-cli脚手架，命令如下。
 
+```bash
+cnpm install --global vue-cli
+```
 
+之后进入项目文件夹运行即可，命令如下。
+
+```bash
+npm run serve
+```
 
